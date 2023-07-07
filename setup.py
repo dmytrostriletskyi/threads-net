@@ -3,14 +3,14 @@ Setup the package.
 """
 from setuptools import find_packages, setup
 
-with open('README.md', 'r') as read_me:
+with open('README.md', 'r', encoding='utf-8') as read_me:
     long_description = read_me.read()
 
 with open('requirements/project.txt', 'r') as f:
     requirements = f.read().splitlines()
 
 setup(
-    version='0.0.2',
+    version='0.0.3',
     name='threads-net',
     description='Threads (threads.net) Python API wrapper',
     long_description=long_description,
