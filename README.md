@@ -9,6 +9,7 @@ Table of content:
   * [How to install](#how-to-install)
   * [Initialization](#initialization)
   * [Examples](#examples)
+  * [User ID](#user-id)
 * [API](#api)
   * [Get User](#get-user)
   * [Get User Threads](#get-user-threads)
@@ -52,6 +53,15 @@ examples
 └── get_user_threads.py
 ...
 ```
+
+### User ID
+
+Below in the API, for a set of endpoints, you would need to specify a user identifier. It is integer value although
+you don't see such on `Threads` platform. You will only see Instagram-like (probably, those are the same basically
+because they probably have same back-end and database) like [@zuck](https://www.threads.net/@zuck).
+
+On how to work with this, check [this](https://github.com/dmytrostriletskyi/threads-net/issues/3) 
+discussion.
 
 ## API
 
