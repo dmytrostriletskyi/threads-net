@@ -1,1 +1,3 @@
+instagrapi==1.17.10
+pillow==10.0.0
 requests==2.31.0
