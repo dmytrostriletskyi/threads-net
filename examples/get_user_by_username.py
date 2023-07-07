@@ -19,16 +19,14 @@ def find_user_by_username(username):
             pass  # User profile not found
     except Exception as e:
         print(f'{find_user_by_username.__name__} error: {e}')
-    return user_id
+    # Return the result of threads.get_user() with the retrieved user ID
+    return threads.get_user(id=user_id)
 
 if __name__ == '__main__':
     threads = Threads()
 
-    # Find the user ID for the username 'threadsapp'
-    user_id = find_user_by_username('threadsapp')
-
-    # Get the user data using the retrieved user ID
-    thread_user = threads.get_user(id=user_id)
+    # Call the find_user_by_username() function to get user data for 'threadsapp'
+    thread_user = find_user_by_username('threadsapp')
 
     if thread_user['data'] is None:
         print("User data not found:", thread_user['errors'][0]['message'])
