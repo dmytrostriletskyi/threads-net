@@ -1,31 +1,68 @@
 """
 Threads (threads.net) API wrapper implementation.
 """
+import logging
 import json
+from urllib.parse import urlparse
 
 import requests
 
+from instagrapi.mixins.account import AccountMixin
+from instagrapi.mixins.auth import LoginMixin
+from instagrapi.mixins.bloks import BloksMixin
+from instagrapi.mixins.challenge import ChallengeResolveMixin
+from instagrapi.mixins.password import PasswordMixin
+from instagrapi.mixins.private import PrivateRequestMixin
+from instagrapi.mixins.public import (
+    ProfilePublicMixin,
+    PublicRequestMixin,
+)
+from instagrapi.mixins.user import UserMixin
 
-class Threads:
+DEFAULT_LOGGER = logging.getLogger('threads')
+
+
+class Threads(
+    PublicRequestMixin,
+    ChallengeResolveMixin,
+    PrivateRequestMixin,
+    ProfilePublicMixin,
+    LoginMixin,
+    PasswordMixin,
+    BloksMixin,
+    UserMixin,
+    AccountMixin,
+):
     """
     Threads (threads.net) API wrapper implementation.
 
     Each unique API endpoint requires unique document ID which is just a constant predefined by API developers.
     """
 
-    API_URL = 'https://www.threads.net/api/graphql'
+    THREADS_API_URL = 'https://www.threads.net/api/graphql'
 
-    def __init__(self):
+    def __init__(
+        self,
+        settings: dict = {},
+        proxy: str = None,
+        delay_range: list = None,
+        logger=DEFAULT_LOGGER,
+        **kwargs,
+    ):
         """
         Construct the object.
         """
-        self.token = self._get_token()
-        self.headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-IG-App-ID': '238260118697367',
-            'X-FB-LSD': self.token,
-            'Sec-Fetch-Site': 'same-origin',
-        }
+        super().__init__(**kwargs)
+
+        self.settings = settings
+        self.logger = logger
+        self.delay_range = delay_range
+
+        self.set_proxy(proxy)
+
+        self.init()
+
+        self.temporary_token = self._get_token()
 
     def _get_token(self):
         """
@@ -41,60 +78,42 @@ class Threads:
 
         return token
 
-    def get_post(self, id: int):
+    def get_user_by_username(self, username: str):
         """
-        Get a post.
+        Get a user by identifier.
 
         Arguments:
-            id (int): a post's identifier.
+            username (str): a user's username.
         """
-        response = requests.post(
-            url=self.API_URL,
-            headers=self.headers,
-            data={
-                'lsd': self.token,
-                'variables': json.dumps({
-                    'postID': id,
-                }),
-                'doc_id': '5587632691339264',
-            },
-        )
+        return self.user_info_by_username_v1(username=username).dict()
 
-        return response.json()
-
-    def get_user(self, id: int):
+    def get_user_by_id(self, id: int):
         """
         Get a user.
 
         Arguments:
             id (int): a user's identifier.
         """
-        response = requests.post(
-            url=self.API_URL,
-            headers=self.headers,
-            data={
-                'lsd': self.token,
-                'variables': json.dumps({
-                    'userID': id,
-                }),
-                'doc_id': '23996318473300828',
-            },
-        )
-
-        return response.json()
+        return self.user_info_gql(user_id=id).dict()
 
     def get_user_threads(self, id: int):
         """
         Get a user's threads.
 
         Arguments:
-            id (int): a user's identifier.
+            id (int):
+            a user's identifier.
         """
         response = requests.post(
-            url=self.API_URL,
-            headers=self.headers,
+            url=self.THREADS_API_URL,
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-IG-App-ID': '238260118697367',
+                'X-FB-LSD': self.temporary_token,
+                'Sec-Fetch-Site': 'same-origin',
+            },
             data={
-                'lsd': self.token,
+                'lsd': self.temporary_token,
                 'variables': json.dumps({
                     'userID': id,
                 }),
@@ -112,10 +131,15 @@ class Threads:
             id (int): a user's identifier.
         """
         response = requests.post(
-            url=self.API_URL,
-            headers=self.headers,
+            url=self.THREADS_API_URL,
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-IG-App-ID': '238260118697367',
+                'X-FB-LSD': self.temporary_token,
+                'Sec-Fetch-Site': 'same-origin',
+            },
             data={
-                'lsd': self.token,
+                'lsd': self.temporary_token,
                 'variables': json.dumps({
                     'userID': id,
                 }),
@@ -124,3 +148,55 @@ class Threads:
         )
 
         return response.json()
+
+    def get_post(self, id: int):
+        """
+        Get a post.
+
+        Arguments:
+            id (int): a post's identifier.
+        """
+        response = requests.post(
+            url=self.THREADS_API_URL,
+            headers=self.headers,
+            data={
+                'lsd': self.token,
+                'variables': json.dumps({
+                    'postID': id,
+                }),
+                'doc_id': '5587632691339264',
+            },
+        )
+
+        return response.json()
+
+    def set_proxy(self, dsn: str):
+        """
+        Set a proxy.
+
+        Copy-past code from the parent library.
+
+        References:
+            - https://github.com/adw0rd/instagrapi/blob/288803bdfbf60432143a474aa90aabdb7ba637e0/instagrapi/__init__.py#L112
+        """
+        if dsn:
+            assert isinstance(
+                dsn, str
+            ), f'Proxy must been string (URL), but now "{dsn}" ({type(dsn)})'
+
+            self.proxy = dsn
+
+            proxy_href = "{scheme}{href}".format(
+                scheme="http://" if not urlparse(self.proxy).scheme else "",
+                href=self.proxy,
+            )
+
+            self.public.proxies = self.private.proxies = {
+                "http": proxy_href,
+                "https": proxy_href,
+            }
+
+            return True
+
+        self.public.proxies = self.private.proxies = {}
+        return False

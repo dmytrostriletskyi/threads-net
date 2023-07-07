@@ -5,16 +5,27 @@ Threads (threads.net) Python API wrapper
 
 Table of content:
 
+* [Disclaimer](#disclaimer)
 * [Getting started](#getting-started)
   * [How to install](#how-to-install)
   * [Initialization](#initialization)
   * [Examples](#examples)
-  * [User ID](#user-id)
 * [API](#api)
-  * [Get User](#get-user)
+  * [Login](#login)
+  * [Get User By Username](#get-user-by-username)
+  * [Get User By Identifier](#get-user-by-identifier)
   * [Get User Threads](#get-user-threads)
   * [Get User Replies](#get-user-replies)
   * [Get Post](#get-post)
+
+## Disclaimer
+
+* This project is unofficial (is not supported by Threads company) and utilize both public and private endpoints. 
+  Utilizing private endpoints means simulating/pretending being a client (a mobile phone) «manually» creating all 
+  needed credentials and a session. So, you might face `rate limits` or even be suspended if mess up with logining.
+  So use the project at your own risk until the normal `Threads` public `API` is available.
+* For all the authentication and a few more capabilities, [instagrapi](https://github.com/adw0rd/instagrapi) library
+  is used because `Threads` are backed by `Instagram` and you do a login via it as well.
 
 ## Getting started
 
@@ -35,10 +46,6 @@ Import the class responsible for `Threads API` communication and start using it 
 >>> threads = Threads()
 ```
 
-Under the hood, in the constructor (`__init__`), it makes a request to the `Threads API` to fetch a token. It is called 
-`lsd` internally and is required for any request. For anonymous users, it is just generated automatically from 
-API's back-end and passed to front-end. So, basically, you do not need any `API key` or other credentials to use the library.
-
 ### Examples
 
 Find examples of how to use the library functionality in the `examples` folder:
@@ -46,7 +53,7 @@ Find examples of how to use the library functionality in the `examples` folder:
 ```bash
 ➜  ls examples
 examples
-├── __init__.py
+├── login.py
 ├── get_post.py
 ├── get_user.py
 ├── get_user_replies.py
@@ -54,62 +61,75 @@ examples
 ...
 ```
 
-### User ID
-
-Below in the API, for a set of endpoints, you would need to specify a user identifier. It is integer value although
-you don't see such on `Threads` platform. You will only see Instagram-like (probably, those are the same basically
-because they probably have same back-end and database) like [@zuck](https://www.threads.net/@zuck).
-
-On how to work with this, check [this](https://github.com/dmytrostriletskyi/threads-net/issues/3) 
-discussion.
-
 ## API
 
-### Get User
+### Login
 
-To get a user, use the following commands:
+In order for `Instagram` to trust you more, you must always login from one device and one IP (or from a subnet), for 
+this there is a dump session functionality. So, once you logged in once, store them into a file and do not touch it again:
 
 ```python3
->>> user = threads.get_user(id=314216)
+>>> threads = Threads()
+>>> threads.login('INSTAGRAM_USERNAME', 'INSTAGRAM_PASSWORD')
+>>> threads.dump_settings('session.json')
+```
+
+Next time, just load the session from the file and use it for login with the following commands:
+
+```python3
+>>> threads = Threads()
+>>> threads.load_settings('session.json')
+>>> threads.login(os.environ.get('INSTAGRAM_USERNAME'), os.environ.get('INSTAGRAM_PASSWORD'))
+```
+
+The login method might ask for additional username/password entering, confirmation code and other challenges. But if
+you reuse the session, those should be minimum times. For more information, check this out — 
+https://adw0rd.github.io/instagrapi/usage-guide/interactions.html
+
+Also, the login is only needed for getting a user by identifier and username, for other endpoints it is not required, so
+you can easily skip it.
+
+### Get User by Username
+
+To get a user by a username, use the following commands:
+
+```python3
+>>> user = threads.get_user_by_username(username='zuck')
 >>> user
 {
-    "data": {
-        "userData": {
-            "user": {
-                "is_private": false,
-                "profile_pic_url": "https://scontent.cdninstagram.com/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=9PG1NK-L8OkAX-7KBKu&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfANyGvPklT1Hkax6hmmmzvD7QX2vwqYe4XAzZIYo1fGqA&oe=64ACDDC0&_nc_sid=10d13b",
-                "username": "zuck",
-                "hd_profile_pic_versions": [
-                    {
-                        "height": 320,
-                        "url": "https://scontent.cdninstagram.com/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s320x320&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=9PG1NK-L8OkAX-7KBKu&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfCjdM98k9QZZVAr3czL_EjLYje6g__zJ8b_q3ZQi8Uqpw&oe=64ACDDC0&_nc_sid=10d13b",
-                        "width": 320
-                    },
-                    {
-                        "height": 640,
-                        "url": "https://scontent.cdninstagram.com/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s640x640&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=9PG1NK-L8OkAX-7KBKu&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfDA1pVfIGaKNihFuUc80xxx8SnNgnqlpvxSCSq9N_n-mQ&oe=64ACDDC0&_nc_sid=10d13b",
-                        "width": 640
-                    }
-                ],
-                "is_verified": true,
-                "biography": "",
-                "biography_with_entities": null,
-                "follower_count": 1988496,
-                "profile_context_facepile_users": null,
-                "bio_links": [
-                    {
-                        "url": ""
-                    }
-                ],
-                "pk": "314216",
-                "full_name": "Mark Zuckerberg",
-                "id": null
-            }
-        }
-    },
-    "extensions": {
-        "is_final": true
-    }
+    "pk": 314216,
+    "username": "zuck",
+    "full_name": "Mark Zuckerberg",
+    "is_private": False,
+    "profile_pic_url": HttpUrl('https://scontent-hel3-1.cdninstagram.com/v/t51.2885-19/s150x150/123884060_803537687159702_2508263208740189974_n.jpg?...', scheme='https', host='scontent-hel3-1.cdninstagram.com', tld='com', host_type='domain', ...'),
+    "is_verified": False,
+    "media_count": 102,
+    "follower_count": 576,
+    "following_count": 538,
+    "biography": '',
+    "is_business": False
+}
+```
+
+### Get User by Identifier
+
+To get a user by an identifier, use the following commands:
+
+```python3
+>>> user = threads.get_user_by_id(id=314216)
+>>> user
+{
+    "pk": 314216,
+    "username": "zuck",
+    "full_name": "Mark Zuckerberg",
+    "is_private": False,
+    "profile_pic_url": HttpUrl('https://scontent-hel3-1.cdninstagram.com/v/t51.2885-19/s150x150/123884060_803537687159702_2508263208740189974_n.jpg?...', scheme='https', host='scontent-hel3-1.cdninstagram.com', tld='com', host_type='domain', ...'),
+    "is_verified": False,
+    "media_count": 102,
+    "follower_count": 576,
+    "following_count": 538,
+    "biography": '',
+    "is_business": False
 }
 ```
 
@@ -631,4 +651,3 @@ To get a post, use the following commands:
     }
 }
 ```
-
