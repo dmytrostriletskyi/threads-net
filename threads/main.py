@@ -165,11 +165,11 @@ class Threads(
                 'Sec-Fetch-Site': 'same-origin',
             },
             data={
-                'lsd': self.token,
+                'lsd': self.temporary_token,
                 'variables': json.dumps({
                     'postID': id,
                 }),
-                'doc_id': '6529829603744567',
+                'doc_id': '5587632691339264',
             },
         )
 
