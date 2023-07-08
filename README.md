@@ -2,6 +2,7 @@
 
 Threads (threads.net) Python API wrapper
 
+[![Downdloads](https://pepy.tech/badge/threads-net)](https://pepy.tech/project/threads-net)
 [![PyPI license](https://img.shields.io/pypi/l/threads-net.svg)](https://pypi.python.org/pypi/threads-net/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/threads-net.svg)](https://pypi.python.org/pypi/threads-net/)
 
