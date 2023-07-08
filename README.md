@@ -144,6 +144,7 @@ To get a user by an identifier, use the following commands:
 To get a user's threads, use the following commands:
 
 ```python3
+>>> user_threads = threads.get_user_threads(username=zuck)
 >>> user_threads = threads.get_user_threads(id=314216)
 >>> user_threads
 {
@@ -314,6 +315,7 @@ To get a user's threads, use the following commands:
 To get a user's replies, use the following commands:
 
 ```python3
+>>> user_threads = threads.get_user_replies(username=zuck)
 >>> user_replies = threads.get_user_replies(id=314216)
 >>> user_replies
 {

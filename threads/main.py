@@ -78,7 +78,7 @@ class Threads(
 
         return token
 
-    def get_user(self, username=None, user_id=None) -> dict:
+    def get_user(self, username=None, id=None) -> dict:
         """
         Get a user.
         
@@ -86,11 +86,11 @@ class Threads(
             username (str): a user's username.
             user_id (int): a user's identifier.
         """
-        if not username and not user_id:
-            raise ValueError('Either username or user_id must be specified.')
+        if not username and not id:
+            raise ValueError('Either username or id must be specified.')
 
         if username:
-            user_id = self.user_id_from_username(username)
+            id = self.user_id_from_username(username)
 
         response = requests.post(
             url=self.THREADS_API_URL,
@@ -103,7 +103,7 @@ class Threads(
             data={
                 'lsd': self.temporary_token,
                 'variables': json.dumps({
-                    'userID': user_id,
+                    'userID': id,
                 }),
                 'doc_id': '23996318473300828',
             }
@@ -111,14 +111,20 @@ class Threads(
 
         return response.json()
 
-    def get_user_threads(self, id: int):
+    def get_user_threads(self, username=None, id: int = None) -> dict:
         """
         Get a user's threads.
 
         Arguments:
-            id (int):
-            a user's identifier.
+            username (str): a user's username.
+            user_id (int): a user's identifier.
         """
+        if not username and not id:
+            raise ValueError('Either username or id must be specified.')
+        
+        if username:
+            id = self.user_id_from_username(username)
+
         response = requests.post(
             url=self.THREADS_API_URL,
             headers={
@@ -138,13 +144,20 @@ class Threads(
 
         return response.json()
 
-    def get_user_replies(self, id: int):
+    def get_user_replies(self, username=None, id: int = None):
         """
         Get a user's replies.
 
         Arguments:
-            id (int): a user's identifier.
+            username (str): a user's username.
+            user_id (int): a user's identifier.
         """
+        if not username and not id:
+            raise ValueError('Either username or id must be specified.')
+        
+        if username:
+            id = self.user_id_from_username(username)
+
         response = requests.post(
             url=self.THREADS_API_URL,
             headers={
@@ -164,7 +177,7 @@ class Threads(
 
         return response.json()
 
-    def get_post(self, id: int):
+    def get_post(self, id: int) -> dict:
         """
         Get a post.
 
