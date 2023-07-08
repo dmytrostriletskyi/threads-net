@@ -78,52 +78,48 @@ class Threads(
 
         return token
 
-    def get_user(self, username=None, id=None) -> dict:
-        """
-        Get a user.
-        
-        Arguments:
-            username (str): a user's username.
-            user_id (int): a user's identifier.
-        """
-        if not username and not id:
-            raise ValueError('Either username or id must be specified.')
+    def get_user(self, identifier: str or int) -> dict:
+            """
+            Get a user.
+            
+            Arguments:
+                identifier (str or int): Either the username (str) or the identifier (int) of a user.
+            
+            Returns:
+                dict: A dictionary containing user information.
+            """
+            if isinstance(identifier, str): id = self.user_id_from_username(identifier)
 
-        if username:
-            id = self.user_id_from_username(username)
+            response = requests.post(
+                url=self.THREADS_API_URL,
+                headers={
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-IG-App-ID': '238260118697367',
+                    'X-FB-LSD': self.temporary_token,
+                    'Sec-Fetch-Site': 'same-origin',
+                },
+                data={
+                    'lsd': self.temporary_token,
+                    'variables': json.dumps({
+                        'userID': id,
+                    }),
+                    'doc_id': '23996318473300828',
+                }
+            )
 
-        response = requests.post(
-            url=self.THREADS_API_URL,
-            headers={
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-IG-App-ID': '238260118697367',
-                'X-FB-LSD': self.temporary_token,
-                'Sec-Fetch-Site': 'same-origin',
-            },
-            data={
-                'lsd': self.temporary_token,
-                'variables': json.dumps({
-                    'userID': id,
-                }),
-                'doc_id': '23996318473300828',
-            }
-        )
+            return response.json()
 
-        return response.json()
-
-    def get_user_threads(self, username=None, id: int = None) -> dict:
+    def get_user_threads(self, identifier: str or int) -> dict:
         """
         Get a user's threads.
 
         Arguments:
-            username (str): a user's username.
-            user_id (int): a user's identifier.
+            identifier (str or int): Either the username (str) or the identifier (int) of a user.
+
+        Returns:
+            dict: A dictionary containing user threads.
         """
-        if not username and not id:
-            raise ValueError('Either username or id must be specified.')
-        
-        if username:
-            id = self.user_id_from_username(username)
+        if isinstance(identifier, str): id = self.user_id_from_username(identifier)
 
         response = requests.post(
             url=self.THREADS_API_URL,
@@ -144,19 +140,17 @@ class Threads(
 
         return response.json()
 
-    def get_user_replies(self, username=None, id: int = None):
+    def get_user_replies(self, identifier: str or int) -> dict:
         """
         Get a user's replies.
 
         Arguments:
-            username (str): a user's username.
-            user_id (int): a user's identifier.
+            identifier (str or int): Either the username (str) or the identifier (int) of a user.
+
+        Returns:
+            dict: A dictionary containing user replies.
         """
-        if not username and not id:
-            raise ValueError('Either username or id must be specified.')
-        
-        if username:
-            id = self.user_id_from_username(username)
+        if isinstance(identifier, str): id = self.user_id_from_username(identifier)
 
         response = requests.post(
             url=self.THREADS_API_URL,
@@ -183,6 +177,9 @@ class Threads(
 
         Arguments:
             id (int): a post's identifier.
+
+        Returns:
+            dict: A dictionary containing post information.
         """
         response = requests.post(
             url=self.THREADS_API_URL,
