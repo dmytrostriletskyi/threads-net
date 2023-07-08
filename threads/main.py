@@ -78,17 +78,16 @@ class Threads(
 
         return token
 
-    def get_user(self, identifier: str or int) -> dict:
+    def get_user(self, id: str or int) -> dict:
             """
             Get a user.
             
             Arguments:
-                identifier (str or int): Either the username (str) or the identifier (int) of a user.
-            
+                id (str or int): A user's ID or username.
             Returns:
                 dict: A dictionary containing user information.
             """
-            if isinstance(identifier, str): id = self.user_id_from_username(identifier)
+            if type(id) == str: id = self.user_id_from_username(id)
 
             response = requests.post(
                 url=self.THREADS_API_URL,
@@ -109,17 +108,17 @@ class Threads(
 
             return response.json()
 
-    def get_user_threads(self, identifier: str or int) -> dict:
+    def get_user_threads(self, id: str or int) -> dict:
         """
         Get a user's threads.
 
         Arguments:
-            identifier (str or int): Either the username (str) or the identifier (int) of a user.
+            id (str or int): Either the username (str) or the identifier (int) of a user.
 
         Returns:
             dict: A dictionary containing user threads.
         """
-        if isinstance(identifier, str): id = self.user_id_from_username(identifier)
+        if isinstance(id, str): id = self.user_id_from_username(id)
 
         response = requests.post(
             url=self.THREADS_API_URL,
@@ -140,17 +139,17 @@ class Threads(
 
         return response.json()
 
-    def get_user_replies(self, identifier: str or int) -> dict:
+    def get_user_replies(self, id: str or int) -> dict:
         """
         Get a user's replies.
 
         Arguments:
-            identifier (str or int): Either the username (str) or the identifier (int) of a user.
+            id (str or int): Either the username (str) or the identifier (int) of a user.
 
         Returns:
             dict: A dictionary containing user replies.
         """
-        if isinstance(identifier, str): id = self.user_id_from_username(identifier)
+        if isinstance(id, str): id = self.user_id_from_username(id)
 
         response = requests.post(
             url=self.THREADS_API_URL,
@@ -181,6 +180,7 @@ class Threads(
         Returns:
             dict: A dictionary containing post information.
         """
+
         response = requests.post(
             url=self.THREADS_API_URL,
             headers={
