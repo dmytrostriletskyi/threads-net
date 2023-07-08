@@ -158,13 +158,18 @@ class Threads(
         """
         response = requests.post(
             url=self.THREADS_API_URL,
-            headers=self.headers,
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-IG-App-ID': '238260118697367',
+                'X-FB-LSD': self.temporary_token,
+                'Sec-Fetch-Site': 'same-origin',
+            },
             data={
                 'lsd': self.token,
                 'variables': json.dumps({
                     'postID': id,
                 }),
-                'doc_id': '5587632691339264',
+                'doc_id': '6529829603744567',
             },
         )
 

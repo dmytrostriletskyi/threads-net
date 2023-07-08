@@ -25,15 +25,18 @@ Table of content:
 * This project is unofficial (is not supported by Threads company) and utilize both public and private endpoints. 
   Utilizing private endpoints means simulating/pretending being a client (a mobile phone) «manually» creating all 
   needed credentials and a session. So, you might face `rate limits` or even be suspended if mess up with logining.
-  So use the project at your own risk until the normal `Threads` public `API` is available.
+  So use the project at your own risk until the normal `Threads` public `API` is available or this product become more
+  stable for such things.
 * For all the authentication and a few more capabilities, [instagrapi](https://github.com/adw0rd/instagrapi) library
   is used because `Threads` are backed by `Instagram` and you do a login via it as well.
+* As the library use `Threads API ` private endpoints, they have no defined model for support and backward compatibility. 
+* So, some methods might end up not working until the library maintainers find out hot to fix it.
 
 ## Getting started
 
 ### How to install
 
-Install the project with the following command using `pip3`:
+Install the library with the following command using `pip3`:
 
 ```bash
 $ pip3 install threads-net
