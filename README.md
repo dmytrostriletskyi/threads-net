@@ -122,7 +122,7 @@ To get a user by a username, use the following commands:
 To get a user by an identifier, use the following commands:
 
 ```python3
->>> user = threads.get_user(user_id=314216)
+>>> user = threads.get_user(id=314216)
 >>> user
 {
     "pk": 314216,
