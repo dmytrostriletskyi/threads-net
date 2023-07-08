@@ -9,8 +9,10 @@ from threads import Threads
 if __name__ == '__main__':
     threads = Threads()
 
-    user_threads = threads.get_user_threads(username="zuck")
+    # Get user threads by username
+    user_threads = threads.get_user_threads('zuck')
     print(json.dumps(user_threads, indent=4))
 
-    user_threads = threads.get_user_threads(id=314216)
+    # Get user threads by user id
+    user_threads = threads.get_user_threads(314216)
     print(json.dumps(user_threads, indent=4))
