@@ -78,23 +78,38 @@ class Threads(
 
         return token
 
-    def get_user_by_username(self, username: str):
-        """
-        Get a user by identifier.
-
-        Arguments:
-            username (str): a user's username.
-        """
-        return self.user_info_by_username_v1(username=username).dict()
-
-    def get_user_by_id(self, id: int):
+    def get_user(self, username=None, user_id=None) -> dict:
         """
         Get a user.
-
+        
         Arguments:
-            id (int): a user's identifier.
+            username (str): a user's username.
+            user_id (int): a user's identifier.
         """
-        return self.user_info_gql(user_id=id).dict()
+        if not username and not user_id:
+            raise ValueError('Either username or user_id must be specified.')
+
+        if username:
+            user_id = self.user_id_from_username(username)
+
+        response = requests.post(
+            url=self.THREADS_API_URL,
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-IG-App-ID': '238260118697367',
+                'X-FB-LSD': self.temporary_token,
+                'Sec-Fetch-Site': 'same-origin',
+            },
+            data={
+                'lsd': self.temporary_token,
+                'variables': json.dumps({
+                    'userID': user_id,
+                }),
+                'doc_id': '23996318473300828',
+            }
+        )
+
+        return response.json()
 
     def get_user_threads(self, id: int):
         """
