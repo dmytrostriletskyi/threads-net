@@ -100,7 +100,7 @@ you can easily skip it.
 To get a user by a username, use the following commands:
 
 ```python3
->>> user = threads.get_user_by_username(username='zuck')
+>>> user = threads.get_user(username='zuck')
 >>> user
 {
     "pk": 314216,
