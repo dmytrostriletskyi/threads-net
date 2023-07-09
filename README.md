@@ -15,7 +15,6 @@ Table of content:
   * [Initialization](#initialization)
   * [Examples](#examples)
 * [API](#api)
-  * [Login](#login)
   * [Get User Identifier](#get-user-identifier)
   * [Get User By Identifier](#get-user-by-identifier)
   * [Get User Threads](#get-user-threads)
@@ -36,8 +35,6 @@ Table of content:
   risk until the normal public `ThreadsAPI` is released or this product become more stable for such things.Also,
   utilizing such endpoints mean that they might not be stable (because they are under active development and there is
   no any promise in backward compatibility).
-* For all the `Instagram`-related thing other well-know and already stable library called [instagrapi](https://github.com/adw0rd/instagrapi)
-  is used in `threads-net`.
 
 ## Roadmap
 
@@ -92,29 +89,6 @@ examples
 ```
 
 ## API
-
-### Login
-
-In order for `Instagram` to trust you more, you must always login from one device and one IP (or from a subnet), for 
-this there is the dump session functionality. So, once you logged in once, store it into a file:
-
-```python3
->>> threads = Threads()
->>> threads.login('INSTAGRAM_USERNAME', 'INSTAGRAM_PASSWORD')
->>> threads.dump_settings('session.json')
-```
-
-Next time, just load the session from the file and use it for login with the following commands:
-
-```python3
->>> threads = Threads()
->>> threads.load_settings('session.json')
->>> threads.login(os.environ.get('INSTAGRAM_USERNAME'), os.environ.get('INSTAGRAM_PASSWORD'))
-```
-
-The login method might ask for additional username/password entering, confirmation code and other challenges. But if
-you reuse the session, those should happen minimum times. For more information, check this out — 
-https://adw0rd.github.io/instagrapi/usage-guide/interactions.html
 
 ### Get User Identifier
 

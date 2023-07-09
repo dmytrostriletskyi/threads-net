@@ -99,7 +99,26 @@ class Threads(
         Arguments:
             username (str): a user's username.
         """
-        return self.user_info_by_username_v1(username=username).dict().get('pk')
+        headers = self.default_headers | {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Referer': f'https://www.threads.net/@{username}',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'cross-site',
+            'Sec-Fetch-User': '?1',
+            'Upgrade-Insecure-Requests': '1',
+        }
+
+        del headers['X-ASBD-ID']
+        del headers['X-FB-LSD']
+        del headers['X-IG-App-ID']
+
+        response = requests.get(url=f'https://www.threads.net/@{username}')
+
+        user_id_key_position = response.text.find('\"user_id\"')
+        user_id = response.text[user_id_key_position + 11:user_id_key_position + 17]
+
+        return user_id
 
     def get_user(self, id: int):
         """
