@@ -62,10 +62,27 @@ class Threads:
         It is called `lsd` internally and is required for any request.
         For anonymous users, it is just generated automatically from API's back-end and passed to front-end.
         """
-        response = requests.get('https://www.threads.net/@instagram')
+        headers = {
+            'Authority': 'www.threads.net',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Cache-Control': 'no-cache',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Origin': 'https://www.threads.net',
+            'Pragma': 'no-cache',
+            'Referer': 'https://www.instagram.com',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'cross-site',
+            'Sec-Fetch-User': '?1',
+            'Upgrade-Insecure-Requests': '1',
+        }
 
-        token_key_position = response.text.find('\"token\"')
-        token = response.text[token_key_position + 9:token_key_position + 31]
+        response = requests.get(url=f'https://www.instagram.com/instagram', headers=headers)
+
+        token_key_value = re.search('LSD",\[\],{"token":"(\w+)"},\d+\]', response.text).group()
+        token_key_value = token_key_value.replace('LSD",[],{"token":"', '')
+        token = token_key_value.split('"')[0]
 
         return token
 
