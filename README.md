@@ -19,9 +19,10 @@ Table of content:
   * [Get User By Identifier](#get-user-by-identifier)
   * [Get User Threads](#get-user-threads)
   * [Get User Replies](#get-user-replies)
-  * [Get Post Identifier](#get-post-identifier)
-  * [Get Post](#get-post)
-  * [Get Post Likers](#get-post-likers)
+  * [Get Thread Identifier](#get-thread-identifier)
+  * [Get Thread](#get-thread)
+  * [Get Thread Likers](#get-thread-likers)
+  * [Create Thread](#create-thread)
 
 ## Disclaimer
 
@@ -45,12 +46,12 @@ Table of content:
   - [x] Get a user's replies
   - [ ] Get a user's followers
   - [ ] Get a user's followings
-  - [x] Get a post's identifier
-  - [x] Get a post
-  - [x] Get a post's likers
+  - [x] Get a thread's identifier
+  - [x] Get a thread
+  - [x] Get a thread's likers
 - [ ] Read private information
 - [ ] Writing capabilities
-  - [ ] Create a thread with text
+  - [x] Create a thread with text
   - [ ] Create a thread with media
   - [ ] Reply to an existing thread
 
@@ -66,7 +67,22 @@ $ pip3 install threads-net
 
 ### Initialization
 
-Import the class responsible for `Threads API` communication and start using it with the following commands:
+Import the class responsible for `Threads API` communication and start using it with the following commands, specifying
+`Instagram` username and password:
+
+```python3
+>>> from threads import Threads
+>>> threads = Threads(username='instagram_username', password='instagram_password')
+```
+
+It is taken care of `rate limits`, so those are only used when it is really needed avoiding initialization authentication
+(obtaining an `API` token) for each of the library method. Moreover, the `API` token will be cached and fetched only once.
+
+Currently, only this list of methods will perform authentication:
+
+* [Create Thread](#create-thread)
+
+So, if you do not plan to use those method, you can leave them unspecified:
 
 ```python3
 >>> from threads import Threads
@@ -75,20 +91,25 @@ Import the class responsible for `Threads API` communication and start using it 
 
 ### Examples
 
-Find examples of how to use the library functionality in the `examples` folder:
+Find examples of how to use the library in the `examples` folder:
 
 ```bash
-➜  ls examples
-examples
-├── login.py
-├── get_post.py
+ls examples
+├── create_thread.py
+├── get_thread.py
+├── get_thread_likers.py
 ├── get_user.py
 ├── get_user_replies.py
 └── get_user_threads.py
-...
 ```
 
 ## API
+
+There might be a confusion among many `Threads API` clients as well as in both `Threads` an `Instagram` `APIs` according
+to the naming of entities. For instance, in `Threads` a publication is called a `thread`, but under the hood in the API
+of fetching or creating a `thread` it is called a `post`. It is done because `Threads` are backed by `Instagram` and
+`threads` creation is done on `Instagram API` where a publication called a post. Library maintainers decided to stick
+into `Threads` terminology and use the word `thread`.
 
 ### Get User Identifier
 
@@ -456,24 +477,24 @@ To get a user's replies, use the following commands:
 }
 ```
 
-### Get Post Identifier
+### Get Thread Identifier
 
-To get a post's identifier by a URL identifier. For instance, there is the URL — https://www.threads.net/t/CuXFPIeLLod.
+To get a thread's identifier by a URL identifier. For instance, there is the URL — https://www.threads.net/t/CuXFPIeLLod.
 The URL's identifier would be `CuXFPIeLLod`. Use the following commands:
 
 ```python3
->>> post_id = threads.get_post_id(url_id='CuXFPIeLLod')
->>> post_id
+>>> thread_id = threads.get_thread_id(url_id='CuXFPIeLLod')
+>>> thread_id
 3141002295235099165
 ```
 
-### Get Post
+### Get Thread
 
-To get a post, use the following commands:
+To get a thread, use the following commands:
 
 ```python3
->>> post = threads.get_post(id=3141002295235099165)
->>> post
+>>> thread = threads.get_thread(id=3141002295235099165)
+>>> thread
 {
     "data": {
         "data": {
@@ -590,13 +611,13 @@ To get a post, use the following commands:
 }
 ```
 
-### Get Post Likers
+### Get Thread Likers
 
-To get a post's likers, use the following commands:
+To get a thread's likers, use the following commands:
 
 ```python3
->>> post = threads.get_post_likers(id=3141002295235099165)
->>> post_likers
+>>> thread_likers = threads.get_thread_likers(id=3141002295235099165)
+>>> thread_likers
 {
     "data": {
         "likers": {
@@ -618,5 +639,197 @@ To get a post's likers, use the following commands:
     "extensions": {
         "is_final": true
     }
+}
+```
+
+
+### Create Thread
+
+To create a thread, use the following commands:
+
+```python3
+>>> created_tread = threads.create_thread(caption='Hello, world!')
+>>> created_tread
+{
+    "media": {
+        "taken_at": 1688927865,
+        "pk": 3143277215847793526,
+        "id": "3143277215847793526_32545771157",
+        "device_timestamp": 1688927864,
+        "media_type": 19,
+        "code": "CufKflZL8N2",
+        "client_cache_key": "MzE0MzI3NzIxNTg0Nzc5MzUyNg==.2",
+        "filter_type": 0,
+        "can_viewer_reshare": true,
+        "caption": {
+            "pk": "18083774509335737",
+            "user_id": 32545771157,
+            "text": "Hello, world!",
+            "type": 1,
+            "created_at": 1688927865,
+            "created_at_utc": 1688927865,
+            "content_type": "comment",
+            "status": "Active",
+            "bit_flags": 0,
+            "did_report_as_spam": false,
+            "share_enabled": false,
+            "user": {
+                "has_anonymous_profile_picture": true,
+                "liked_clips_count": 0,
+                "fan_club_info": {
+                    "fan_club_id": null,
+                    "fan_club_name": null,
+                    "is_fan_club_referral_eligible": null,
+                    "fan_consideration_page_revamp_eligiblity": null,
+                    "is_fan_club_gifting_eligible": null,
+                    "subscriber_count": null,
+                    "connected_member_count": null,
+                    "autosave_to_exclusive_highlight": null,
+                    "has_enough_subscribers_for_ssc": null
+                },
+                "fbid_v2": 17841432494728221,
+                "transparency_product_enabled": false,
+                "text_post_app_take_a_break_setting": 0,
+                "interop_messaging_user_fbid": 17842937552083158,
+                "show_insights_terms": false,
+                "allowed_commenter_type": "any",
+                "is_unpublished": false,
+                "reel_auto_archive": "unset",
+                "can_boost_post": false,
+                "can_see_organic_insights": false,
+                "has_onboarded_to_text_post_app": true,
+                "text_post_app_joiner_number": 68427510,
+                "pk": 32545771157,
+                "pk_id": "32545771157",
+                "username": "dmytro.striletskyi",
+                "full_name": "Dmytro Striletskyi",
+                "is_private": false,
+                "profile_pic_url": "https://instagram.fist10-1.fna.fbcdn.net/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fist10-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=s7XO4bcYceYAX8idgqz&edm=AEVnrqQBAAAA&ccb=7-5&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-5&oh=00_AfDFQxQ9GzdvenWWifNYgwTAH9lfhqVzpYkTEyMVYmlfiA&oe=64AF5E0F&_nc_sid=f8b7b3",
+                "account_badges": [],
+                "feed_post_reshare_disabled": false,
+                "show_account_transparency_details": true,
+                "third_party_downloads_enabled": 0
+            },
+            "is_covered": false,
+            "is_ranked_comment": false,
+            "media_id": 3143277215847793526,
+            "private_reply_status": 0
+        },
+        "clips_tab_pinned_user_ids": [],
+        "comment_inform_treatment": {
+            "should_have_inform_treatment": false,
+            "text": "",
+            "url": null,
+            "action_type": null
+        },
+        "fundraiser_tag": {
+            "has_standalone_fundraiser": false
+        },
+        "sharing_friction_info": {
+            "should_have_sharing_friction": false,
+            "bloks_app_url": null,
+            "sharing_friction_payload": null
+        },
+        "xpost_deny_reason": "This post cannot be shared to Facebook.",
+        "caption_is_edited": false,
+        "original_media_has_visual_reply_media": false,
+        "like_and_view_counts_disabled": false,
+        "fb_user_tags": {
+            "in": []
+        },
+        "can_viewer_save": true,
+        "is_in_profile_grid": false,
+        "profile_grid_control_enabled": false,
+        "featured_products": [],
+        "is_comments_gif_composer_enabled": true,
+        "product_suggestions": [],
+        "user": {
+            "has_anonymous_profile_picture": true,
+            "liked_clips_count": 0,
+            "fan_club_info": {
+                "fan_club_id": null,
+                "fan_club_name": null,
+                "is_fan_club_referral_eligible": null,
+                "fan_consideration_page_revamp_eligiblity": null,
+                "is_fan_club_gifting_eligible": null,
+                "subscriber_count": null,
+                "connected_member_count": null,
+                "autosave_to_exclusive_highlight": null,
+                "has_enough_subscribers_for_ssc": null
+            },
+            "fbid_v2": 17841432494728221,
+            "transparency_product_enabled": false,
+            "text_post_app_take_a_break_setting": 0,
+            "interop_messaging_user_fbid": 17842937552083158,
+            "show_insights_terms": false,
+            "allowed_commenter_type": "any",
+            "is_unpublished": false,
+            "reel_auto_archive": "unset",
+            "can_boost_post": false,
+            "can_see_organic_insights": false,
+            "has_onboarded_to_text_post_app": true,
+            "text_post_app_joiner_number": 68427510,
+            "pk": 32545771157,
+            "pk_id": "32545771157",
+            "username": "dmytro.striletskyi",
+            "full_name": "Dmytro Striletskyi",
+            "is_private": false,
+            "profile_pic_url": "https://instagram.fist10-1.fna.fbcdn.net/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fist10-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=s7XO4bcYceYAX8idgqz&edm=AEVnrqQBAAAA&ccb=7-5&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-5&oh=00_AfDFQxQ9GzdvenWWifNYgwTAH9lfhqVzpYkTEyMVYmlfiA&oe=64AF5E0F&_nc_sid=f8b7b3",
+            "account_badges": [],
+            "feed_post_reshare_disabled": false,
+            "show_account_transparency_details": true,
+            "third_party_downloads_enabled": 0
+        },
+        "image_versions2": {
+            "candidates": []
+        },
+        "original_width": 612,
+        "original_height": 612,
+        "is_reshare_of_text_post_app_media_in_ig": false,
+        "comment_threading_enabled": false,
+        "max_num_visible_preview_comments": 2,
+        "has_more_comments": false,
+        "preview_comments": [],
+        "comment_count": 0,
+        "can_view_more_preview_comments": false,
+        "hide_view_all_comment_entrypoint": false,
+        "likers": [],
+        "shop_routing_user_id": null,
+        "can_see_insights_as_brand": false,
+        "is_organic_product_tagging_eligible": false,
+        "product_type": "text_post",
+        "is_paid_partnership": false,
+        "music_metadata": null,
+        "deleted_reason": 0,
+        "organic_tracking_token": "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjpmYWxzZSwidXVpZCI6ImYwZmExMGI0MTQwMzRhZDRhMjgzOWYyYzg0ZWFkYTg1MzE0MzI3NzIxNTg0Nzc5MzUyNiIsInNlcnZlcl90b2tlbiI6IjE2ODg5Mjc4NjczMDd8MzE0MzI3NzIxNTg0Nzc5MzUyNnwzMjU0NTc3MTE1N3wzNzExMTQyZjM2NjZmNjA4YThmMGQwODIyY2RjYmM4MDA5ODcyNDdlM2YzZDg1ZWMyYzhjMzM3MThiMjllMzZhIn0sInNpZ25hdHVyZSI6IiJ9",
+        "text_post_app_info": {
+            "is_post_unavailable": false,
+            "is_reply": false,
+            "reply_to_author": null,
+            "direct_reply_count": 0,
+            "self_thread_count": 0,
+            "reply_facepile_users": [],
+            "link_preview_attachment": null,
+            "can_reply": true,
+            "reply_control": "everyone",
+            "hush_info": null,
+            "share_info": {
+                "can_repost": true,
+                "is_reposted_by_viewer": false,
+                "can_quote_post": true
+            }
+        },
+        "integrity_review_decision": "pending",
+        "ig_media_sharing_disabled": false,
+        "has_shared_to_fb": 0,
+        "is_unified_video": false,
+        "should_request_ads": false,
+        "is_visual_reply_commenter_notice_enabled": true,
+        "commerciality_status": "not_commercial",
+        "explore_hide_comments": false,
+        "has_delayed_metadata": false
+    },
+    "upload_id": "1688927864",
+    "status": "ok"
 }
 ```
