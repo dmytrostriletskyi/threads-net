@@ -64,6 +64,20 @@ class Threads(
 
         self.temporary_token = self._get_token()
 
+        self.default_headers = {
+            'Authority': 'www.threads.net',
+            'Accept': '*/*',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Cache-Control': 'no-cache',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Origin': 'https://www.threads.net',
+            'Pragma': 'no-cache',
+            'Sec-Fetch-Site': 'same-origin',
+            'X-ASBD-ID': '129477',
+            'X-FB-LSD': self.temporary_token,
+            'X-IG-App-ID': '238260118697367',
+        }
+
     def _get_token(self):
         """
         Get a token.
@@ -94,15 +108,13 @@ class Threads(
         Arguments:
             id (int): a user's identifier.
         """
+        headers = self.default_headers | {
+            'X-FB-Friendly-Name': 'BarcelonaProfileRootQuery',
+        }
+
         response = requests.post(
             url=self.THREADS_API_URL,
-            headers={
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-IG-App-ID': '238260118697367',
-                'X-FB-LSD': self.temporary_token,
-                'Sec-Fetch-Site': 'same-origin',
-                'X-FB-Friendly-Name': 'BarcelonaProfileRootQuery',
-            },
+            headers=headers,
             data={
                 'lsd': self.temporary_token,
                 'variables': json.dumps({
@@ -122,15 +134,13 @@ class Threads(
             id (int):
             a user's identifier.
         """
+        headers = self.default_headers | {
+            'X-FB-Friendly-Name': 'BarcelonaProfileThreadsTabQuery',
+        }
+
         response = requests.post(
             url=self.THREADS_API_URL,
-            headers={
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-IG-App-ID': '238260118697367',
-                'X-FB-LSD': self.temporary_token,
-                'Sec-Fetch-Site': 'same-origin',
-                'X-FB-Friendly-Name': 'BarcelonaProfileThreadsTabQuery',
-            },
+            headers=headers,
             data={
                 'lsd': self.temporary_token,
                 'variables': json.dumps({
@@ -149,15 +159,13 @@ class Threads(
         Arguments:
             id (int): a user's identifier.
         """
+        headers = self.default_headers | {
+            'X-FB-Friendly-Name': 'BarcelonaProfileRepliesTabQuery',
+        }
+
         response = requests.post(
             url=self.THREADS_API_URL,
-            headers={
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-IG-App-ID': '238260118697367',
-                'X-FB-LSD': self.temporary_token,
-                'Sec-Fetch-Site': 'same-origin',
-                'X-FB-Friendly-Name': 'BarcelonaProfileRepliesTabQuery',
-            },
+            headers=headers,
             data={
                 'lsd': self.temporary_token,
                 'variables': json.dumps({
@@ -203,15 +211,13 @@ class Threads(
         Arguments:
             id (int): a post's identifier.
         """
+        headers = self.default_headers | {
+            'X-FB-Friendly-Name': 'BarcelonaPostPageQuery',
+        }
+
         response = requests.post(
             url=self.THREADS_API_URL,
-            headers={
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-IG-App-ID': '238260118697367',
-                'X-FB-LSD': self.temporary_token,
-                'Sec-Fetch-Site': 'same-origin',
-                'X-FB-Friendly-Name': 'BarcelonaPostPageQuery',
-            },
+            headers=headers,
             data={
                 'lsd': self.temporary_token,
                 'variables': json.dumps({
@@ -232,12 +238,7 @@ class Threads(
         """
         response = requests.post(
             url=self.THREADS_API_URL,
-            headers={
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-IG-App-ID': '238260118697367',
-                'X-FB-LSD': self.temporary_token,
-                'Sec-Fetch-Site': 'same-origin',
-            },
+            headers=self.default_headers,
             data={
                 'lsd': self.temporary_token,
                 'variables': json.dumps({
