@@ -1,38 +1,18 @@
 """
 Threads (threads.net) API wrapper implementation.
 """
-import logging
+import hashlib
 import json
-from urllib.parse import urlparse
+import time
+import re
+from urllib.parse import quote
 
 import requests
 
-from instagrapi.mixins.account import AccountMixin
-from instagrapi.mixins.auth import LoginMixin
-from instagrapi.mixins.bloks import BloksMixin
-from instagrapi.mixins.challenge import ChallengeResolveMixin
-from instagrapi.mixins.password import PasswordMixin
-from instagrapi.mixins.private import PrivateRequestMixin
-from instagrapi.mixins.public import (
-    ProfilePublicMixin,
-    PublicRequestMixin,
-)
-from instagrapi.mixins.user import UserMixin
-
-DEFAULT_LOGGER = logging.getLogger('threads')
+from threads.auth import use_instagram_api_token
 
 
-class Threads(
-    PublicRequestMixin,
-    ChallengeResolveMixin,
-    PrivateRequestMixin,
-    ProfilePublicMixin,
-    LoginMixin,
-    PasswordMixin,
-    BloksMixin,
-    UserMixin,
-    AccountMixin,
-):
+class Threads:
     """
     Threads (threads.net) API wrapper implementation.
 
@@ -40,29 +20,20 @@ class Threads(
     """
 
     THREADS_API_URL = 'https://www.threads.net/api/graphql'
+    INSTAGRAM_API_URL = 'https://i.instagram.com/api/v1'
 
-    def __init__(
-        self,
-        settings: dict = {},
-        proxy: str = None,
-        delay_range: list = None,
-        logger=DEFAULT_LOGGER,
-        **kwargs,
-    ):
+    def __init__(self, username: str = None, password: str = None):
         """
         Construct the object.
         """
-        super().__init__(**kwargs)
+        self.username = username
+        self.password = password
 
-        self.settings = settings
-        self.logger = logger
-        self.delay_range = delay_range
+        self.android_device_id = self._generate_android_device_id()
+        self.timezone_offset = -14400
 
-        self.set_proxy(proxy)
-
-        self.init()
-
-        self.temporary_token = self._get_token()
+        self.threads_api_token = self._get_threads_api_token()
+        self.instagram_api_token = None
 
         self.default_headers = {
             'Authority': 'www.threads.net',
@@ -74,13 +45,19 @@ class Threads(
             'Pragma': 'no-cache',
             'Sec-Fetch-Site': 'same-origin',
             'X-ASBD-ID': '129477',
-            'X-FB-LSD': self.temporary_token,
+            'X-FB-LSD': self.threads_api_token,
             'X-IG-App-ID': '238260118697367',
         }
 
-    def _get_token(self):
+    def _generate_android_device_id(self) -> str:
         """
-        Get a token.
+        Generate Android device ID.
+        """
+        return 'android-%s' % hashlib.sha256(str(time.time()).encode()).hexdigest()[:16]
+
+    def _get_threads_api_token(self):
+        """
+        Get a token for Threads API.
 
         It is called `lsd` internally and is required for any request.
         For anonymous users, it is just generated automatically from API's back-end and passed to front-end.
@@ -89,6 +66,50 @@ class Threads(
 
         token_key_position = response.text.find('\"token\"')
         token = response.text[token_key_position + 9:token_key_position + 31]
+
+        return token
+
+    def _get_instagram_api_token(self):
+        """
+        Get a token for Instagram API.
+        """
+        block_version = '5f56efad68e1edec7801f630b5c122704ec5378adbee6609a448f105f34a9c73'
+
+        parameters_as_string = json.dumps({
+            'client_input_params': {
+                'password': self.password,
+                'contact_point': self.username,
+                'device_id': self.android_device_id,
+            },
+            'server_params': {
+                'credential_type': 'password',
+                'device_id': self.android_device_id,
+            },
+        })
+
+        bk_client_context_as_string = json.dumps({
+            'bloks_version': block_version,
+            'styles_id': 'instagram',
+        })
+
+        params = quote(string=parameters_as_string, safe="!~*'()")
+        bk_client_context = quote(string=bk_client_context_as_string, safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/bloks/apps/com.bloks.www.bloks.caa.login.async.send_login_request/',
+            headers={
+                'User-Agent': 'Barcelona 289.0.0.77.109 Android',
+                'Sec-Fetch-Site': 'same-origin',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            },
+            data=f'params={params}&bk_client_context={bk_client_context}&bloks_versioning_id={block_version}'
+        )
+
+        bearer_key_position = response.text.find('Bearer IGT:2:')
+        response_text = response.text[bearer_key_position:]
+
+        backslash_key_position = response_text.find('\\\\')
+        token = response_text[13:backslash_key_position]
 
         return token
 
@@ -101,7 +122,7 @@ class Threads(
         """
         headers = self.default_headers | {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-            'Referer': f'https://www.threads.net/@{username}',
+            'Referer': 'https://www.instagram.com',
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
             'Sec-Fetch-Site': 'cross-site',
@@ -113,12 +134,12 @@ class Threads(
         del headers['X-FB-LSD']
         del headers['X-IG-App-ID']
 
-        response = requests.get(url=f'https://www.threads.net/@{username}')
+        response = requests.get(url=f'https://www.instagram.com/{username}')
 
-        user_id_key_position = response.text.find('\"user_id\"')
-        user_id = response.text[user_id_key_position + 11:user_id_key_position + 17]
+        user_id_key_value = re.search('"user_id":"(\d+)",', response.text).group()
+        user_id = re.search('\d+', user_id_key_value).group()
 
-        return user_id
+        return int(user_id)
 
     def get_user(self, id: int):
         """
@@ -135,7 +156,7 @@ class Threads(
             url=self.THREADS_API_URL,
             headers=headers,
             data={
-                'lsd': self.temporary_token,
+                'lsd': self.threads_api_token,
                 'variables': json.dumps({
                     'userID': id,
                 }),
@@ -161,7 +182,7 @@ class Threads(
             url=self.THREADS_API_URL,
             headers=headers,
             data={
-                'lsd': self.temporary_token,
+                'lsd': self.threads_api_token,
                 'variables': json.dumps({
                     'userID': id,
                 }),
@@ -186,7 +207,7 @@ class Threads(
             url=self.THREADS_API_URL,
             headers=headers,
             data={
-                'lsd': self.temporary_token,
+                'lsd': self.threads_api_token,
                 'variables': json.dumps({
                     'userID': id,
                 }),
@@ -196,39 +217,39 @@ class Threads(
 
         return response.json()
 
-    def get_post_id(self, url_id):
+    def get_thread_id(self, url_id):
         """
-        Get a post' identifier by its URL's identifier.
+        Get a thread' identifier by its URL's identifier.
 
         For instance, there is the URL — `https://www.threads.net/t/CuXFPIeLLod`.
         The URL's identifier would be `CuXFPIeLLod`.
 
         Args:
-            url_id (str): a post's URL identifier.
+            url_id (str): a thread's URL identifier.
 
         Raises:
-            ValueError: If the ost identifier has not been found.
+            ValueError: If the thread identifier has not been found.
         """
         response = requests.get(f'https://www.threads.net/t/{url_id}/')
 
-        post_id_start_key_position = response.text.find('{"post_id":"') + len('{"post_id":"')
-        post_id_end_key_position = response.text.find('"}', post_id_start_key_position)
+        thread_id_start_key_position = response.text.find('{"post_id":"') + len('{"post_id":"')
+        thread_id_end_key_position = response.text.find('"}', thread_id_start_key_position)
 
-        if post_id_start_key_position == -1 or post_id_end_key_position == -1:
+        if thread_id_start_key_position == -1 or thread_id_end_key_position == -1:
             raise ValueError(
                 'Post identifier has not been found: '
                 'please, create an issue — https://github.com/dmytrostriletskyi/threads-net/issues',
             )
 
-        post_id = int(response.text[post_id_start_key_position:post_id_end_key_position])
-        return post_id
+        thread_id = int(response.text[thread_id_start_key_position:thread_id_end_key_position])
+        return thread_id
 
-    def get_post(self, id: int):
+    def get_thread(self, id: int):
         """
-        Get a post.
+        Get a thread.
 
         Arguments:
-            id (int): a post's identifier.
+            id (int): a thread's identifier.
         """
         headers = self.default_headers | {
             'X-FB-Friendly-Name': 'BarcelonaPostPageQuery',
@@ -238,7 +259,7 @@ class Threads(
             url=self.THREADS_API_URL,
             headers=headers,
             data={
-                'lsd': self.temporary_token,
+                'lsd': self.threads_api_token,
                 'variables': json.dumps({
                     'postID': id,
                 }),
@@ -248,18 +269,18 @@ class Threads(
 
         return response.json()
 
-    def get_post_likers(self, id: int):
+    def get_thread_likers(self, id: int):
         """
-        Get a post's likers.
+        Get a thread's likers.
 
         Arguments:
-            id (int): a post's identifier.
+            id (int): a thread's identifier.
         """
         response = requests.post(
             url=self.THREADS_API_URL,
             headers=self.default_headers,
             data={
-                'lsd': self.temporary_token,
+                'lsd': self.threads_api_token,
                 'variables': json.dumps({
                     'mediaID': id,
                 }),
@@ -269,33 +290,46 @@ class Threads(
 
         return response.json()
 
-    def set_proxy(self, dsn: str):
+    @use_instagram_api_token
+    def create_thread(self, caption: str, instagram_api_token: str):
         """
-        Set a proxy.
+        Create a thread.
 
-        Copy-past code from the parent library.
-
-        References:
-            - https://github.com/adw0rd/instagrapi/blob/288803bdfbf60432143a474aa90aabdb7ba637e0/instagrapi/__init__.py#L112
+        Arguments:
+            caption (str) a thread's caption.
+            instagram_api_token (str): an Instagram API's token.
         """
-        if dsn:
-            assert isinstance(
-                dsn, str
-            ), f'Proxy must been string (URL), but now "{dsn}" ({type(dsn)})'
+        current_timestamp = time.time()
+        user_id = self.get_user_id(username=self.username)
 
-            self.proxy = dsn
-
-            proxy_href = "{scheme}{href}".format(
-                scheme="http://" if not urlparse(self.proxy).scheme else "",
-                href=self.proxy,
-            )
-
-            self.public.proxies = self.private.proxies = {
-                "http": proxy_href,
-                "https": proxy_href,
+        parameters_as_string = json.dumps({
+            'publish_mode': 'text_post',
+            'text_post_app_info': '{"reply_control":0}',
+            'timezone_offset': str(self.timezone_offset),
+            'source_type': '4',
+            'caption': caption,
+            '_uid': user_id,
+            'device_id': self.android_device_id,
+            'upload_id':  int(current_timestamp),
+            'device': {
+                'manufacturer': 'OnePlus',
+                'model': 'ONEPLUS+A3010',
+                'android_version': 25,
+                'android_release': '7.1.1',
             }
+        })
 
-            return True
+        encoded_parameters = quote(string=parameters_as_string, safe="!~*'()")
 
-        self.public.proxies = self.private.proxies = {}
-        return False
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/media/configure_text_only_post/',
+            headers={
+                'Authorization': f'Bearer IGT:2:{instagram_api_token}',
+                'User-Agent': 'Barcelona 289.0.0.77.109 Android',
+                'Sec-Fetch-Site': 'same-origin',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            },
+            data=f'signed_body=SIGNATURE.{encoded_parameters}'
+        )
+
+        return response.json()

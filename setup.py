@@ -17,7 +17,7 @@ read_me = get_file_content('README.md', encoding='utf-8')
 requirements = get_file_content('requirements.txt').splitlines()
 
 setup(
-    version='0.0.11',
+    version='0.0.12',
     name='threads-net',
     description='Threads (threads.net) Python API wrapper',
     long_description=read_me,
