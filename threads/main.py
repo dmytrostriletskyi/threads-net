@@ -78,14 +78,14 @@ class Threads(
 
         return token
 
-    def get_user_by_username(self, username: str):
+    def get_user_id(self, username: str):
         """
-        Get a user by identifier.
+        Get a user's identifier.
 
         Arguments:
             username (str): a user's username.
         """
-        return self.user_info_by_username_v1(username=username).dict()
+        return self.user_info_by_username_v1(username=username).dict().get('pk')
 
     def get_user_by_id(self, id: int):
         """
@@ -94,7 +94,24 @@ class Threads(
         Arguments:
             id (int): a user's identifier.
         """
-        return self.user_info_gql(user_id=id).dict()
+        response = requests.post(
+            url=self.THREADS_API_URL,
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-IG-App-ID': '238260118697367',
+                'X-FB-LSD': self.temporary_token,
+                'Sec-Fetch-Site': 'same-origin',
+            },
+            data={
+                'lsd': self.temporary_token,
+                'variables': json.dumps({
+                    'userID': id,
+                }),
+                'doc_id': '23996318473300828',
+            },
+        )
+
+        return response.json()
 
     def get_user_threads(self, id: int):
         """

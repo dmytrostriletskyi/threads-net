@@ -1,8 +1,8 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct-single.svg)](https://stand-with-ukraine.pp.ua)
 
-Threads (threads.net) Python API wrapper
+Threads (threads.net) Python API wrapper.
 
-[![Downdloads](https://pepy.tech/badge/threads-net)](https://pepy.tech/project/threads-net)
+[![Downloads](https://pepy.tech/badge/threads-net)](https://pepy.tech/project/threads-net)
 [![PyPI license](https://img.shields.io/pypi/l/threads-net.svg)](https://pypi.python.org/pypi/threads-net/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/threads-net.svg)](https://pypi.python.org/pypi/threads-net/)
 
@@ -15,7 +15,7 @@ Table of content:
   * [Examples](#examples)
 * [API](#api)
   * [Login](#login)
-  * [Get User By Username](#get-user-by-username)
+  * [Get User Identifier](#get-user-identifier)
   * [Get User By Identifier](#get-user-by-identifier)
   * [Get User Threads](#get-user-threads)
   * [Get User Replies](#get-user-replies)
@@ -23,15 +23,18 @@ Table of content:
 
 ## Disclaimer
 
-* This project is unofficial (is not supported by Threads company) and utilize both public and private endpoints. 
-  Utilizing private endpoints means simulating/pretending being a client (a mobile phone) «manually» creating all 
-  needed credentials and a session. So, you might face `rate limits` or even be suspended if mess up with logining.
-  So use the project at your own risk until the normal `Threads` public `API` is available or this product become more
-  stable for such things.
-* For all the authentication and a few more capabilities, [instagrapi](https://github.com/adw0rd/instagrapi) library
-  is used because `Threads` are backed by `Instagram` and you do a login via it as well.
-* As the library use `Threads API ` private endpoints, they have no defined model for support and backward compatibility. 
-* So, some methods might end up not working until the library maintainers find out hot to fix it.
+* As `Threads` are backed by `Instagram`. It means that `Threads` functionality partially placed in `Instagram API`:
+  you do a login to `Threads` application via `Instagram`'s username and password, posting new threads and fetching user
+  identifier (for further library usage) too. So expect seeing things related to `Instagram` in this library.
+* This project is unofficial and utilize both public and private endpoints of both `Threads` and `Instagram` `APIs`. 
+  Utilizing private endpoints means pretending being a mobile phone or web user (via proper `HTTP` headers and other 
+  things). Thus you might face `rate limits` (because pretending is never ideal) or even your account in `Threads` and 
+  `Instagram` might be suspended if mess up with logining or sending too much requests. So use the project at your own 
+  risk until the normal public `ThreadsAPI` is released or this product become more stable for such things.Also,
+  utilizing such endpoints mean that they might not be stable (because they are under active development and there is
+  no any promise in backward compatibility).
+* For all the `Instagram`-related thing other well-know and already stable library called [instagrapi](https://github.com/adw0rd/instagrapi)
+  is used in `threads-net`.
 
 ## Getting started
 
@@ -72,7 +75,7 @@ examples
 ### Login
 
 In order for `Instagram` to trust you more, you must always login from one device and one IP (or from a subnet), for 
-this there is a dump session functionality. So, once you logged in once, store them into a file and do not touch it again:
+this there is the dump session functionality. So, once you logged in once, store it into a file:
 
 ```python3
 >>> threads = Threads()
@@ -89,32 +92,17 @@ Next time, just load the session from the file and use it for login with the fol
 ```
 
 The login method might ask for additional username/password entering, confirmation code and other challenges. But if
-you reuse the session, those should be minimum times. For more information, check this out — 
+you reuse the session, those should happen minimum times. For more information, check this out — 
 https://adw0rd.github.io/instagrapi/usage-guide/interactions.html
 
-Also, the login is only needed for getting a user by identifier and username, for other endpoints it is not required, so
-you can easily skip it.
+### Get User Identifier
 
-### Get User by Username
-
-To get a user by a username, use the following commands:
+To get a user's identifier by a username, use the following commands:
 
 ```python3
->>> user = threads.get_user_by_username(username='zuck')
->>> user
-{
-    "pk": 314216,
-    "username": "zuck",
-    "full_name": "Mark Zuckerberg",
-    "is_private": False,
-    "profile_pic_url": HttpUrl('https://scontent-hel3-1.cdninstagram.com/v/t51.2885-19/s150x150/123884060_803537687159702_2508263208740189974_n.jpg?...', scheme='https', host='scontent-hel3-1.cdninstagram.com', tld='com', host_type='domain', ...'),
-    "is_verified": False,
-    "media_count": 102,
-    "follower_count": 576,
-    "following_count": 538,
-    "biography": '',
-    "is_business": False
-}
+>>> user_id = threads.get_user_id(username='zuck')
+>>> user_id
+314216
 ```
 
 ### Get User by Identifier
@@ -125,17 +113,43 @@ To get a user by an identifier, use the following commands:
 >>> user = threads.get_user_by_id(id=314216)
 >>> user
 {
-    "pk": 314216,
-    "username": "zuck",
-    "full_name": "Mark Zuckerberg",
-    "is_private": False,
-    "profile_pic_url": HttpUrl('https://scontent-hel3-1.cdninstagram.com/v/t51.2885-19/s150x150/123884060_803537687159702_2508263208740189974_n.jpg?...', scheme='https', host='scontent-hel3-1.cdninstagram.com', tld='com', host_type='domain', ...'),
-    "is_verified": False,
-    "media_count": 102,
-    "follower_count": 576,
-    "following_count": 538,
-    "biography": '',
-    "is_business": False
+    "data": {
+        "userData": {
+            "user": {
+                "is_private": false,
+                "profile_pic_url": "https://scontent.cdninstagram.com/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=euIj8dtTGIkAX-mW2_l&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfAUZzobOIH6imLnb2Z3iXoWY5H1Fv_kNnyG8T4UGgJegQ&oe=64AED800&_nc_sid=10d13b",
+                "username": "zuck",
+                "hd_profile_pic_versions": [
+                    {
+                        "height": 320,
+                        "url": "https://scontent.cdninstagram.com/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s320x320&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=euIj8dtTGIkAX-mW2_l&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfD5z6UgnQH54dihPnMrXgH2L-mLCMGlFsIF9Ug7U4RWdA&oe=64AED800&_nc_sid=10d13b",
+                        "width": 320
+                    },
+                    {
+                        "height": 640,
+                        "url": "https://scontent.cdninstagram.com/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s640x640&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=euIj8dtTGIkAX-mW2_l&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfD4BaVu4cDcX53xPocD-3o_ZbKIESxUZhlU08FBpycCsA&oe=64AED800&_nc_sid=10d13b",
+                        "width": 640
+                    }
+                ],
+                "is_verified": true,
+                "biography": "",
+                "biography_with_entities": null,
+                "follower_count": 2663947,
+                "profile_context_facepile_users": null,
+                "bio_links": [
+                    {
+                        "url": ""
+                    }
+                ],
+                "pk": "314216",
+                "full_name": "Mark Zuckerberg",
+                "id": null
+            }
+        }
+    },
+    "extensions": {
+        "is_final": true
+    }
 }
 ```
 
@@ -147,164 +161,76 @@ To get a user's threads, use the following commands:
 >>> user_threads = threads.get_user_threads(id=314216)
 >>> user_threads
 {
-    "data": {
-        "mediaData": {
-            "threads": [
-                {
-                    "thread_items": [
+    "instagram": {
+        "pk": "314216",
+        "username": "zuck",
+        "full_name": "Mark Zuckerberg",
+        "is_private": false,
+        "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/352224138_1028122805231303_1175896139426286760_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=hbekpcjRfioAX8iYGJv&edm=AKEQFekBAAAA&ccb=7-5&oh=00_AfDf2r6qwujUc84tkzUlYJMfJt66xoWScQ-nsB5bmtYDnw&oe=64B0066A&_nc_sid=29ddf3",
+        "profile_pic_url_hd": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/352224138_1028122805231303_1175896139426286760_n.jpg?stp=dst-jpg_s320x320&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=hbekpcjRfioAX8iYGJv&edm=AKEQFekBAAAA&ccb=7-5&oh=00_AfCoPcYmzHdc2evDvduZjZK-IxDS07wGf0x9czecY_TgVQ&oe=64B0066A&_nc_sid=29ddf3",
+        "is_verified": true,
+        "media_count": 283,
+        "follower_count": 11924434,
+        "following_count": 523,
+        "biography": "",
+        "external_url": null,
+        "account_type": null,
+        "is_business": false,
+        "public_email": null,
+        "contact_phone_number": null,
+        "public_phone_country_code": null,
+        "public_phone_number": null,
+        "business_contact_method": "UNKNOWN",
+        "business_category_name": null,
+        "category_name": "Entrepreneur",
+        "category": null,
+        "address_street": null,
+        "city_id": null,
+        "city_name": null,
+        "latitude": null,
+        "longitude": null,
+        "zip": null,
+        "instagram_location_id": null,
+        "interop_messaging_user_fbid": null
+    },
+    "threads": {
+        "data": {
+            "userData": {
+                "user": {
+                    "is_private": false,
+                    "profile_pic_url": "https://scontent.cdninstagram.com/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=euIj8dtTGIkAX9JAAZI&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfCdAMkmk0XL_r0GQi2MRD1Aq1kPZKBLfXLby47e_hsZrg&oe=64AED800&_nc_sid=10d13b",
+                    "username": "zuck",
+                    "hd_profile_pic_versions": [
                         {
-                            "post": {
-                                "user": {
-                                    "profile_pic_url": "https://scontent.cdninstagram.com/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=9PG1NK-L8OkAX-q_Nrf&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfDWsSPBghiIhwJnh4_3kO5maVMhDErg9ky_-dhqUHVtRw&oe=64ACDDC0&_nc_sid=10d13b",
-                                    "username": "zuck",
-                                    "id": null,
-                                    "is_verified": true,
-                                    "pk": "314216"
-                                },
-                                "image_versions2": {
-                                    "candidates": [
-                                        {
-                                            "height": 3000,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=dst-jpg_e35&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfBVkBmYMO2TozQJYlE6xblN10YDdmKXhzzs0hSHHCfUgQ&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 4000,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 810,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=dst-jpg_e35_s1080x1080&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfCl-OTiAWiST-z8pGT0IHQAcdQiuWxdoI44UQccZrvkdw&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 1080,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 540,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=dst-jpg_e35_s720x720&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfCQ6PZm83pOL4_QMalEvrzu1TTLWqvHWMVK3WercfrQdA&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 720,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 480,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=dst-jpg_e35_s640x640_sh0.08&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfB6A9bQNJLWiNgczI7Kp7q7wII7TC1ifn4oVd5cN8nTBg&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 640,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 360,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=dst-jpg_e35_s480x480&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfAtSvruwFWIjemafFJXaFfb_iag6LMjJL7EFaBmZmyP0Q&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 480,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 240,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=dst-jpg_e35_s320x320&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfCCyzKffNLdsvdSRuyHMdAN-F7sEALSVrc0kM3R2nsrQA&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 320,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 180,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=dst-jpg_e35_s240x240&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfCq8hu-NdtgzUrS_S4MnBrJX4ogGvCiAIhG_gr6xwp5Ag&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 240,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 1080,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=c500.0.3000.3000a_dst-jpg_e35_s1080x1080&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfDWf1VGojZDDWQDCDO1x0l3SU34cgdEOceFGPxK_9EZfA&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 1080,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 750,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=c500.0.3000.3000a_dst-jpg_e35_s750x750_sh0.08&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfA-Kqa9UoMluJGqD_wBNG3qtcbWT63RCkq07fDo88ZVaw&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 750,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 640,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=c500.0.3000.3000a_dst-jpg_e35_s640x640_sh0.08&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfCh7r-VI_5fLBmsPNp_cb-rZSBsDJTYdrn0PnMKBgATlw&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 640,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 480,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=c500.0.3000.3000a_dst-jpg_e35_s480x480&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfBXkMC4qSLcsgFURS0yXTu02CyydoJpInHfOr5L-FP5ww&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 480,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 320,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=c500.0.3000.3000a_dst-jpg_e35_s320x320&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfCwJtku5xDOM0dxwCvfAzmV64T-_kaA4CZLOIl3OTNiJQ&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 320,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 240,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=c500.0.3000.3000a_dst-jpg_e35_s240x240&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfCxaBgqYV7qj0svYLI1KavhteMygChYAfZma84Fe0tZmw&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 240,
-                                            "__typename": "XDTImageCandidate"
-                                        },
-                                        {
-                                            "height": 150,
-                                            "url": "https://scontent.cdninstagram.com/v/t51.2885-15/357916630_786901039847062_4398530087245184228_n.jpg?stp=c500.0.3000.3000a_dst-jpg_e35_s150x150&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=vSLyED13mHsAX-BfOPb&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE0MTAwMjI5NTIzNTA5OTE2NQ%3D%3D.2-ccb7-5&oh=00_AfDwSo36FyoIW052Qvgp7eDCfi-ij8x3NsySfbpfQAlM_Q&oe=64ACBB47&_nc_sid=10d13b",
-                                            "width": 150,
-                                            "__typename": "XDTImageCandidate"
-                                        }
-                                    ]
-                                },
-                                "original_width": 4000,
-                                "original_height": 3000,
-                                "video_versions": [],
-                                "carousel_media": null,
-                                "carousel_media_count": null,
-                                "pk": "3141002295235099165",
-                                "has_audio": null,
-                                "text_post_app_info": {
-                                    "link_preview_attachment": null,
-                                    "share_info": {
-                                        "quoted_post": null,
-                                        "reposted_post": null
-                                    },
-                                    "reply_to_author": null,
-                                    "is_post_unavailable": false
-                                },
-                                "caption": {
-                                    "text": "Lots of work on basic capabilities this morning."
-                                },
-                                "taken_at": 1688656673,
-                                "like_count": 184611,
-                                "code": "CuXFPIeLLod",
-                                "media_overlay_info": null,
-                                "id": "3141002295235099165_314216"
-                            },
-                            "line_type": "line",
-                            "view_replies_cta_string": "17,882 replies",
-                            "reply_facepile_users": [
-                                {
-                                    "__typename": "XDTUserDict",
-                                    "id": null,
-                                    "profile_pic_url": "https://scontent.cdninstagram.com/v/t51.2885-19/358166568_272137218742674_3025287304976949959_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent.cdninstagram.com&_nc_cat=106&_nc_ohc=Wl0wRGxM7g4AX-cl1FE&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfAaJRzZHv09tlkXbrdFTQC-ZhwW7v2BPih4fIBN3HxdYg&oe=64AC6E7C&_nc_sid=10d13b"
-                                },
-                                {
-                                    "__typename": "XDTUserDict",
-                                    "id": null,
-                                    "profile_pic_url": "https://scontent.cdninstagram.com/v/t51.2885-19/358337983_581973004113850_7681929282916239696_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent.cdninstagram.com&_nc_cat=110&_nc_ohc=9xd6QhLrfr0AX_jXvvd&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfD01Al_ukeQOVXysDuudHw82ZUfn4q_PI1KuWE1Swf1Kw&oe=64AC446D&_nc_sid=10d13b"
-                                },
-                                {
-                                    "__typename": "XDTUserDict",
-                                    "id": null,
-                                    "profile_pic_url": "https://scontent.cdninstagram.com/v/t51.2885-19/358357576_689254799697876_1184079927626851628_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent.cdninstagram.com&_nc_cat=100&_nc_ohc=95IT8pfSV8MAX8qeB2M&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfBtniKWdsj56GWa3T_UQZG6xEhLv_2ck-q_V9J34Pb4ag&oe=64ADA8C7&_nc_sid=10d13b"
-                                }
-                            ],
-                            "should_show_replies_cta": true,
-                            "__typename": "XDTThreadItem"
+                            "height": 320,
+                            "url": "https://scontent.cdninstagram.com/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s320x320&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=euIj8dtTGIkAX9JAAZI&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfDJeE127_ZFA-eD3qRMM0Fh2NM-jRR4tUFsTywCrMctNA&oe=64AED800&_nc_sid=10d13b",
+                            "width": 320
+                        },
+                        {
+                            "height": 640,
+                            "url": "https://scontent.cdninstagram.com/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s640x640&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=euIj8dtTGIkAX9JAAZI&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfAY-75SdPDasc0ophRu3lgeeHmnb3qPZIE-mCPh8PRRBw&oe=64AED800&_nc_sid=10d13b",
+                            "width": 640
                         }
                     ],
-                    "id": "3141002295235099165"
-                },
-                ...
-            ]
+                    "is_verified": true,
+                    "biography": "",
+                    "biography_with_entities": null,
+                    "follower_count": 2663588,
+                    "profile_context_facepile_users": null,
+                    "bio_links": [
+                        {
+                            "url": ""
+                        }
+                    ],
+                    "pk": "314216",
+                    "full_name": "Mark Zuckerberg",
+                    "id": null
+                }
+            }
+        },
+        "extensions": {
+            "is_final": true
         }
-    },
-    "extensions": {
-        "is_final": true
     }
 }
 ```

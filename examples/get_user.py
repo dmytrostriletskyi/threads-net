@@ -12,8 +12,8 @@ if __name__ == '__main__':
     threads.load_settings('session.json')
     threads.login(os.environ.get('INSTAGRAM_USERNAME'), os.environ.get('INSTAGRAM_PASSWORD'))
 
-    user = threads.get_user_by_username(username='zuck')
-    print(json.dumps(user, indent=4))
+    user_id = threads.get_user_id(username='zuck')
+    print(user_id)
 
-    user = threads.get_user_by_id(id=314216)
+    user = threads.get_user_by_id(id=user_id)
     print(json.dumps(user, indent=4))
