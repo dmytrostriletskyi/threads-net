@@ -20,6 +20,7 @@ Table of content:
   * [Get User Threads](#get-user-threads)
   * [Get User Replies](#get-user-replies)
   * [Get Post](#get-post)
+  * [Get Post Likers](#get-post-likers)
 
 ## Disclaimer
 
@@ -110,7 +111,7 @@ To get a user's identifier by a username, use the following commands:
 To get a user by an identifier, use the following commands:
 
 ```python3
->>> user = threads.get_user_by_id(id=314216)
+>>> user = threads.get_user(id=314216)
 >>> user
 {
     "data": {
@@ -573,6 +574,37 @@ To get a post, use the following commands:
                     "thread_type": "thread",
                     "header": null,
                     "id": "3141082664316809193"
+                },
+                ...
+            ]
+        }
+    },
+    "extensions": {
+        "is_final": true
+    }
+}
+```
+
+### Get Post Likers
+
+To get a post's likers, use the following commands:
+
+```python3
+>>> post = threads.get_post_likers(id=3141055616164096839)
+>>> post_likers
+{
+    "data": {
+        "likers": {
+            "users": [
+                {
+                    "pk": "32729880576",
+                    "full_name": "K 🦋I🦋K🦋I",
+                    "profile_pic_url": "https://scontent.cdninstagram.com/19/6007.jpg
+                    "follower_count": 51,
+                    "is_verified": false,
+                    "username": "niyod_couture",
+                    "profile_context_facepile_users": null,
+                    "id": null
                 },
                 ...
             ]

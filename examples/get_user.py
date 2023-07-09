@@ -15,5 +15,5 @@ if __name__ == '__main__':
     user_id = threads.get_user_id(username='zuck')
     print(user_id)
 
-    user = threads.get_user_by_id(id=user_id)
+    user = threads.get_user(id=user_id)
     print(json.dumps(user, indent=4))

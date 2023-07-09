@@ -87,7 +87,7 @@ class Threads(
         """
         return self.user_info_by_username_v1(username=username).dict().get('pk')
 
-    def get_user_by_id(self, id: int):
+    def get_user(self, id: int):
         """
         Get a user.
 
@@ -101,6 +101,7 @@ class Threads(
                 'X-IG-App-ID': '238260118697367',
                 'X-FB-LSD': self.temporary_token,
                 'Sec-Fetch-Site': 'same-origin',
+                'X-FB-Friendly-Name': 'BarcelonaProfileRootQuery',
             },
             data={
                 'lsd': self.temporary_token,
@@ -128,6 +129,7 @@ class Threads(
                 'X-IG-App-ID': '238260118697367',
                 'X-FB-LSD': self.temporary_token,
                 'Sec-Fetch-Site': 'same-origin',
+                'X-FB-Friendly-Name': 'BarcelonaProfileThreadsTabQuery',
             },
             data={
                 'lsd': self.temporary_token,
@@ -154,6 +156,7 @@ class Threads(
                 'X-IG-App-ID': '238260118697367',
                 'X-FB-LSD': self.temporary_token,
                 'Sec-Fetch-Site': 'same-origin',
+                'X-FB-Friendly-Name': 'BarcelonaProfileRepliesTabQuery',
             },
             data={
                 'lsd': self.temporary_token,
@@ -180,6 +183,7 @@ class Threads(
                 'X-IG-App-ID': '238260118697367',
                 'X-FB-LSD': self.temporary_token,
                 'Sec-Fetch-Site': 'same-origin',
+                'X-FB-Friendly-Name': 'BarcelonaPostPageQuery',
             },
             data={
                 'lsd': self.temporary_token,
@@ -187,6 +191,32 @@ class Threads(
                     'postID': id,
                 }),
                 'doc_id': '5587632691339264',
+            },
+        )
+
+        return response.json()
+
+    def get_post_likers(self, id: int):
+        """
+        Get a post's likers.
+
+        Arguments:
+            id (int): a post's identifier.
+        """
+        response = requests.post(
+            url=self.THREADS_API_URL,
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-IG-App-ID': '238260118697367',
+                'X-FB-LSD': self.temporary_token,
+                'Sec-Fetch-Site': 'same-origin',
+            },
+            data={
+                'lsd': self.temporary_token,
+                'variables': json.dumps({
+                    'mediaID': id,
+                }),
+                'doc_id': '9360915773983802',
             },
         )
 
