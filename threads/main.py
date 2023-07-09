@@ -169,6 +169,33 @@ class Threads(
 
         return response.json()
 
+    def get_post_id(self, url_id):
+        """
+        Get a post' identifier by its URL's identifier.
+
+        For instance, there is the URL — `https://www.threads.net/t/CuXFPIeLLod`.
+        The URL's identifier would be `CuXFPIeLLod`.
+
+        Args:
+            url_id (str): a post's URL identifier.
+
+        Raises:
+            ValueError: If the ost identifier has not been found.
+        """
+        response = requests.get(f'https://www.threads.net/t/{url_id}/')
+
+        post_id_start_key_position = response.text.find('{"post_id":"') + len('{"post_id":"')
+        post_id_end_key_position = response.text.find('"}', post_id_start_key_position)
+
+        if post_id_start_key_position == -1 or post_id_end_key_position == -1:
+            raise ValueError(
+                'Post identifier has not been found: '
+                'please, create an issue — https://github.com/dmytrostriletskyi/threads-net/issues',
+            )
+
+        post_id = int(response.text[post_id_start_key_position:post_id_end_key_position])
+        return post_id
+
     def get_post(self, id: int):
         """
         Get a post.

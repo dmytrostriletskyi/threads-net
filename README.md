@@ -9,6 +9,7 @@ Threads (threads.net) Python API wrapper.
 Table of content:
 
 * [Disclaimer](#disclaimer)
+* [Roadmap](#roadmap)
 * [Getting started](#getting-started)
   * [How to install](#how-to-install)
   * [Initialization](#initialization)
@@ -19,6 +20,7 @@ Table of content:
   * [Get User By Identifier](#get-user-by-identifier)
   * [Get User Threads](#get-user-threads)
   * [Get User Replies](#get-user-replies)
+  * [Get Post Identifier](#get-post-identifier)
   * [Get Post](#get-post)
   * [Get Post Likers](#get-post-likers)
 
@@ -36,6 +38,24 @@ Table of content:
   no any promise in backward compatibility).
 * For all the `Instagram`-related thing other well-know and already stable library called [instagrapi](https://github.com/adw0rd/instagrapi)
   is used in `threads-net`.
+
+## Roadmap
+
+- [ ] Read public information
+  - [x] Get a user's identifier
+  - [x] Get a user by an identifier
+  - [x] Get a user's threads
+  - [x] Get a user's replies
+  - [ ] Get a user's followers
+  - [ ] Get a user's followings
+  - [x] Get a post's identifier
+  - [x] Get a post
+  - [x] Get a post's likers
+- [ ] Read private information
+- [ ] Writing capabilities
+  - [ ] Create a thread with text
+  - [ ] Create a thread with media
+  - [ ] Reply to an existing thread
 
 ## Getting started
 
@@ -462,12 +482,23 @@ To get a user's replies, use the following commands:
 }
 ```
 
+### Get Post Identifier
+
+To get a post's identifier by a URL identifier. For instance, there is the URL — https://www.threads.net/t/CuXFPIeLLod.
+The URL's identifier would be `CuXFPIeLLod`. Use the following commands:
+
+```python3
+>>> post_id = threads.get_post_id(url_id='CuXFPIeLLod')
+>>> post_id
+3141002295235099165
+```
+
 ### Get Post
 
 To get a post, use the following commands:
 
 ```python3
->>> post = threads.get_post(id=3141055616164096839)
+>>> post = threads.get_post(id=3141002295235099165)
 >>> post
 {
     "data": {
@@ -590,7 +621,7 @@ To get a post, use the following commands:
 To get a post's likers, use the following commands:
 
 ```python3
->>> post = threads.get_post_likers(id=3141055616164096839)
+>>> post = threads.get_post_likers(id=3141002295235099165)
 >>> post_likers
 {
     "data": {
