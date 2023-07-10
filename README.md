@@ -32,10 +32,12 @@ Table of content:
     * [Get User Following](#get-user-following)
     * [Search User](#search-user)
     * [Follow User](#follow-user)
-    * [Unollow User](#unfollow-user)
+    * [Unfollow User](#unfollow-user)
     * [Get Thread Identifier](#get-thread-identifier)
     * [Get Thread](#get-thread)
     * [Create Thread](#create-thread)
+    * [Like Thread](#like-thread)
+    * [Unlike Thread](#unlike-thread)
 
 ## Disclaimer
 
@@ -82,8 +84,8 @@ Table of content:
     - [ ] With multiple images
     - [ ] With link attachment
   - [ ] Delete a thread
-  - [ ] Like a thread
-  - [ ] Unlike a thread
+  - [x] Like a thread
+  - [x] Unlike a thread
   - [ ] Reply to a thread
   - [ ] Embed a thread
 
@@ -1408,6 +1410,30 @@ To create a thread, use the following commands:
         "has_delayed_metadata": false
     },
     "upload_id": "1688927864",
+    "status": "ok"
+}
+```
+
+#### Like Thread
+
+To like a thread, use the following commands:
+
+```python3
+>>> liking = threads.private_api.like_thread(id=3141055616164096839)
+>>> liking
+{
+    "status": "ok"
+}
+```
+
+#### Unlike Thread
+
+To unlike a thread, use the following commands:
+
+```python3
+>>> unliking = threads.private_api.unlike_thread(id=3141055616164096839)
+>>> unliking
+{
     "status": "ok"
 }
 ```

@@ -43,6 +43,8 @@ class PrivateThreadsApi(AbstractThreadsApi):
                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             }
 
+        self.user_id = self.get_user_id(username=username)
+
     def _get_instagram_api_token(self):
         """
         Get a token for Instagram API.
@@ -159,6 +161,30 @@ class PrivateThreadsApi(AbstractThreadsApi):
             id (str): a thread's identifier.
         """
         response = requests.get(url=f'{self.INSTAGRAM_API_URL}/text_feed/{id}/replies', headers=self.headers)
+        return response.json()
+
+    def like_thread(self, id: str):
+        """
+        Like a thread.
+
+        Arguments:
+            id (str): a thread's identifier.
+        """
+        response = requests.post(url=f'{self.INSTAGRAM_API_URL}/media/{id}_{self.user_id}/like/', headers=self.headers)
+        return response.json()
+
+    def unlike_thread(self, id: str):
+        """
+        Unlike a thread.
+
+        Arguments:
+            id (str): a thread's identifier.
+        """
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/media/{id}_{self.user_id}/unlike/',
+            headers=self.headers,
+        )
+
         return response.json()
 
     def create_thread(self, caption: str):
