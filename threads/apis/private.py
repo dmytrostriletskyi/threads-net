@@ -27,13 +27,13 @@ class PrivateThreadsApi(AbstractThreadsApi):
         """
         super().__init__()
 
-        self.username = username
-        self.password = password
+        if username is not None and password is not None:
+            self.username = username
+            self.password = password
 
-        self.timezone_offset = -14400
-        self.android_device_id = generate_android_device_id()
+            self.timezone_offset = -14400
+            self.android_device_id = generate_android_device_id()
 
-        if self.username is not None and self.password is not None:
             self.instagram_api_token = self._get_instagram_api_token()
 
             self.headers = {
@@ -43,7 +43,13 @@ class PrivateThreadsApi(AbstractThreadsApi):
                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             }
 
-            self.user_id = self.get_user_id(username=username)
+            self.user_id = self.get_user_id(username=self.username)
+        else:
+            self.timezone_offset = None
+            self.android_device_id = None
+            self.instagram_api_token = None
+            self.headers = None
+            self.user_id = None
 
     def _get_instagram_api_token(self):
         """
