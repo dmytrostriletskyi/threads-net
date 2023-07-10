@@ -1,5 +1,5 @@
 """
-Provide example of creating a thread implementation.
+Provide example of following a user from private Threads API.
 """
 import os
 import json
@@ -13,5 +13,5 @@ INSTAGRAM_PASSWORD = os.environ.get('INSTAGRAM_PASSWORD')
 if __name__ == '__main__':
     threads = Threads(username=INSTAGRAM_USERNAME, password=INSTAGRAM_PASSWORD)
 
-    created_thread = threads.create_thread(caption='Hello, world!')
-    print(json.dumps(created_thread, indent=4))
+    following = threads.private_api.follow_user(id=314216)
+    print(json.dumps(following, indent=4))

@@ -1,6 +1,7 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct-single.svg)](https://stand-with-ukraine.pp.ua)
 
-Threads (threads.net) Python API wrapper.
+Unofficial and reverse-engineered Threads ([threads.net](https://www.threads.net/@zuck)) Python API wrapper. 
+Supports read and write capabilities.
 
 [![Downloads](https://pepy.tech/badge/threads-net)](https://pepy.tech/project/threads-net)
 [![PyPI license](https://img.shields.io/pypi/l/threads-net.svg)](https://pypi.python.org/pypi/threads-net/)
@@ -12,48 +13,70 @@ Table of content:
 * [Roadmap](#roadmap)
 * [Getting started](#getting-started)
   * [How to install](#how-to-install)
-  * [Initialization](#initialization)
   * [Examples](#examples)
 * [API](#api)
-  * [Get User Identifier](#get-user-identifier)
-  * [Get User By Identifier](#get-user-by-identifier)
-  * [Get User Threads](#get-user-threads)
-  * [Get User Replies](#get-user-replies)
-  * [Get Thread Identifier](#get-thread-identifier)
-  * [Get Thread](#get-thread)
-  * [Get Thread Likers](#get-thread-likers)
-  * [Create Thread](#create-thread)
+  * [Terminology](#terminology)
+  * [Initialization](#initialization)
+  * [Public](#api)
+    * [Get User Identifier](#get-user-identifier)
+    * [Get User By Identifier](#get-user-by-identifier)
+    * [Get User Threads](#get-user-threads)
+    * [Get User Replies](#get-user-replies)
+    * [Get Thread Identifier](#get-thread-identifier)
+    * [Get Thread](#get-thread)
+    * [Get Thread Likers](#get-thread-likers)
+  * [Private](#private)
+    * [Get User Identifier](#get-user-identifier)
+    * [Get User By Identifier](#get-user-by-identifier)
+    * [Get User Followers](#get-user-identifier)
+    * [Get User Following](#get-user-by-identifier)
+    * [Search User](#search-user)
+    * [Follow User](#follow-user)
+    * [Create Thread](#create-thread)
 
 ## Disclaimer
 
-* As `Threads` are backed by `Instagram`. It means that `Threads` functionality partially placed in `Instagram API`:
-  you do a login to `Threads` application via `Instagram`'s username and password, posting new threads and fetching user
-  identifier (for further library usage) too. So expect seeing things related to `Instagram` in this library.
-* This project is unofficial and utilize both public and private endpoints of both `Threads` and `Instagram` `APIs`. 
-  Utilizing private endpoints means pretending being a mobile phone or web user (via proper `HTTP` headers and other 
-  things). Thus you might face `rate limits` (because pretending is never ideal) or even your account in `Threads` and 
-  `Instagram` might be suspended if mess up with logining or sending too much requests. So use the project at your own 
-  risk until the normal public `ThreadsAPI` is released or this product become more stable for such things.Also,
-  utilizing such endpoints mean that they might not be stable (because they are under active development and there is
-  no any promise in backward compatibility).
+* As `Threads` are backed by `Instagram`, those are couples in terms of `APIs`. For example, there is a way to fetch a
+  user or thread information from both `Threads` and `Instagram` `APIs`. But there are unique `API` endpoints that exist 
+  only in one of the `APIs`, for instance, to create a post, there is only `Instagram API` endpoint.
+* To interact with `Threads API` there is no need for any authorization. On the other hand, to interact with 
+  `Instagram API`, you have to specify `Instagram` username and password (as like you do when you log in to `Threads` 
+  mobile application). 
+* This project is unofficial and reverse-engineered, it means: 
+  * That the library would be pretending being a mobile phone or web user (via proper `HTTP` headers and other things). 
+    Thus, you might face `rate limits` (because pretending is never ideal) or even your account in `Threads` and/or 
+    `Instagram` might be suspended if you mess up with logining or sending too much requests. 
+  * That `Threads` and `Instagram` `APIs` which are used by a library are not provided as public `API` and developed to 
+    be used internally (`Meta'`s `back-end` developers for `front-end` developers) without any intention to reveal it. 
+    Thus, expect activate development on their side and not stable work of the `APIs` and therefore the library.
 
 ## Roadmap
 
-- [ ] Read public information
+- [x] Read public information
   - [x] Get a user's identifier
   - [x] Get a user by an identifier
   - [x] Get a user's threads
   - [x] Get a user's replies
-  - [ ] Get a user's followers
-  - [ ] Get a user's followings
   - [x] Get a thread's identifier
   - [x] Get a thread
   - [x] Get a thread's likers
 - [ ] Read private information
-- [ ] Writing capabilities
-  - [x] Create a thread with text
-  - [ ] Create a thread with media
-  - [ ] Reply to an existing thread
+  - [x] Get a user's identifier
+  - [x] Get a user by an identifier
+  - [ ] Get a user's threads
+  - [ ] Get a user's replies
+  - [x] Get a user's followers
+  - [x] Get a user's followings
+  - [x] Search a user
+  - [x] Follow a user
+  - [ ] Get a thread's identifier
+  - [ ] Get a thread
+  - [ ] Get a thread's likers
+  - [x] Create a thread
+  - [ ] Delete a thread
+  - [ ] Like a thread
+  - [ ] Reply to a thread
+  - [ ] Embed a thread
 
 ## Getting started
 
@@ -65,68 +88,84 @@ Install the library with the following command using `pip3`:
 $ pip3 install threads-net
 ```
 
-### Initialization
-
-Import the class responsible for `Threads API` communication and start using it with the following commands, specifying
-`Instagram` username and password:
-
-```python3
->>> from threads import Threads
->>> threads = Threads(username='instagram_username', password='instagram_password')
-```
-
-It is taken care of `rate limits`, so those are only used when it is really needed avoiding initialization authentication
-(obtaining an `API` token) for each of the library method. Moreover, the `API` token will be cached and fetched only once.
-
-Currently, only this list of methods will perform authentication:
-
-* [Create Thread](#create-thread)
-
-So, if you do not plan to use those method, you can leave them unspecified:
-
-```python3
->>> from threads import Threads
->>> threads = Threads()
-```
-
 ### Examples
 
 Find examples of how to use the library in the `examples` folder:
 
 ```bash
 ls examples
-├── create_thread.py
-├── get_thread.py
-├── get_thread_likers.py
-├── get_user.py
-├── get_user_replies.py
-└── get_user_threads.py
+├── private
+│   ├── create_thread.py
+│   ├── follow_user.py
+│   ├── get_user.py
+│   ├── get_user_followers.py
+│   ├── get_user_following.py
+│   └── search_user.py
+│   ...
+└── public
+    ├── get_thread.py
+    ├── get_thread_likers.py
+    ├── get_user.py
+    ├── get_user_replies.py
+    └── get_user_threads.py
+    ...
 ```
 
 ## API
 
-There might be a confusion among many `Threads API` clients as well as in both `Threads` an `Instagram` `APIs` according
-to the naming of entities. For instance, in `Threads` a publication is called a `thread`, but under the hood in the API
-of fetching or creating a `thread` it is called a `post`. It is done because `Threads` are backed by `Instagram` and
-`threads` creation is done on `Instagram API` where a publication called a post. Library maintainers decided to stick
-into `Threads` terminology and use the word `thread`.
+### Terminology
 
-### Get User Identifier
+There might be a confusion among many `Threads API` clients as well as in both `Threads` an `Instagram` `APIs` according
+to the naming of entities. For instance, in `Threads` a publication is called a `thread`, but under the hood in the `API`
+of fetching or creating a `thread` it is called a `post`. 
+
+It is done because `Threads` are backed by `Instagram` and `threads` creation is done on `Instagram API` where a 
+publication called a post. Library maintainers decided to stick into `Threads` terminology and use the word `thread`.
+
+### Initialization
+
+Import the class responsible for `Threads API` communication and initialize the object. But it depends on if you are
+going to use public or private `API`. The differences between public or private `APIs` are:
+
+* Public `API` is `Threads API` which is developed for anonymous access. On other hand, private `API` is `Instagram API`,
+  which is developed for access from mobile phone being authorized via `Instagram` username and password.
+* Public `API` has only read-only endpoints. On other hand, private `API` has both read and write endpoints such as
+  creating a post or follow a user.
+* Public `API` much less stable than private `API` (from the library maintainers perspective).
+* Public `API` much less risky to get `rate limits` or to have account in `Threads` and/or `Instagram` be suspended.
+
+So, it is a trade-off between less risk, less stability and bugs and more risk, more stability and less bugs.
+
+```python3
+>>> from threads import Threads
+>>> threads = Threads(username='instagram_username', password='instagram_password')
+```
+
+You can leave `username` and `password` arguments unspecified if you have no plans to use private `API`:
+
+```python3
+>>> from threads import Threads
+>>> threads = Threads()
+```
+
+### Public
+
+#### Get User Identifier
 
 To get a user's identifier by a username, use the following commands:
 
 ```python3
->>> user_id = threads.get_user_id(username='zuck')
+>>> threads.public_api.get_user_id(username='zuck')
 >>> user_id
 314216
 ```
 
-### Get User by Identifier
+#### Get User by Identifier
 
 To get a user by an identifier, use the following commands:
 
 ```python3
->>> user = threads.get_user(id=314216)
+>>> user = threads.public_api.get_user(id=314216)
 >>> user
 {
     "data": {
@@ -169,12 +208,12 @@ To get a user by an identifier, use the following commands:
 }
 ```
 
-### Get User Threads
+#### Get User Threads
 
 To get a user's threads, use the following commands:
 
 ```python3
->>> user_threads = threads.get_user_threads(id=314216)
+>>> user_threads = threads.public_api.get_user_threads(id=314216)
 >>> user_threads
 {
     "instagram": {
@@ -251,12 +290,12 @@ To get a user's threads, use the following commands:
 }
 ```
 
-### Get User Replies
+#### Get User Replies
 
 To get a user's replies, use the following commands:
 
 ```python3
->>> user_replies = threads.get_user_replies(id=314216)
+>>> user_replies = threads.public_api.get_user_replies(id=314216)
 >>> user_replies
 {
     "data": {
@@ -477,23 +516,23 @@ To get a user's replies, use the following commands:
 }
 ```
 
-### Get Thread Identifier
+#### Get Thread Identifier
 
-To get a thread's identifier by a URL identifier. For instance, there is the URL — https://www.threads.net/t/CuXFPIeLLod.
-The URL's identifier would be `CuXFPIeLLod`. Use the following commands:
+To get a thread's identifier by a `URL` identifier, use the following commands. `URL` identifier is a last part of a 
+thread's `URL`. If the thread's `URL` is `https://www.threads.net/t/CuXFPIeLLod`, then it would be `CuXFPIeLLod`.
 
 ```python3
->>> thread_id = threads.get_thread_id(url_id='CuXFPIeLLod')
+>>> thread_id = threads.public_api.get_thread_id(url_id='CuXFPIeLLod')
 >>> thread_id
 3141002295235099165
 ```
 
-### Get Thread
+#### Get Thread
 
 To get a thread, use the following commands:
 
 ```python3
->>> thread = threads.get_thread(id=3141002295235099165)
+>>> thread = threads.public_api.get_thread(id=3141002295235099165)
 >>> thread
 {
     "data": {
@@ -611,12 +650,12 @@ To get a thread, use the following commands:
 }
 ```
 
-### Get Thread Likers
+#### Get Thread Likers
 
 To get a thread's likers, use the following commands:
 
 ```python3
->>> thread_likers = threads.get_thread_likers(id=3141002295235099165)
+>>> thread_likers = threads.public_api.get_thread_likers(id=3141002295235099165)
 >>> thread_likers
 {
     "data": {
@@ -642,13 +681,383 @@ To get a thread's likers, use the following commands:
 }
 ```
 
+### Private
 
-### Create Thread
+#### Get User Identifier
+
+To get a user's identifier by a username, use the following commands:
+
+```python3
+>>> threads.private_api.get_user_id(username='zuck')
+>>> user_id
+314216
+```
+
+#### Get User by Identifier
+
+To get a user by an identifier, use the following commands:
+
+```python3
+>>> user = threads.private_api.get_user(id=314216)
+>>> user
+{
+    "user": {
+        "has_anonymous_profile_picture": false,
+        "is_supervision_features_enabled": false,
+        "follower_count": 2782815,
+        "media_count": 283,
+        "following_count": 313,
+        "following_tag_count": 3,
+        "can_use_affiliate_partnership_messaging_as_creator": false,
+        "can_use_affiliate_partnership_messaging_as_brand": false,
+        "has_collab_collections": false,
+        "has_private_collections": true,
+        "has_music_on_profile": false,
+        "is_potential_business": false,
+        "can_use_branded_content_discovery_as_creator": false,
+        "can_use_branded_content_discovery_as_brand": false,
+        "fan_club_info": {
+            "fan_club_id": null,
+            "fan_club_name": null,
+            "is_fan_club_referral_eligible": null,
+            "fan_consideration_page_revamp_eligiblity": null,
+            "is_fan_club_gifting_eligible": null,
+            "subscriber_count": null,
+            "connected_member_count": null,
+            "autosave_to_exclusive_highlight": null,
+            "has_enough_subscribers_for_ssc": null
+        },
+        "fbid_v2": "17841401746480004",
+        "pronouns": [],
+        "is_whatsapp_linked": false,
+        "transparency_product_enabled": false,
+        "account_category": "",
+        "interop_messaging_user_fbid": 119171612803872,
+        "bio_links": [
+            {
+                "link_id": 17979756671109835,
+                "url": "",
+                "lynx_url": "",
+                "link_type": "external",
+                "title": "",
+                "open_external_url_with_in_app_browser": true
+            }
+        ],
+        "can_add_fb_group_link_on_profile": false,
+        "external_url": "",
+        "show_shoppable_feed": false,
+        "merchant_checkout_style": "none",
+        "seller_shoppable_feed_type": "none",
+        "creator_shopping_info": {
+            "linked_merchant_accounts": []
+        },
+        "has_guides": false,
+        "has_highlight_reels": false,
+        "hd_profile_pic_url_info": {
+            "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=euIj8dtTGIkAX_8Gm2Q&edm=AEF8tYYBAAAA&ccb=7-5&oh=00_AfBs65PPEgj6s58aEAVAZWAUJu9JqhMcsWV8VLubRyzQwQ&oe=64B0D240&_nc_sid=1e20d2",
+            "width": 805,
+            "height": 805
+        },
+        "hd_profile_pic_versions": [
+            {
+                "width": 320,
+                "height": 320,
+                "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s320x320&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=euIj8dtTGIkAX_8Gm2Q&edm=AEF8tYYBAAAA&ccb=7-5&oh=00_AfB7HZGMI4QLDwO-wKkntDBbGavE_-oKHus264KgonCVqg&oe=64B0D240&_nc_sid=1e20d2"
+            },
+            {
+                "width": 640,
+                "height": 640,
+                "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s640x640&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=euIj8dtTGIkAX_8Gm2Q&edm=AEF8tYYBAAAA&ccb=7-5&oh=00_AfBxpkJK3xNM4BLNfbMzrcTyKkza60pitJvggFKtuX4uIA&oe=64B0D240&_nc_sid=1e20d2"
+            }
+        ],
+        "is_interest_account": true,
+        "is_favorite": false,
+        "is_favorite_for_stories": false,
+        "is_favorite_for_igtv": false,
+        "is_favorite_for_clips": false,
+        "is_favorite_for_highlights": false,
+        "broadcast_chat_preference_status": {
+            "json_response": "{\"status\":\"ok\",\"status_code\":\"200\",\"is_broadcast_chat_creator\":true,\"notification_setting_type\":2}"
+        },
+        "live_subscription_status": "default",
+        "usertags_count": 43060,
+        "total_ar_effects": 1,
+        "total_clips_count": 1,
+        "has_videos": true,
+        "total_igtv_videos": 12,
+        "has_igtv_series": false,
+        "biography": "",
+        "include_direct_blacklist_status": true,
+        "biography_with_entities": {
+            "raw_text": "",
+            "entities": []
+        },
+        "show_fb_link_on_profile": false,
+        "primary_profile_link_type": 0,
+        "can_hide_category": true,
+        "can_hide_public_contacts": true,
+        "should_show_category": false,
+        "category_id": 1617,
+        "is_category_tappable": false,
+        "should_show_public_contacts": false,
+        "is_eligible_for_smb_support_flow": true,
+        "is_eligible_for_lead_center": false,
+        "is_experienced_advertiser": false,
+        "lead_details_app_id": "com.bloks.www.ig.smb.lead_gen.subpage",
+        "is_business": false,
+        "professional_conversion_suggested_account_type": 3,
+        "account_type": 3,
+        "direct_messaging": "",
+        "instagram_location_id": "",
+        "address_street": "",
+        "business_contact_method": "UNKNOWN",
+        "city_id": 0,
+        "city_name": "",
+        "contact_phone_number": "",
+        "is_profile_audio_call_enabled": false,
+        "latitude": 0.0,
+        "longitude": 0.0,
+        "public_email": "",
+        "public_phone_country_code": "",
+        "public_phone_number": "",
+        "zip": "",
+        "mutual_followers_count": 0,
+        "has_onboarded_to_text_post_app": true,
+        "show_text_post_app_badge": true,
+        "text_post_app_joiner_number": 1,
+        "show_ig_app_switcher_badge": true,
+        "show_text_post_app_switcher_badge": true,
+        "profile_context": "",
+        "profile_context_links_with_user_ids": [],
+        "profile_context_facepile_users": [],
+        "has_chaining": true,
+        "pk": 314216,
+        "pk_id": "314216",
+        "username": "zuck",
+        "full_name": "Mark Zuckerberg",
+        "is_private": false,
+        "follow_friction_type": 0,
+        "is_verified": true,
+        "profile_pic_id": "3138909791791822006_314216",
+        "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=euIj8dtTGIkAX_8Gm2Q&edm=AEF8tYYBAAAA&ccb=7-5&oh=00_AfD5zX6BkQpgR-H-iTsZ2PlwDEOXnf7PCbohypiV8Aj10g&oe=64B0D240&_nc_sid=1e20d2",
+        "current_catalog_id": null,
+        "mini_shop_seller_onboarding_status": null,
+        "shopping_post_onboard_nux_type": null,
+        "ads_incentive_expiration_date": null,
+        "displayed_action_button_partner": null,
+        "smb_delivery_partner": null,
+        "smb_support_delivery_partner": null,
+        "displayed_action_button_type": "",
+        "smb_support_partner": null,
+        "is_call_to_action_enabled": false,
+        "num_of_admined_pages": null,
+        "category": "Entrepreneur",
+        "account_badges": [],
+        "show_account_transparency_details": true,
+        "existing_user_age_collection_enabled": true,
+        "show_post_insights_entry_point": true,
+        "has_public_tab_threads": true,
+        "third_party_downloads_enabled": 1,
+        "is_regulated_c18": false,
+        "is_in_canada": false,
+        "profile_type": 0,
+        "is_profile_broadcast_sharing_enabled": true,
+        "has_exclusive_feed_content": false,
+        "has_fan_club_subscriptions": false,
+        "is_memorialized": false,
+        "open_external_url_with_in_app_browser": true,
+        "pinned_channels_info": {
+            "pinned_channels_list": [],
+            "has_public_channels": false
+        },
+        "request_contact_enabled": false,
+        "robi_feedback_source": null,
+        "chaining_results": null,
+        "is_bestie": false,
+        "remove_message_entrypoint": false,
+        "auto_expand_chaining": false,
+        "is_new_to_instagram": false,
+        "highlight_reshare_disabled": false
+    },
+    "status": "ok"
+}
+```
+
+#### Get User Followers
+
+To get a user's followers, use the following commands:
+
+```python3
+>>> user_followers = threads.private_api.get_user_followers(id=314216)
+>>> user_followers
+{
+    "users": [
+        {
+            "has_anonymous_profile_picture": false,
+            "fbid_v2": "17841407032091362",
+            "has_onboarded_to_text_post_app": true,
+            "text_post_app_joiner_number": 100165200,
+            "pk": 6970898403,
+            "pk_id": "6970898403",
+            "username": "ali_moslemi_",
+            "full_name": "",
+            "is_private": true,
+            "is_verified": false,
+            "profile_pic_id": "3143675402396969798_6970898403",
+            "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/358504236_795240265474093_1873793041193487951_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=NDKSnch-bEoAX9bRFSg&edm=APQMUHMBAAAA&ccb=7-5&oh=00_AfBAOL--evGSmg6slpcKO-Bmo1I8rXokvlMygal0yEep5A&oe=64AFB4B0&_nc_sid=6ff7c8",
+            "account_badges": [],
+            "is_possible_scammer": false,
+            "third_party_downloads_enabled": 0,
+            "is_possible_bad_actor": {
+                "is_possible_scammer": false,
+                "is_possible_impersonator": {
+                    "is_unconnected_impersonator": false
+                }
+            },
+            "latest_reel_media": 0
+        },
+        ...
+    ],
+    "big_list": false,
+    "page_size": 200,
+    "has_more": false,
+    "should_limit_list_of_followers": false,
+    "status": "ok"
+}
+```
+
+#### Get User Following
+
+To get a user's following, use the following commands:
+
+```python3
+>>> user_following = threads.private_api.get_user_following(id=314216)
+>>> user_following
+{
+    "users": [
+        {
+            "has_anonymous_profile_picture": false,
+            "fbid_v2": "17841400595560228",
+            "has_onboarded_to_text_post_app": true,
+            "text_post_app_joiner_number": 37063252,
+            "pk": 14611852,
+            "pk_id": "14611852",
+            "username": "mikesego",
+            "full_name": "Mike Sego",
+            "is_private": false,
+            "is_verified": false,
+            "profile_pic_id": "3141060757056532902_14611852",
+            "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/358004364_2046926358984696_1656910531495082901_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=100&_nc_ohc=6Hb0M2drxbIAX9eVeGw&edm=ALB854YBAAAA&ccb=7-5&oh=00_AfAeVVBHAjmjJtmatY9YTDLovtOXJwzM-netZTUN_ghOLw&oe=64B028E3&_nc_sid=ce9561",
+            "account_badges": [],
+            "is_possible_scammer": false,
+            "third_party_downloads_enabled": 1,
+            "is_possible_bad_actor": {
+                "is_possible_scammer": false,
+                "is_possible_impersonator": {
+                    "is_unconnected_impersonator": false
+                }
+            },
+            "latest_reel_media": 0,
+            "is_favorite": false
+        },
+        ...
+    ],
+    "big_list": true,
+    "page_size": 200,
+    "next_max_id": "100",
+    "has_more": false,
+    "should_limit_list_of_followers": false,
+    "status": "ok"
+}
+```
+
+#### Search User
+
+To search for a user's following, use the following commands:
+
+```python3
+>>> found_users = threads.private_api.search_user(query='zuck')
+>>> found_users
+{
+    "num_results": 55,
+    "users": [
+        {
+            "has_anonymous_profile_picture": false,
+            "follower_count": 2779681,
+            "media_count": 283,
+            "following_count": 313,
+            "following_tag_count": 3,
+            "fbid_v2": "17841401746480004",
+            "has_onboarded_to_text_post_app": true,
+            "show_text_post_app_badge": true,
+            "text_post_app_joiner_number": 1,
+            "show_ig_app_switcher_badge": true,
+            "pk": 314216,
+            "pk_id": "314216",
+            "username": "zuck",
+            "full_name": "Mark Zuckerberg",
+            "is_private": false,
+            "is_verified": true,
+            "profile_pic_id": "3138909791791822006_314216",
+            "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=euIj8dtTGIkAX_8Gm2Q&edm=AM7KJZYBAAAA&ccb=7-5&oh=00_AfBozKxHv4GtcQ5ZwnPSS_eL9ONAYNekI1hhOWPGgNPaxA&oe=64B0D240&_nc_sid=8ec269",
+            "has_opt_eligible_shop": false,
+            "account_badges": [],
+            "third_party_downloads_enabled": 1,
+            "unseen_count": 0,
+            "friendship_status": {
+                "following": false,
+                "is_private": false,
+                "incoming_request": false,
+                "outgoing_request": false,
+                "text_post_app_pre_following": false,
+                "is_bestie": false,
+                "is_restricted": false,
+                "is_feed_favorite": false
+            },
+            "latest_reel_media": 0,
+            "should_show_category": false
+        },
+        ...
+    ],
+    "has_more": false,
+    "rank_token": "21af3266-ddec-4166-b00c-091a580a54a8",
+    "status": "ok"
+}
+```
+
+#### Follow user
+
+To follow a user, use the following commands:
+
+```python3
+>>> following = threads.private_api.follow_user(id=314216)
+>>> following
+{
+    "friendship_status": {
+        "following": true,
+        "followed_by": false,
+        "blocking": false,
+        "muting": false,
+        "is_private": false,
+        "incoming_request": false,
+        "outgoing_request": false,
+        "text_post_app_pre_following": false,
+        "is_bestie": false,
+        "is_restricted": false,
+        "is_feed_favorite": false,
+        "is_eligible_to_subscribe": false
+    },
+    "previous_following": false,
+    "status": "ok"
+}
+```
+
+#### Create Thread
 
 To create a thread, use the following commands:
 
 ```python3
->>> created_tread = threads.create_thread(caption='Hello, world!')
+>>> created_thread = threads.private_api.create_thread(caption='Hello, world!')
 >>> created_tread
 {
     "media": {
