@@ -3,9 +3,13 @@
 Unofficial and reverse-engineered Threads ([threads.net](https://www.threads.net/@zuck)) Python API wrapper. 
 Supports read and write capabilities.
 
-[![Downloads](https://pepy.tech/badge/threads-net)](https://pepy.tech/project/threads-net)
-[![PyPI license](https://img.shields.io/pypi/l/threads-net.svg)](https://pypi.python.org/pypi/threads-net/)
-[![PyPI pyversions](https://img.shields.io/pypi/pyversions/threads-net.svg)](https://pypi.python.org/pypi/threads-net/)
+[![](https://github.com/dmytrostriletskyi/threads-net/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/dmytrostriletskyi/threads-net/actions/workflows/main.yml)
+[![](https://img.shields.io/github/release/dmytrostriletskyi/threads-net.svg)](https://github.com/dmytrostriletskyi/threads-net/releases)
+[![](https://img.shields.io/pypi/v/threads-net.svg)](https://pypi.python.org/pypi/threads-net)
+
+[![](https://pepy.tech/badge/threads-net)](https://pepy.tech/project/threads-net)
+[![](https://img.shields.io/pypi/l/threads-net.svg)](https://pypi.python.org/pypi/threads-net/)
+[![](https://img.shields.io/pypi/pyversions/threads-net.svg)](https://pypi.python.org/pypi/threads-net/)
 
 Table of content:
 

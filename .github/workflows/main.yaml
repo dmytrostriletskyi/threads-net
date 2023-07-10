@@ -1,0 +1,58 @@
+---
+name: Trunk workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: [ubuntu-latest]
+    outputs:
+      project_version: ${{ steps.get_project_version.outputs.project_version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.11'
+      - name: Get a project version
+        id: get_project_version
+        run: echo "::set-output name=project_version::$(make get-project-version)"
+      - name: Install project requirements
+        run: make install-requirements
+      - name: Make a release
+        env:
+          ACCESS_TOKEN: ${{secrets.GIT_HUB_ACCESS_TOKEN}}
+        run: |
+          project-version release \
+              --provider=GitHub \
+              --organization=dmytrostriletskyi \
+              --repository=threads-net \
+              --branch=main \
+              --project-version=${{ steps.get_project_version.outputs.project_version }}
+  deploy:
+    runs-on: [ubuntu-latest]
+    needs: [release]
+    outputs:
+      project_version: ${{ steps.get_project_version.outputs.project_version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.11'
+      - name: Get a project version
+        id: get_project_version
+        run: echo "::set-output name=project_version::$(make get-project-version)"
+      - name: Install project requirements
+        run: make install-requirements
+      - name: Build the package
+        run: python3 setup.py sdist
+      - name: Deploy the package
+        run: |
+          twine upload \
+              --username ${{ secrets.PYPI_USERNAME }} \
+              --password ${{ secrets.PYPI_PASSWORD }} \
+              dist/threads-net-${{ steps.get_project_version.outputs.project_version }}.tar.gz

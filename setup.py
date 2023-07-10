@@ -9,8 +9,11 @@ with open('README.md', 'r', encoding='utf-8') as read_me:
 with open('requirements/project.txt', 'r') as f:
     requirements = f.read().splitlines()
 
+with open('.project-version', 'r') as project_version_file:
+    project_version = project_version_file.read().strip()
+
 setup(
-    version='0.0.19',
+    version=project_version,
     name='threads-net',
     description='Unofficial and reverse-engineered Threads (threads.net) Python API wrapper. Supports read and write capabilities',
     long_description=long_description,

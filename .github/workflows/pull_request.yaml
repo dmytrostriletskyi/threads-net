@@ -1,0 +1,66 @@
+---
+name: Pull request workflow
+
+on:
+  pull_request_target:
+    branches:
+      - main
+
+jobs:
+  check-project-version:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ['3.11']
+    outputs:
+      project_version: ${{ steps.get_project_version.outputs.project_version }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Get a version of the project
+        id: get_project_version
+        run: echo "::set-output name=project_version::$(make get-project-version)"
+      - name: Install project requirements
+        run: make install-requirements
+      - name: Check project version
+        env:
+          ACCESS_TOKEN: ${{secrets.GIT_HUB_ACCESS_TOKEN}}
+        run: |
+          project-version check \
+            --provider=GitHub \
+            --organization=dmytrostriletskyi \
+            --repository=threads-net \
+            --base-branch=main \
+            --head-branch=${{ github.head_ref }}
+  lint:
+    name: Lint the codebase (python-${{ matrix.python-version }} on ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ['3.9', '3.10', '3.11']
+    outputs:
+      project_version: ${{ steps.get_project_version.outputs.project_version }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Get a version of the project
+        id: get_project_version
+        run: echo "::set-output name=project_version::$(make get-project-version)"
+      - name: Install project requirements
+        run: make install-requirements
+      - name: Check code quality
+        run: make check-code-quality
+      - name: Check YAML standards
+        run: make check-yaml-standards
