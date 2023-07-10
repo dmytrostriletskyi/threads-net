@@ -1,0 +1,18 @@
+---
+extends: default
+rules:
+  indentation:
+    spaces: 2
+    indent-sequences: true
+  document-start:
+    present: true
+    ignore: |
+      **/fixtures/*
+  line-length: disable
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: 1
+  truthy:
+    ignore: |
+      *.yml
+      *.yaml

@@ -56,10 +56,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
         Returns:
             The user's identifier as an integer.
         """
-        response = requests.get(
-            url=f'{self.INSTAGRAM_API_URL}/users/{username}/usernameinfo/',
-            headers=self.headers
-        )
+        response = requests.get(url=f'{self.INSTAGRAM_API_URL}/users/{username}/usernameinfo/', headers=self.headers)
 
         user_id_as_string = response.json().get('user').get('pk')
         user_id_as_int = int(user_id_as_string)
