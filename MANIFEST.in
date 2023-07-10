@@ -1,3 +1,4 @@
 include *.md
 include LICENSE
-include requirements/project.txt
+include requirements *.txt
+include .project-version
