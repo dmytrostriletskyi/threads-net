@@ -15,3 +15,6 @@ if __name__ == '__main__':
 
     following = threads.private_api.follow_user(id=314216)
     print(json.dumps(following, indent=4))
+
+    unfollowing = threads.private_api.unfollow_user(id=314216)
+    print(json.dumps(unfollowing, indent=4))

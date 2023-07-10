@@ -13,11 +13,14 @@ class AbstractThreadsApi:
 
     def __init__(self):
         """
-        Construct. the object.
+        Construct the object.
         """
         self.fetch_html_headers = {
             'Authority': 'www.threads.net',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Accept': (
+                'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;'
+                'q=0.8,application/signed-exchange;v=b3;q=0.7'
+            ),
             'Accept-Language': 'en-US,en;q=0.9',
             'Cache-Control': 'no-cache',
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -29,6 +32,10 @@ class AbstractThreadsApi:
             'Sec-Fetch-Site': 'cross-site',
             'Sec-Fetch-User': '?1',
             'Upgrade-Insecure-Requests': '1',
+            'User-Agent': (
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) '
+                'AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.1.2 Safari/605.1.15'
+            ),
         }
 
     def get_user_id(self, username: str) -> int:
@@ -46,8 +53,8 @@ class AbstractThreadsApi:
             headers=self.fetch_html_headers,
         )
 
-        user_id_key_value = re.search('"user_id":"(\d+)",', response.text).group()
-        user_id = re.search('\d+', user_id_key_value).group()
+        user_id_key_value = re.search('"user_id":"(\\d+)",', response.text).group()
+        user_id = re.search('\\d+', user_id_key_value).group()
 
         return int(user_id)
 

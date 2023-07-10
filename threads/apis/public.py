@@ -1,14 +1,12 @@
 """
 Provide implementation of public Threads API.
 """
-import requests
 import json
-import time
 import re
-from urllib.parse import quote
+
+import requests
 
 from threads.apis.abstract import AbstractThreadsApi
-from threads.utils import generate_android_device_id
 
 
 class PublicThreadsApi(AbstractThreadsApi):
@@ -41,30 +39,15 @@ class PublicThreadsApi(AbstractThreadsApi):
             'X-IG-App-ID': '238260118697367',
         }
 
-    def _get_threads_api_token(self):
-        """
-        Get a token for Threads API.
-
-        It is called `lsd` internally and is required for any request.
-        For anonymous users, it is just generated automatically from API's back-end and passed to front-end.
-        """
-        response = requests.get(
-            url=f'https://www.instagram.com/instagram',
-            headers=self.fetch_html_headers,
-        )
-
-        token_key_value = re.search('LSD",\[\],{"token":"(.*?)"},\d+\]', response.text).group()
-        token_key_value = token_key_value.replace('LSD",[],{"token":"', '')
-        token = token_key_value.split('"')[0]
-
-        return token
-
-    def get_user(self, id: int):
+    def get_user(self, id: int) -> dict:
         """
         Get a user.
 
         Arguments:
             id (int): a user's identifier.
+
+        Returns:
+            The user as a dict.
         """
         headers = self.default_headers | {
             'X-FB-Friendly-Name': 'BarcelonaProfileRootQuery',
@@ -75,22 +58,27 @@ class PublicThreadsApi(AbstractThreadsApi):
             headers=headers,
             data={
                 'lsd': self.threads_api_token,
-                'variables': json.dumps({
-                    'userID': id,
-                }),
+                'variables': json.dumps(
+                    {
+                        'userID': id,
+                    }
+                ),
                 'doc_id': '23996318473300828',
             },
         )
 
         return response.json()
 
-    def get_user_threads(self, id: int):
+    def get_user_threads(self, id: int) -> dict:
         """
         Get a user's threads.
 
         Arguments:
             id (int):
             a user's identifier.
+
+        Returns:
+            The list of user's threads inside a dict.
         """
         headers = self.default_headers | {
             'X-FB-Friendly-Name': 'BarcelonaProfileThreadsTabQuery',
@@ -101,21 +89,26 @@ class PublicThreadsApi(AbstractThreadsApi):
             headers=headers,
             data={
                 'lsd': self.threads_api_token,
-                'variables': json.dumps({
-                    'userID': id,
-                }),
+                'variables': json.dumps(
+                    {
+                        'userID': id,
+                    }
+                ),
                 'doc_id': '6232751443445612',
             },
         )
 
         return response.json()
 
-    def get_user_replies(self, id: int):
+    def get_user_replies(self, id: int) -> dict:
         """
         Get a user's replies.
 
         Arguments:
             id (int): a user's identifier.
+
+        Returns:
+            The list of user's replies inside a dict.
         """
         headers = self.default_headers | {
             'X-FB-Friendly-Name': 'BarcelonaProfileRepliesTabQuery',
@@ -126,21 +119,26 @@ class PublicThreadsApi(AbstractThreadsApi):
             headers=headers,
             data={
                 'lsd': self.threads_api_token,
-                'variables': json.dumps({
-                    'userID': id,
-                }),
+                'variables': json.dumps(
+                    {
+                        'userID': id,
+                    }
+                ),
                 'doc_id': '6307072669391286',
             },
         )
 
         return response.json()
 
-    def get_thread(self, id: int):
+    def get_thread(self, id: int) -> dict:
         """
         Get a thread.
 
         Arguments:
             id (int): a thread's identifier.
+
+        Returns:
+            The thread as a dict.
         """
         headers = self.default_headers | {
             'X-FB-Friendly-Name': 'BarcelonaPostPageQuery',
@@ -151,32 +149,60 @@ class PublicThreadsApi(AbstractThreadsApi):
             headers=headers,
             data={
                 'lsd': self.threads_api_token,
-                'variables': json.dumps({
-                    'postID': id,
-                }),
+                'variables': json.dumps(
+                    {
+                        'postID': id,
+                    }
+                ),
                 'doc_id': '5587632691339264',
             },
         )
 
         return response.json()
 
-    def get_thread_likers(self, id: int):
+    def get_thread_likers(self, id: int) -> dict:
         """
         Get a thread's likers.
 
         Arguments:
             id (int): a thread's identifier.
+
+        Returns:
+            The list of thread's likers inside a dict.
         """
         response = requests.post(
             url=self.THREADS_API_URL,
             headers=self.default_headers,
             data={
                 'lsd': self.threads_api_token,
-                'variables': json.dumps({
-                    'mediaID': id,
-                }),
+                'variables': json.dumps(
+                    {
+                        'mediaID': id,
+                    }
+                ),
                 'doc_id': '9360915773983802',
             },
         )
 
         return response.json()
+
+    def _get_threads_api_token(self) -> str:
+        """
+        Get a token for Threads API.
+
+        It is called `lsd` internally and is required for any request.
+        For anonymous users, it is just generated automatically from API's back-end and passed to front-end.
+
+        Returns:
+            The token for Threads API as a string.
+        """
+        response = requests.get(
+            url='https://www.instagram.com/instagram',
+            headers=self.fetch_html_headers,
+        )
+
+        token_key_value = re.search('LSD",\\[\\],{"token":"(.*?)"},\\d+\\]', response.text).group()
+        token_key_value = token_key_value.replace('LSD",[],{"token":"', '')
+        token = token_key_value.split('"')[0]
+
+        return token

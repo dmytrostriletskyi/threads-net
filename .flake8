@@ -1,0 +1,26 @@
+[flake8]
+inline-quotes = single
+max-line-length = 120
+max-complexity = 9
+show-source = True
+statistics = True
+ignore =
+    D100
+    D104
+    D200
+    A002
+per-file-ignores=
+    threads/__init__.py:
+        F401
+    threads/*/__init__.py:
+        F401
+class_attributes_order =
+    field,
+    meta_class,
+    nested_class,
+    magic_method,
+    property_method,
+    static_method,
+    class_method,
+    method,
+    private_method
