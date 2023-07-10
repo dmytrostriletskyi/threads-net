@@ -1,5 +1,5 @@
 ---
-name: Trunk workflow
+name: Main branch workflow
 
 on:
   push:

@@ -3,7 +3,7 @@
 Unofficial and reverse-engineered Threads ([threads.net](https://www.threads.net/@zuck)) Python API wrapper. 
 Supports read and write capabilities.
 
-[![](https://github.com/dmytrostriletskyi/threads-net/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/dmytrostriletskyi/threads-net/actions/workflows/main.yml)
+[![](https://github.com/dmytrostriletskyi/threads-net/actions/workflows/main.yaml/badge.svg?branch=main)](https://github.com/dmytrostriletskyi/threads-net/actions/workflows/main.yaml)
 [![](https://img.shields.io/github/release/dmytrostriletskyi/threads-net.svg)](https://github.com/dmytrostriletskyi/threads-net/releases)
 [![](https://img.shields.io/pypi/v/threads-net.svg)](https://pypi.python.org/pypi/threads-net)
 
