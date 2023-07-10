@@ -141,6 +141,16 @@ class PrivateThreadsApi(AbstractThreadsApi):
         response = requests.post(url=f'{self.INSTAGRAM_API_URL}/friendships/create/{id}/', headers=self.headers)
         return response.json()
 
+    def unfollow_user(self, id: int):
+        """
+        Unfollow a user.
+
+        Arguments:
+            id (int): a user's identifier.
+        """
+        response = requests.post(url=f'{self.INSTAGRAM_API_URL}/friendships/destroy/{id}/', headers=self.headers)
+        return response.json()
+
     def get_thread(self, id: str):
         """
         Get a thread.

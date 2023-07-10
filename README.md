@@ -32,6 +32,7 @@ Table of content:
     * [Get User Following](#get-user-following)
     * [Search User](#search-user)
     * [Follow User](#follow-user)
+    * [Unollow User](#unfollow-user)
     * [Get Thread Identifier](#get-thread-identifier)
     * [Get Thread](#get-thread)
     * [Create Thread](#create-thread)
@@ -71,12 +72,18 @@ Table of content:
   - [x] Get a user's followings
   - [x] Search a user
   - [x] Follow a user
+  - [x] Unfollow a user
   - [x] Get a thread's identifier
   - [x] Get a thread
   - [ ] Get a thread's likers
-  - [x] Create a thread
+  - [ ] Create a thread
+    - [x] With text
+    - [ ] With image
+    - [ ] With multiple images
+    - [ ] With link attachment
   - [ ] Delete a thread
   - [ ] Like a thread
+  - [ ] Unlike a thread
   - [ ] Reply to a thread
   - [ ] Embed a thread
 
@@ -1050,6 +1057,32 @@ To follow a user, use the following commands:
         "is_eligible_to_subscribe": false
     },
     "previous_following": false,
+    "status": "ok"
+}
+```
+
+#### Unfollow user
+
+To follow a user, use the following commands:
+
+```python3
+>>> following = threads.private_api.unfollow_user(id=314216)
+>>> following
+{
+    "friendship_status": {
+        "following": false,
+        "followed_by": false,
+        "blocking": false,
+        "muting": false,
+        "is_private": false,
+        "incoming_request": false,
+        "outgoing_request": false,
+        "text_post_app_pre_following": false,
+        "is_bestie": false,
+        "is_restricted": false,
+        "is_feed_favorite": false,
+        "is_eligible_to_subscribe": false
+    },
     "status": "ok"
 }
 ```
