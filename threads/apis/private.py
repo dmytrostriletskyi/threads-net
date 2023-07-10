@@ -43,7 +43,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             }
 
-        self.user_id = self.get_user_id(username=username)
+            self.user_id = self.get_user_id(username=username)
 
     def _get_instagram_api_token(self):
         """

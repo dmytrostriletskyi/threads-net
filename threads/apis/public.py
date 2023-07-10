@@ -53,7 +53,7 @@ class PublicThreadsApi(AbstractThreadsApi):
             headers=self.fetch_html_headers,
         )
 
-        token_key_value = re.search('LSD",\[\],{"token":"(\w+)"},\d+\]', response.text).group()
+        token_key_value = re.search('LSD",\[\],{"token":"(.*?)"},\d+\]', response.text).group()
         token_key_value = token_key_value.replace('LSD",[],{"token":"', '')
         token = token_key_value.split('"')[0]
 
