@@ -10,12 +10,17 @@ with open('requirements/project.txt', 'r') as f:
     requirements = f.read().splitlines()
 
 setup(
-    version='0.0.15',
+    version='0.0.16',
     name='threads-net',
     description='Threads (threads.net) Python API wrapper',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/dmytrostriletskyi/threads',
+    project_urls={
+        'Issue Tracker': 'https://github.com/dmytrostriletskyi/threads-net/issues',
+        'Source Code': 'https://github.com/dmytrostriletskyi/threads-net',
+        'Download': 'https://github.com/dmytrostriletskyi/threads-net/tags',
+    },
     license='MIT',
     author='Dmytro Striletskyi',
     author_email='dmytro.striletskyi@gmail.com',

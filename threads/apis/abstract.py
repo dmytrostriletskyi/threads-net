@@ -51,29 +51,27 @@ class AbstractThreadsApi:
 
         return int(user_id)
 
-    def get_thread_id(self, url_id):
+    def get_thread_id(self, url_id: str) -> int:
         """
-        Get a thread' identifier by its URL's identifier.
+        Get a thread's identifier.
 
-        For instance, there is the URL — `https://www.threads.net/t/CuXFPIeLLod`.
-        The URL's identifier would be `CuXFPIeLLod`.
+        `URL` identifier is a last part of a thread's URL. If the thread's URL is
+        `https://www.threads.net/t/CuXFPIeLLod`, then it would be `CuXFPIeLLod`.
 
-        Args:
+        Arguments:
             url_id (str): a thread's URL identifier.
 
-        Raises:
-            ValueError: If the thread identifier has not been found.
+        References:
+            - https://github.com/dmytrostriletskyi/threads-net/pull/16#issuecomment-1627818886
+
+        Returns:
+            The thread's identifier as an integer.
         """
-        response = requests.get(f'https://www.threads.net/t/{url_id}/')
+        alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
 
-        thread_id_start_key_position = response.text.find('{"post_id":"') + len('{"post_id":"')
-        thread_id_end_key_position = response.text.find('"}', thread_id_start_key_position)
+        thread_id = 0
 
-        if thread_id_start_key_position == -1 or thread_id_end_key_position == -1:
-            raise ValueError(
-                'Post identifier has not been found: '
-                'please, create an issue — https://github.com/dmytrostriletskyi/threads-net/issues',
-            )
+        for letter in url_id:
+            thread_id = (thread_id * 64) + alphabet.index(letter)
 
-        thread_id = int(response.text[thread_id_start_key_position:thread_id_end_key_position])
         return thread_id
