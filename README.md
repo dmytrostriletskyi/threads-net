@@ -15,6 +15,8 @@ Table of content:
   * [How to install](#how-to-install)
   * [Examples](#examples)
 * [API](#api)
+  * [Troubleshooting](#troubleshooting)
+    * [User Identifier](#user-identifier)
   * [Terminology](#terminology)
   * [Initialization](#initialization)
   * [Public](#api)
@@ -57,35 +59,17 @@ Table of content:
 
 ## Roadmap
 
-- [x] Read public information
-  - [x] Get a user's identifier
-  - [x] Get a user by an identifier
-  - [x] Get a user's threads
-  - [x] Get a user's replies
-  - [x] Get a thread's identifier
-  - [x] Get a thread
-  - [x] Get a thread's likers
-- [ ] Read private information
-  - [x] Get a user's identifier
-  - [x] Get a user by an identifier
+Check what is already done in the table of content above, below placed only things to be done: 
+
+- [ ] Private `API`
   - [ ] Get a user's threads
   - [ ] Get a user's replies
-  - [x] Get a user's followers
-  - [x] Get a user's followings
-  - [x] Search a user
-  - [x] Follow a user
-  - [x] Unfollow a user
-  - [x] Get a thread's identifier
-  - [x] Get a thread
   - [ ] Get a thread's likers
   - [ ] Create a thread
-    - [x] With text
     - [ ] With image
     - [ ] With multiple images
     - [ ] With link attachment
   - [ ] Delete a thread
-  - [x] Like a thread
-  - [x] Unlike a thread
   - [ ] Reply to a thread
   - [ ] Embed a thread
 
@@ -123,6 +107,21 @@ ls examples
 ```
 
 ## API
+
+### Troubleshooting
+
+#### User Identifier
+
+If you use public `API`, you should know that there is one really unstable method — getting a user's identifier 
+by a username (`threads.public_api.get_user_id`) because under the hood it does retrieving and parsing a plain `HTML`
+instead of regular `GrapQL` or `RESTful API`. The returning `HTML` is inconsistent from time to time as well `API` 
+itself is broken not responding with any data at all.
+
+Until the library maintainers find more stable way, you have two options:
+
+* Retrieve a user's identifier manually from a public service like this one — https://commentpicker.com/instagram-user-id.php.
+* Use private `API` method (`threads.private_api.get_user_id`) which use much more stable endpoint. You can just fetch
+  a user identifier once via it and then pass it to public `API` and it will work.
 
 ### Terminology
 
