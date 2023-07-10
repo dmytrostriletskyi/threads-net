@@ -28,10 +28,12 @@ Table of content:
   * [Private](#private)
     * [Get User Identifier](#get-user-identifier)
     * [Get User By Identifier](#get-user-by-identifier)
-    * [Get User Followers](#get-user-identifier)
-    * [Get User Following](#get-user-by-identifier)
+    * [Get User Followers](#get-user-followers)
+    * [Get User Following](#get-user-following)
     * [Search User](#search-user)
     * [Follow User](#follow-user)
+    * [Get Thread Identifier](#get-thread-identifier)
+    * [Get Thread](#get-thread)
     * [Create Thread](#create-thread)
 
 ## Disclaimer
@@ -69,8 +71,8 @@ Table of content:
   - [x] Get a user's followings
   - [x] Search a user
   - [x] Follow a user
-  - [ ] Get a thread's identifier
-  - [ ] Get a thread
+  - [x] Get a thread's identifier
+  - [x] Get a thread
   - [ ] Get a thread's likers
   - [x] Create a thread
   - [ ] Delete a thread
@@ -1049,6 +1051,140 @@ To follow a user, use the following commands:
     },
     "previous_following": false,
     "status": "ok"
+}
+```
+
+#### Get Thread Identifier
+
+To get a thread's identifier by a `URL` identifier, use the following commands. `URL` identifier is a last part of a 
+thread's `URL`. If the thread's `URL` is `https://www.threads.net/t/CuXFPIeLLod`, then it would be `CuXFPIeLLod`.
+
+```python3
+>>> thread_id = threads.private_api.get_thread_id(url_id='CuXFPIeLLod')
+>>> thread_id
+3141002295235099165
+```
+
+#### Get Thread
+
+To get a thread, use the following commands:
+
+```python3
+>>> thread = threads.private_api.get_thread(id=3141002295235099165)
+>>> thread
+{
+    "data": {
+        "data": {
+            "containing_thread": {
+                "thread_items": [
+                    {
+                        "post": {
+                            "user": {
+                                "profile_pic_url": "https://scontent.cdninstagram.com/v/t51.2885-19/343392897_618515990300243_8088199406170073086_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent.cdninstagram.com&_nc_cat=1&_nc_ohc=1xtR491RY6cAX8Okf3Z&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfDqsZTCRQlz7EaDpgEzBkmXqtqKtTH80Q0r1rIDMJCcpg&oe=64AC2D8D&_nc_sid=10d13b",
+                                "username": "mosseri",
+                                "id": null,
+                                "is_verified": true,
+                                "pk": "95561"
+                            },
+                            "image_versions2": {
+                                "candidates": []
+                            },
+                            "original_width": 612,
+                            "original_height": 612,
+                            "video_versions": [],
+                            "carousel_media": null,
+                            "carousel_media_count": null,
+                            "pk": "3141055616164096839",
+                            "has_audio": null,
+                            "text_post_app_info": {
+                                "link_preview_attachment": null,
+                                "share_info": {
+                                    "quoted_post": null,
+                                    "reposted_post": null
+                                },
+                                "reply_to_author": null,
+                                "is_post_unavailable": false,
+                                "direct_reply_count": 2839
+                            },
+                            "caption": {
+                                "text": "I've been getting some questions about deleting your account. To clarify, you can deactivate your Threads account, which hides your Threads profile and content, you can set your profile to private, and you can delete individual threads posts \u2013 all without deleting your Instagram account. Threads is powered by Instagram, so right now it's just one account, but we're looking into a way to delete your Threads account separately."
+                            },
+                            "taken_at": 1688663030,
+                            "like_count": 29984,
+                            "code": "CuXRXDdNOtH",
+                            "media_overlay_info": null,
+                            "id": "3141055616164096839_95561"
+                        },
+                        "line_type": "none",
+                        "view_replies_cta_string": "2,839 replies",
+                        "reply_facepile_users": [],
+                        "should_show_replies_cta": true
+                    }
+                ],
+                "thread_type": "thread",
+                "header": null,
+                "id": "3141055616164096839"
+            },
+            "reply_threads": [
+                {
+                    "thread_items": [
+                        {
+                            "post": {
+                                "user": {
+                                    "profile_pic_url": "https://scontent.cdninstagram.com/v/t51.2885-19/355424589_948742193018772_4617955233166333765_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent.cdninstagram.com&_nc_cat=100&_nc_ohc=heQWdfsKG5MAX9mLim0&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfA6TUpLjjegnP6KuducRm8n6uU9iBCXg4O1P33WYSh3mg&oe=64ACDDBA&_nc_sid=10d13b",
+                                    "username": "jimmywhotalks",
+                                    "id": null,
+                                    "is_verified": true,
+                                    "pk": "51094265817"
+                                },
+                                "image_versions2": {
+                                    "candidates": []
+                                },
+                                "original_width": 612,
+                                "original_height": 612,
+                                "video_versions": [],
+                                "carousel_media": null,
+                                "carousel_media_count": null,
+                                "pk": "3141082664316809193",
+                                "has_audio": null,
+                                "text_post_app_info": {
+                                    "link_preview_attachment": null,
+                                    "share_info": {
+                                        "quoted_post": null,
+                                        "reposted_post": null
+                                    },
+                                    "reply_to_author": {
+                                        "username": "mosseri",
+                                        "id": null
+                                    },
+                                    "is_post_unavailable": false
+                                },
+                                "caption": {
+                                    "text": "Glad to know, Everyone is worrying for that."
+                                },
+                                "taken_at": 1688666254,
+                                "like_count": 59,
+                                "code": "CuXXgqAva_p",
+                                "media_overlay_info": null,
+                                "id": "3141082664316809193_51094265817"
+                            },
+                            "line_type": "none",
+                            "view_replies_cta_string": null,
+                            "reply_facepile_users": [],
+                            "should_show_replies_cta": false
+                        }
+                    ],
+                    "thread_type": "thread",
+                    "header": null,
+                    "id": "3141082664316809193"
+                },
+                ...
+            ]
+        }
+    },
+    "extensions": {
+        "is_final": true
+    }
 }
 ```
 

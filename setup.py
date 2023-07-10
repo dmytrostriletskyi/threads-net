@@ -10,7 +10,7 @@ with open('requirements/project.txt', 'r') as f:
     requirements = f.read().splitlines()
 
 setup(
-    version='0.0.14',
+    version='0.0.15',
     name='threads-net',
     description='Threads (threads.net) Python API wrapper',
     long_description=long_description,

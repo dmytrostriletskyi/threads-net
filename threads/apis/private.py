@@ -27,14 +27,21 @@ class PrivateThreadsApi(AbstractThreadsApi):
         """
         super().__init__()
 
-        if username is not None and password is not None:
-            self.instagram_api_token = self._get_instagram_api_token()
-
         self.username = username
         self.password = password
 
         self.timezone_offset = -14400
         self.android_device_id = generate_android_device_id()
+
+        if self.username is not None and self.password is not None:
+            self.instagram_api_token = self._get_instagram_api_token()
+
+            self.headers = {
+                'Authorization': f'Bearer IGT:2:{self.instagram_api_token}',
+                'User-Agent': 'Barcelona 289.0.0.77.109 Android',
+                'Sec-Fetch-Site': 'same-origin',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            }
 
     def _get_instagram_api_token(self):
         """
@@ -87,16 +94,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
         Arguments:
             id (int): a user's identifier.
         """
-        response = requests.get(
-            url=f'{self.INSTAGRAM_API_URL}/users/{id}/info/',
-            headers={
-                'Authorization': f'Bearer IGT:2:{self.instagram_api_token}',
-                'User-Agent': 'Barcelona 289.0.0.77.109 Android',
-                'Sec-Fetch-Site': 'same-origin',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            },
-        )
-
+        response = requests.get(url=f'{self.INSTAGRAM_API_URL}/users/{id}/info/', headers=self.headers)
         return response.json()
 
     def search_user(self, query: str):
@@ -106,16 +104,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
         Arguments:
             query (str): a search query.
         """
-        response = requests.get(
-            url=f'{self.INSTAGRAM_API_URL}/users/search/?q={query}',
-            headers={
-                'Authorization': f'Bearer IGT:2:{self.instagram_api_token}',
-                'User-Agent': 'Barcelona 289.0.0.77.109 Android',
-                'Sec-Fetch-Site': 'same-origin',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            },
-        )
-
+        response = requests.get(url=f'{self.INSTAGRAM_API_URL}/users/search/?q={query}', headers=self.headers)
         return response.json()
 
     def get_user_followers(self, id: int):
@@ -127,12 +116,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
         """
         response = requests.get(
             url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/followers/',
-            headers={
-                'Authorization': f'Bearer IGT:2:{self.instagram_api_token}',
-                'User-Agent': 'Barcelona 289.0.0.77.109 Android',
-                'Sec-Fetch-Site': 'same-origin',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            },
+            headers=self.headers,
         )
 
         return response.json()
@@ -144,16 +128,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
         Arguments:
             id (int): a user's identifier.
         """
-        response = requests.get(
-            url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/following/',
-            headers={
-                'Authorization': f'Bearer IGT:2:{self.instagram_api_token}',
-                'User-Agent': 'Barcelona 289.0.0.77.109 Android',
-                'Sec-Fetch-Site': 'same-origin',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            },
-        )
-
+        response = requests.get(url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/following/', headers=self.headers)
         return response.json()
 
     def follow_user(self, id: int):
@@ -163,16 +138,17 @@ class PrivateThreadsApi(AbstractThreadsApi):
         Arguments:
             id (int): a user's identifier.
         """
-        response = requests.post(
-            url=f'{self.INSTAGRAM_API_URL}/friendships/create/{id}/',
-            headers={
-                'Authorization': f'Bearer IGT:2:{self.instagram_api_token}',
-                'User-Agent': 'Barcelona 289.0.0.77.109 Android',
-                'Sec-Fetch-Site': 'same-origin',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            },
-        )
+        response = requests.post(url=f'{self.INSTAGRAM_API_URL}/friendships/create/{id}/', headers=self.headers)
+        return response.json()
 
+    def get_thread(self, id: str):
+        """
+        Get a thread.
+
+        Arguments:
+            id (str): a thread's identifier.
+        """
+        response = requests.get(url=f'{self.INSTAGRAM_API_URL}/text_feed/{id}/replies', headers=self.headers)
         return response.json()
 
     def create_thread(self, caption: str):
@@ -206,12 +182,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         response = requests.post(
             url=f'{self.INSTAGRAM_API_URL}/media/configure_text_only_post/',
-            headers={
-                'Authorization': f'Bearer IGT:2:{self.instagram_api_token}',
-                'User-Agent': 'Barcelona 289.0.0.77.109 Android',
-                'Sec-Fetch-Site': 'same-origin',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            },
+            headers=self.headers,
             data=f'signed_body=SIGNATURE.{encoded_parameters}'
         )
 
