@@ -101,14 +101,30 @@ class PrivateThreadsApi(AbstractThreadsApi):
             id (int): a user's identifier.
 
         Returns:
-            The list of user's followers inside a dict.
+            The list of user's followers.
         """
         response = requests.get(
             url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/followers/',
             headers=self.headers,
         )
 
-        return response.json()
+        response = response.json()
+        followers_list = response.get('users')
+        max_id=response.get('next_max_id')
+
+        while max_id:
+            print(max_id)
+            response = requests.get(
+                url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/followers/',
+                headers=self.headers,
+                params={'max_id' : max_id}
+            )
+
+            response = response.json()
+            followers_list.extend(response.get('users'))
+            max_id = response.get('next_max_id')
+
+        return followers_list
 
     def get_user_following(self, id: int) -> dict:
         """
@@ -118,14 +134,29 @@ class PrivateThreadsApi(AbstractThreadsApi):
             id (int): a user's identifier.
 
         Returns:
-            The list of user's following inside a dict.
+            The list of user's following.
         """
         response = requests.get(
             url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/following/',
             headers=self.headers,
         )
 
-        return response.json()
+        response = response.json()
+        following_list = response.get('users')
+        max_id=response.get('next_max_id')
+
+        while max_id:
+            response = requests.get(
+                url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/following/',
+                headers=self.headers,
+                params={'max_id' : max_id}
+            )
+
+            response = response.json()
+            following_list.extend(response.get('users'))
+            max_id = response.get('next_max_id')
+
+        return following_list
 
     def follow_user(self, id: int) -> dict:
         """
