@@ -51,7 +51,6 @@ Table of content:
       * [Delete](#delete)
       * [Like](#like)
       * [Unlike](#unlike)
-      * [Reply](#reply)
 
 ## Disclaimer
 
@@ -1379,7 +1378,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 
 ##### Get Likers
 
-`threads.public_api.get_thread_likers` — getting a thread's likers by the thread's identifier.
+`threads.private_api.get_thread_likers` — getting a thread's likers by the thread's identifier.
 
 | Parameters |  Type   | Required | Restrictions | Description            |
 |:----------:|:-------:|:--------:|:------------:|------------------------|
@@ -1416,36 +1415,57 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 
 ##### Create
 
-`threads.private_api.create_thread` — create a thread.
+`threads.private_api.create_thread` — create a thread. You can create a thread with an attachment link or image (
+specifying either `HTTP(S)` `URL` or path to a file). Also, you are able to create a thread as a reply to another
+thread. Basically, each thread is either a root or linked to another thread like a graph. You can check 
+`https://www.threads.net/@threadstester1` for all the examples of possible threads.
 
-| Parameters |  Type  | Required | Restrictions | Description         |
-|:----------:|:------:|:--------:|:------------:|---------------------|
-| `caption`  | String |   Yes    |      -       | A thread's caption. |
+| Parameters  |  Type  | Required | Restrictions | Description                                 |
+|:-----------:|:------:|:--------:|:------------:|---------------------------------------------|
+|  `caption`  | String |   Yes    |      -       | A thread's caption.                         |
+|    `url`    | String |    No    |      -       | A thread's attachment `URL`.                |
+| `image_url` | String |    No    |      -       | An image's `HTTP(S)` URL or path to a file. |
+| `reply_to`  | String |    No    |      -       | An identifier of a thread to reply to.      |
 
 <details>
   <summary>Open example</summary>
   
   ```python3
-  >>> created_thread = threads.private_api.create_thread(caption='Hello, world!')
+  >>> created_thread = threads.private_api.create_thread(
+          caption='Hello, world!',
+      )
+  >>> created_thread = threads.private_api.create_thread(
+          caption='Hello, world!',
+          url='https://www.youtube.com/watch?v=lc4qU6BakvE'
+      )
+  >>> created_thread = threads.private_api.create_thread(
+          caption='Hello, world!',
+          image_url='/Users/dmytrostriletskyi/projects/threads/assets/picture.png',
+      )
+  >>> created_thread = threads.private_api.create_thread(
+          caption='Hello, world!',
+          image_url='https://raw.githubusercontent.com/dmytrostriletskyi/threads-net/main/assets/picture.png',
+          reply_to=3141055616164096839,
+      )
   >>> created_thread
   {
       "media": {
-          "taken_at": 1688927865,
-          "pk": 3143277215847793526,
-          "id": "3143277215847793526_32545771157",
-          "device_timestamp": 1688927864,
-          "media_type": 19,
-          "code": "CufKflZL8N2",
-          "client_cache_key": "MzE0MzI3NzIxNTg0Nzc5MzUyNg==.2",
+          "taken_at": 1689087793,
+          "pk": 3144618785809596584,
+          "id": "3144618785809596584_32545771157",
+          "device_timestamp": 1689087791,
+          "media_type": 1,
+          "code": "Cuj7h_yM4Co",
+          "client_cache_key": "MzE0NDYxODc4NTgwOTU5NjU4NA==.2",
           "filter_type": 0,
           "can_viewer_reshare": true,
           "caption": {
-              "pk": "18083774509335737",
+              "pk": "17986860047032912",
               "user_id": 32545771157,
               "text": "Hello, world!",
               "type": 1,
-              "created_at": 1688927865,
-              "created_at_utc": 1688927865,
+              "created_at": 1689087793,
+              "created_at_utc": 1689087793,
               "content_type": "comment",
               "status": "Active",
               "bit_flags": 0,
@@ -1482,7 +1502,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
                   "username": "dmytro.striletskyi",
                   "full_name": "Dmytro Striletskyi",
                   "is_private": false,
-                  "profile_pic_url": "https://instagram.fist10-1.fna.fbcdn.net/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fist10-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=s7XO4bcYceYAX8idgqz&edm=AEVnrqQBAAAA&ccb=7-5&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-5&oh=00_AfDFQxQ9GzdvenWWifNYgwTAH9lfhqVzpYkTEyMVYmlfiA&oe=64AF5E0F&_nc_sid=f8b7b3",
+                  "profile_pic_url": "https://scontent-cdg4-1.cdninstagram.com/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=scontent-cdg4-1.cdninstagram.com&_nc_cat=1&_nc_ohc=s7XO4bcYceYAX9jyeT8&edm=AAAAAAABAAAA&ccb=7-5&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-5&oh=00_AfBhetyTgz8h53kRlSorYqET2tbmZOmYt2jiucME8qI7AQ&oe=64B3528F",
                   "account_badges": [],
                   "feed_post_reshare_disabled": false,
                   "show_account_transparency_details": true,
@@ -1490,7 +1510,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
               },
               "is_covered": false,
               "is_ranked_comment": false,
-              "media_id": 3143277215847793526,
+              "media_id": 3144618785809596584,
               "private_reply_status": 0
           },
           "clips_tab_pinned_user_ids": [],
@@ -1514,6 +1534,19 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
           "like_and_view_counts_disabled": false,
           "fb_user_tags": {
               "in": []
+          },
+          "mashup_info": {
+              "mashups_allowed": true,
+              "can_toggle_mashups_allowed": true,
+              "has_been_mashed_up": false,
+              "formatted_mashups_count": null,
+              "original_media": null,
+              "privacy_filtered_mashups_media_count": null,
+              "non_privacy_filtered_mashups_media_count": null,
+              "mashup_type": null,
+              "is_creator_requesting_mashup": false,
+              "has_nonmimicable_additional_audio": false,
+              "is_pivot_page_available": false
           },
           "can_viewer_save": true,
           "is_in_profile_grid": false,
@@ -1552,17 +1585,96 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
               "username": "dmytro.striletskyi",
               "full_name": "Dmytro Striletskyi",
               "is_private": false,
-              "profile_pic_url": "https://instagram.fist10-1.fna.fbcdn.net/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fist10-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=s7XO4bcYceYAX8idgqz&edm=AEVnrqQBAAAA&ccb=7-5&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-5&oh=00_AfDFQxQ9GzdvenWWifNYgwTAH9lfhqVzpYkTEyMVYmlfiA&oe=64AF5E0F&_nc_sid=f8b7b3",
+              "profile_pic_url": "https://scontent-cdg4-1.cdninstagram.com/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=scontent-cdg4-1.cdninstagram.com&_nc_cat=1&_nc_ohc=s7XO4bcYceYAX9jyeT8&edm=AAAAAAABAAAA&ccb=7-5&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-5&oh=00_AfBhetyTgz8h53kRlSorYqET2tbmZOmYt2jiucME8qI7AQ&oe=64B3528F",
               "account_badges": [],
               "feed_post_reshare_disabled": false,
               "show_account_transparency_details": true,
               "third_party_downloads_enabled": 0
           },
           "image_versions2": {
-              "candidates": []
+              "candidates": [
+                  {
+                      "width": 980,
+                      "height": 652,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=dst-jpg_e35&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfB5avonpo72-x_5Te_cXCKf2aM6jJO9dGmmejvdV821zg&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  },
+                  {
+                      "width": 720,
+                      "height": 479,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=dst-jpg_e35_s720x720&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfBJhcGMT6yd6pECPVoeFAIoTIcgOzTw6zDKxs8ZdZK1CA&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  },
+                  {
+                      "width": 640,
+                      "height": 426,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=dst-jpg_e35_s640x640_sh0.08&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfBPn-IvLSL4PYxQQoFyFyHFuimEtfKoDq7EoCys3xaMWg&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  },
+                  {
+                      "width": 480,
+                      "height": 319,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=dst-jpg_e35_s480x480&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfDiPNhb5u_FX3VKC8KZ1rmN7yvmmTMiunWJBK25yuly4A&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  },
+                  {
+                      "width": 320,
+                      "height": 213,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=dst-jpg_e35_s320x320&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfAy8wZuJneP3N_g6PyDKk-2kiAGLvPO4XPfK1MBwVSSPw&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  },
+                  {
+                      "width": 240,
+                      "height": 160,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=dst-jpg_e35_s240x240&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfDnUnB202rqbhfPupeNKKd-NRM9e4-FvsnnGD2FsEY_bQ&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  },
+                  {
+                      "width": 1080,
+                      "height": 1080,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=c164.0.652.652a_dst-jpg_e35&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfDGwvzJe8hIAfBBrRerzo8PCdQAey0_Q9uJSF5eGz1f-w&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  },
+                  {
+                      "width": 750,
+                      "height": 750,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=c164.0.652.652a_dst-jpg_e35_s750x750_sh0.08&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfD2nnAd_T-Zj3cX0-TUEjajO9jn3EMfKwaUHwLmagBhiA&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  },
+                  {
+                      "width": 640,
+                      "height": 640,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=c164.0.652.652a_dst-jpg_e35_s640x640_sh0.08&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfB0kVjlsVkk26Rqad6KRlMWTOxs88NzLS1iuHpHYLU1tA&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  },
+                  {
+                      "width": 480,
+                      "height": 480,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=c164.0.652.652a_dst-jpg_e35_s480x480&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfCo8QoGPw8tlIavEsSbZkMoZOFdey8XM0--RAIABYqxZQ&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  },
+                  {
+                      "width": 320,
+                      "height": 320,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=c164.0.652.652a_dst-jpg_e35_s320x320&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfAfleZMSb3Ae50Fj1dhDUYc6slUO5zxUKwcKYL0PmHNkA&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  },
+                  {
+                      "width": 240,
+                      "height": 240,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=c164.0.652.652a_dst-jpg_e35_s240x240&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfAR1f9S-NF_DwhyaSq0qzme6k4rDsGb6RfWkgnw07Tt1A&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  },
+                  {
+                      "width": 150,
+                      "height": 150,
+                      "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-15/359145974_1454822158673126_2191780209015799278_n.jpg?stp=c164.0.652.652a_dst-jpg_e35_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=8vV5VulJfUwAX-jnGZU&edm=AL_hgCEBAAAA&ccb=7-5&ig_cache_key=MzE0NDYxODc4NTgwOTU5NjU4NA%3D%3D.2-ccb7-5&oh=00_AfAYtetjgt4tQah5PnX8LXRlrUGS0A1uH4kkUrUPNwcr_g&oe=64B3067E&_nc_sid=e50d24",
+                      "scans_profile": "e35"
+                  }
+              ]
           },
-          "original_width": 612,
-          "original_height": 612,
+          "original_width": 980,
+          "original_height": 652,
           "is_reshare_of_text_post_app_media_in_ig": false,
           "comment_threading_enabled": false,
           "max_num_visible_preview_comments": 2,
@@ -1575,15 +1687,31 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
           "shop_routing_user_id": null,
           "can_see_insights_as_brand": false,
           "is_organic_product_tagging_eligible": false,
-          "product_type": "text_post",
+          "product_type": "feed",
           "is_paid_partnership": false,
-          "music_metadata": null,
+          "music_metadata": {
+              "music_canonical_id": "0",
+              "audio_type": null,
+              "music_info": null,
+              "original_sound_info": null,
+              "pinned_media_ids": null
+          },
           "deleted_reason": 0,
-          "organic_tracking_token": "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjpmYWxzZSwidXVpZCI6ImYwZmExMGI0MTQwMzRhZDRhMjgzOWYyYzg0ZWFkYTg1MzE0MzI3NzIxNTg0Nzc5MzUyNiIsInNlcnZlcl90b2tlbiI6IjE2ODg5Mjc4NjczMDd8MzE0MzI3NzIxNTg0Nzc5MzUyNnwzMjU0NTc3MTE1N3wzNzExMTQyZjM2NjZmNjA4YThmMGQwODIyY2RjYmM4MDA5ODcyNDdlM2YzZDg1ZWMyYzhjMzM3MThiMjllMzZhIn0sInNpZ25hdHVyZSI6IiJ9",
+          "organic_tracking_token": "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjpmYWxzZSwidXVpZCI6IjQxNjBkY2E0ODY1YzQyODY5NThhOWE3M2I2N2UyZWI0MzE0NDYxODc4NTgwOTU5NjU4NCIsInNlcnZlcl90b2tlbiI6IjE2ODkwODc3OTYwOTZ8MzE0NDYxODc4NTgwOTU5NjU4NHwzMjU0NTc3MTE1N3xiY2RkZjliZGNlZjFiMzNlZDIzZTJiZDg4M2E0MjAzZmNlMjQ1ZjI2MjdmYWZiNDgwNTlhNjBiMzgwYjM1MjA3In0sInNpZ25hdHVyZSI6IiJ9",
           "text_post_app_info": {
               "is_post_unavailable": false,
-              "is_reply": false,
-              "reply_to_author": null,
+              "is_reply": true,
+              "reply_to_author": {
+                  "pk": 95561,
+                  "pk_id": "95561",
+                  "username": "mosseri",
+                  "full_name": "Adam Mosseri",
+                  "is_private": false,
+                  "is_verified": true,
+                  "profile_pic_id": "3090458139926225297_95561",
+                  "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/343392897_618515990300243_8088199406170073086_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=H93HRKonYSQAX9OmlMQ&edm=AL_hgCEBAAAA&ccb=7-5&oh=00_AfC8sdQl6N1YwEs5Xva8HSfc98_zv7l4beWBQVuVBkHxJA&oe=64B21C4D&_nc_sid=e50d24",
+                  "has_onboarded_to_text_post_app": true
+              },
               "direct_reply_count": 0,
               "self_thread_count": 0,
               "reply_facepile_users": [],
@@ -1607,7 +1735,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
           "explore_hide_comments": false,
           "has_delayed_metadata": false
       },
-      "upload_id": "1688927864",
+      "upload_id": "1689087791",
       "status": "ok"
   }
   ```
@@ -1670,206 +1798,6 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
   >>> unliking = threads.private_api.unlike_thread(id=3141055616164096839)
   >>> unliking
   {
-      "status": "ok"
-  }
-  ```
-</details>
-
-##### Reply
-
-`threads.private_api.reply_to_thread` — reply to a thread.
-
-| Parameters |  Type   | Required | Restrictions | Description                        |
-|:----------:|:-------:|:--------:|:------------:|------------------------------------|
-|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a thread to like. |
-| `caption`  | String  |   Yes    |      -       | A reply's caption.                 |
-
-<details>
-  <summary>Open example</summary>
-
-  ```python3
-  >>> created_reply = threads.private_api.reply_to_thread(id=3141055616164096839, caption='Nice thread, by the way!')
-  >>> created_reply
-  {
-      "media": {
-          "taken_at": 1688927865,
-          "pk": 3143277215847793526,
-          "id": "3143277215847793526_32545771157",
-          "device_timestamp": 1688927864,
-          "media_type": 19,
-          "code": "CufKflZL8N2",
-          "client_cache_key": "MzE0MzI3NzIxNTg0Nzc5MzUyNg==.2",
-          "filter_type": 0,
-          "can_viewer_reshare": true,
-          "caption": {
-              "pk": "18083774509335737",
-              "user_id": 32545771157,
-              "text": "Hello, world!",
-              "type": 1,
-              "created_at": 1688927865,
-              "created_at_utc": 1688927865,
-              "content_type": "comment",
-              "status": "Active",
-              "bit_flags": 0,
-              "did_report_as_spam": false,
-              "share_enabled": false,
-              "user": {
-                  "has_anonymous_profile_picture": true,
-                  "liked_clips_count": 0,
-                  "fan_club_info": {
-                      "fan_club_id": null,
-                      "fan_club_name": null,
-                      "is_fan_club_referral_eligible": null,
-                      "fan_consideration_page_revamp_eligiblity": null,
-                      "is_fan_club_gifting_eligible": null,
-                      "subscriber_count": null,
-                      "connected_member_count": null,
-                      "autosave_to_exclusive_highlight": null,
-                      "has_enough_subscribers_for_ssc": null
-                  },
-                  "fbid_v2": 17841432494728221,
-                  "transparency_product_enabled": false,
-                  "text_post_app_take_a_break_setting": 0,
-                  "interop_messaging_user_fbid": 17842937552083158,
-                  "show_insights_terms": false,
-                  "allowed_commenter_type": "any",
-                  "is_unpublished": false,
-                  "reel_auto_archive": "unset",
-                  "can_boost_post": false,
-                  "can_see_organic_insights": false,
-                  "has_onboarded_to_text_post_app": true,
-                  "text_post_app_joiner_number": 68427510,
-                  "pk": 32545771157,
-                  "pk_id": "32545771157",
-                  "username": "dmytro.striletskyi",
-                  "full_name": "Dmytro Striletskyi",
-                  "is_private": false,
-                  "profile_pic_url": "https://instagram.fist10-1.fna.fbcdn.net/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fist10-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=s7XO4bcYceYAX8idgqz&edm=AEVnrqQBAAAA&ccb=7-5&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-5&oh=00_AfDFQxQ9GzdvenWWifNYgwTAH9lfhqVzpYkTEyMVYmlfiA&oe=64AF5E0F&_nc_sid=f8b7b3",
-                  "account_badges": [],
-                  "feed_post_reshare_disabled": false,
-                  "show_account_transparency_details": true,
-                  "third_party_downloads_enabled": 0
-              },
-              "is_covered": false,
-              "is_ranked_comment": false,
-              "media_id": 3143277215847793526,
-              "private_reply_status": 0
-          },
-          "clips_tab_pinned_user_ids": [],
-          "comment_inform_treatment": {
-              "should_have_inform_treatment": false,
-              "text": "",
-              "url": null,
-              "action_type": null
-          },
-          "fundraiser_tag": {
-              "has_standalone_fundraiser": false
-          },
-          "sharing_friction_info": {
-              "should_have_sharing_friction": false,
-              "bloks_app_url": null,
-              "sharing_friction_payload": null
-          },
-          "xpost_deny_reason": "This post cannot be shared to Facebook.",
-          "caption_is_edited": false,
-          "original_media_has_visual_reply_media": false,
-          "like_and_view_counts_disabled": false,
-          "fb_user_tags": {
-              "in": []
-          },
-          "can_viewer_save": true,
-          "is_in_profile_grid": false,
-          "profile_grid_control_enabled": false,
-          "featured_products": [],
-          "is_comments_gif_composer_enabled": true,
-          "product_suggestions": [],
-          "user": {
-              "has_anonymous_profile_picture": true,
-              "liked_clips_count": 0,
-              "fan_club_info": {
-                  "fan_club_id": null,
-                  "fan_club_name": null,
-                  "is_fan_club_referral_eligible": null,
-                  "fan_consideration_page_revamp_eligiblity": null,
-                  "is_fan_club_gifting_eligible": null,
-                  "subscriber_count": null,
-                  "connected_member_count": null,
-                  "autosave_to_exclusive_highlight": null,
-                  "has_enough_subscribers_for_ssc": null
-              },
-              "fbid_v2": 17841432494728221,
-              "transparency_product_enabled": false,
-              "text_post_app_take_a_break_setting": 0,
-              "interop_messaging_user_fbid": 17842937552083158,
-              "show_insights_terms": false,
-              "allowed_commenter_type": "any",
-              "is_unpublished": false,
-              "reel_auto_archive": "unset",
-              "can_boost_post": false,
-              "can_see_organic_insights": false,
-              "has_onboarded_to_text_post_app": true,
-              "text_post_app_joiner_number": 68427510,
-              "pk": 32545771157,
-              "pk_id": "32545771157",
-              "username": "dmytro.striletskyi",
-              "full_name": "Dmytro Striletskyi",
-              "is_private": false,
-              "profile_pic_url": "https://instagram.fist10-1.fna.fbcdn.net/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fist10-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=s7XO4bcYceYAX8idgqz&edm=AEVnrqQBAAAA&ccb=7-5&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-5&oh=00_AfDFQxQ9GzdvenWWifNYgwTAH9lfhqVzpYkTEyMVYmlfiA&oe=64AF5E0F&_nc_sid=f8b7b3",
-              "account_badges": [],
-              "feed_post_reshare_disabled": false,
-              "show_account_transparency_details": true,
-              "third_party_downloads_enabled": 0
-          },
-          "image_versions2": {
-              "candidates": []
-          },
-          "original_width": 612,
-          "original_height": 612,
-          "is_reshare_of_text_post_app_media_in_ig": false,
-          "comment_threading_enabled": false,
-          "max_num_visible_preview_comments": 2,
-          "has_more_comments": false,
-          "preview_comments": [],
-          "comment_count": 0,
-          "can_view_more_preview_comments": false,
-          "hide_view_all_comment_entrypoint": false,
-          "likers": [],
-          "shop_routing_user_id": null,
-          "can_see_insights_as_brand": false,
-          "is_organic_product_tagging_eligible": false,
-          "product_type": "text_post",
-          "is_paid_partnership": false,
-          "music_metadata": null,
-          "deleted_reason": 0,
-          "organic_tracking_token": "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjpmYWxzZSwidXVpZCI6ImYwZmExMGI0MTQwMzRhZDRhMjgzOWYyYzg0ZWFkYTg1MzE0MzI3NzIxNTg0Nzc5MzUyNiIsInNlcnZlcl90b2tlbiI6IjE2ODg5Mjc4NjczMDd8MzE0MzI3NzIxNTg0Nzc5MzUyNnwzMjU0NTc3MTE1N3wzNzExMTQyZjM2NjZmNjA4YThmMGQwODIyY2RjYmM4MDA5ODcyNDdlM2YzZDg1ZWMyYzhjMzM3MThiMjllMzZhIn0sInNpZ25hdHVyZSI6IiJ9",
-          "text_post_app_info": {
-              "is_post_unavailable": false,
-              "is_reply": false,
-              "reply_to_author": null,
-              "direct_reply_count": 0,
-              "self_thread_count": 0,
-              "reply_facepile_users": [],
-              "link_preview_attachment": null,
-              "can_reply": true,
-              "reply_control": "everyone",
-              "hush_info": null,
-              "share_info": {
-                  "can_repost": true,
-                  "is_reposted_by_viewer": false,
-                  "can_quote_post": true
-              }
-          },
-          "integrity_review_decision": "pending",
-          "ig_media_sharing_disabled": false,
-          "has_shared_to_fb": 0,
-          "is_unified_video": false,
-          "should_request_ads": false,
-          "is_visual_reply_commenter_notice_enabled": true,
-          "commerciality_status": "not_commercial",
-          "explore_hide_comments": false,
-          "has_delayed_metadata": false
-      },
-      "upload_id": "1688927864",
       "status": "ok"
   }
   ```
