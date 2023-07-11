@@ -206,6 +206,53 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
+    def reply_to_thread(self, id: int, caption: str) -> dict:
+        """
+        Create a thread.
+
+        Arguments:
+            id (int): a thread's identifier.
+            caption (str): a reply's caption.
+
+        Returns:
+             The created reply as a dict.
+        """
+        current_timestamp = time.time()
+
+        parameters_as_string = json.dumps(
+            {
+                'publish_mode': 'text_post',
+                'text_post_app_info': json.dumps(
+                    {
+                        'reply_id': id,
+                        'reply_control': 0,
+                    }
+                ),
+                'timezone_offset': str(self.timezone_offset),
+                'source_type': '4',
+                'caption': caption,
+                '_uid': self.user_id,
+                'device_id': self.android_device_id,
+                'upload_id': int(current_timestamp),
+                'device': {
+                    'manufacturer': 'OnePlus',
+                    'model': 'ONEPLUS+A3010',
+                    'android_version': 25,
+                    'android_release': '7.1.1',
+                },
+            }
+        )
+
+        encoded_parameters = quote(string=parameters_as_string, safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/media/configure_text_only_post/',
+            headers=self.headers,
+            data=f'signed_body=SIGNATURE.{encoded_parameters}',
+        )
+
+        return response.json()
+
     def create_thread(self, caption: str) -> dict:
         """
         Create a thread.
@@ -217,7 +264,6 @@ class PrivateThreadsApi(AbstractThreadsApi):
             The created thread as a dict.
         """
         current_timestamp = time.time()
-        user_id = self.get_user_id(username=self.username)
 
         parameters_as_string = json.dumps(
             {
@@ -226,7 +272,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
                 'timezone_offset': str(self.timezone_offset),
                 'source_type': '4',
                 'caption': caption,
-                '_uid': user_id,
+                '_uid': self.user_id,
                 'device_id': self.android_device_id,
                 'upload_id': int(current_timestamp),
                 'device': {
