@@ -25,26 +25,31 @@ Table of content:
   * [Terminology](#terminology)
   * [Initialization](#initialization)
   * [Public](#api)
-    * [Get User Identifier](#get-user-identifier)
-    * [Get User By Identifier](#get-user-by-identifier)
-    * [Get User Threads](#get-user-threads)
-    * [Get User Replies](#get-user-replies)
-    * [Get Thread Identifier](#get-thread-identifier)
-    * [Get Thread](#get-thread)
-    * [Get Thread Likers](#get-thread-likers)
+    * [User](#user)
+      * [Get Identifier](#get-identifier)
+      * [Get By Identifier](#get-by-identifier)
+      * [Get Threads](#get-threads)
+      * [Get Replies](#get-replies)
+    * [Thread](#thread)
+      * [Get Identifier](#get-identifier-1)
+      * [Get By Identifier](#get-by-identifier-1)
+      * [Get Likers](#get-likers)
   * [Private](#private)
-    * [Get User Identifier](#get-user-identifier-1)
-    * [Get User By Identifier](#get-user-by-identifier-1)
-    * [Get User Followers](#get-user-followers)
-    * [Get User Following](#get-user-following)
-    * [Search User](#search-user)
-    * [Follow User](#follow-user)
-    * [Unfollow User](#unfollow-user)
-    * [Get Thread Identifier](#get-thread-identifier-1)
-    * [Get Thread](#get-thread-1)
-    * [Create Thread](#create-thread)
-    * [Like Thread](#like-thread)
-    * [Unlike Thread](#unlike-thread)
+    * [User](#user-1)
+      * [Get Identifier](#get-identifier-2)
+      * [Get By Identifier](#get-by-identifier-2)
+      * [Get Followers](#get-followers)
+      * [Get Following](#get-following)
+      * [Search](#search)
+      * [Follow](#follow)
+      * [Unfollow](#unfollow)
+    * [Thread](#thread-1)
+      * [Get Identifier](#get-identifier-3)
+      * [Get By Identifier](#get-by-identifier-3)
+      * [Create](#create)
+      * [Like](#like)
+      * [Unlike](#unlike)
+      * [Reply](#reply)
 
 ## Disclaimer
 
@@ -172,17 +177,19 @@ You can leave `username` and `password` arguments unspecified if you have no pla
 
 ### Public
 
-#### Get User Identifier
+#### User
+
+##### Get Identifier
 
 To get a user's identifier by a username, use the following commands:
 
 ```python3
->>> threads.public_api.get_user_id(username='zuck')
+>>> user_id = threads.public_api.get_user_id(username='zuck')
 >>> user_id
 314216
 ```
 
-#### Get User by Identifier
+##### Get By Identifier
 
 To get a user by an identifier, use the following commands:
 
@@ -230,7 +237,7 @@ To get a user by an identifier, use the following commands:
 }
 ```
 
-#### Get User Threads
+##### Get Threads
 
 To get a user's threads, use the following commands:
 
@@ -312,7 +319,7 @@ To get a user's threads, use the following commands:
 }
 ```
 
-#### Get User Replies
+##### Get Replies
 
 To get a user's replies, use the following commands:
 
@@ -538,7 +545,9 @@ To get a user's replies, use the following commands:
 }
 ```
 
-#### Get Thread Identifier
+#### Thread
+
+##### Get Identifier
 
 To get a thread's identifier by a `URL` identifier, use the following commands. `URL` identifier is a last part of a 
 thread's `URL`. If the thread's `URL` is `https://www.threads.net/t/CuXFPIeLLod`, then it would be `CuXFPIeLLod`.
@@ -549,7 +558,7 @@ thread's `URL`. If the thread's `URL` is `https://www.threads.net/t/CuXFPIeLLod`
 3141002295235099165
 ```
 
-#### Get Thread
+##### Get By Identifier
 
 To get a thread, use the following commands:
 
@@ -672,7 +681,7 @@ To get a thread, use the following commands:
 }
 ```
 
-#### Get Thread Likers
+##### Get Likers
 
 To get a thread's likers, use the following commands:
 
@@ -705,7 +714,9 @@ To get a thread's likers, use the following commands:
 
 ### Private
 
-#### Get User Identifier
+#### User
+
+##### Get User Identifier
 
 To get a user's identifier by a username, use the following commands:
 
@@ -715,7 +726,17 @@ To get a user's identifier by a username, use the following commands:
 314216
 ```
 
-#### Get User by Identifier
+##### Get Identifier
+
+To get a user's identifier by a username, use the following commands:
+
+```python3
+>>> user_id = threads.private_api.get_user_id(username='zuck')
+>>> user_id
+314216
+```
+
+##### Get By Identifier
 
 To get a user by an identifier, use the following commands:
 
@@ -905,7 +926,7 @@ To get a user by an identifier, use the following commands:
 }
 ```
 
-#### Get User Followers
+##### Get Followers
 
 To get a user's followers, use the following commands:
 
@@ -948,7 +969,7 @@ To get a user's followers, use the following commands:
 }
 ```
 
-#### Get User Following
+##### Get Following
 
 To get a user's following, use the following commands:
 
@@ -993,7 +1014,7 @@ To get a user's following, use the following commands:
 }
 ```
 
-#### Search User
+##### Search
 
 To search for a user's following, use the following commands:
 
@@ -1047,7 +1068,7 @@ To search for a user's following, use the following commands:
 }
 ```
 
-#### Follow user
+##### Follow
 
 To follow a user, use the following commands:
 
@@ -1074,7 +1095,7 @@ To follow a user, use the following commands:
 }
 ```
 
-#### Unfollow user
+##### Unfollow
 
 To follow a user, use the following commands:
 
@@ -1100,7 +1121,9 @@ To follow a user, use the following commands:
 }
 ```
 
-#### Get Thread Identifier
+#### Thread
+
+##### Get Identifier
 
 To get a thread's identifier by a `URL` identifier, use the following commands. `URL` identifier is a last part of a 
 thread's `URL`. If the thread's `URL` is `https://www.threads.net/t/CuXFPIeLLod`, then it would be `CuXFPIeLLod`.
@@ -1111,7 +1134,7 @@ thread's `URL`. If the thread's `URL` is `https://www.threads.net/t/CuXFPIeLLod`
 3141002295235099165
 ```
 
-#### Get Thread
+##### Get By Identifier
 
 To get a thread, use the following commands:
 
@@ -1234,7 +1257,7 @@ To get a thread, use the following commands:
 }
 ```
 
-#### Create Thread
+##### Create
 
 To create a thread, use the following commands:
 
@@ -1425,7 +1448,7 @@ To create a thread, use the following commands:
 }
 ```
 
-#### Like Thread
+##### Like
 
 To like a thread, use the following commands:
 
@@ -1437,7 +1460,7 @@ To like a thread, use the following commands:
 }
 ```
 
-#### Unlike Thread
+##### Unlike
 
 To unlike a thread, use the following commands:
 
@@ -1449,7 +1472,7 @@ To unlike a thread, use the following commands:
 }
 ```
 
-#### Reply To Thread
+##### Reply
 
 To reply a thread, use the following commands:
 
