@@ -21,6 +21,7 @@ Table of content:
 * [API](#api)
   * [Troubleshooting](#troubleshooting)
     * [User Identifier](#user-identifier)
+    * [Two-Factor Authentication (2FA)](#two-factor-authentication-2fa)
   * [Terminology](#terminology)
   * [Initialization](#initialization)
   * [Public](#api)
@@ -76,6 +77,7 @@ Check what is already done in the table of content above, below placed only thin
   - [ ] Delete a thread
   - [ ] Reply to a thread
   - [ ] Embed a thread
+  - [ ] Manage auth for accounts with enabled 2FA
 
 ## Getting started
 
@@ -126,6 +128,13 @@ Until the library maintainers find more stable way, you have two options:
 * Retrieve a user's identifier manually from a public service like this one — https://commentpicker.com/instagram-user-id.php.
 * Use private `API` method (`threads.private_api.get_user_id`) which use much more stable endpoint. You can just fetch
   a user identifier once via it and then pass it to public `API` and it will work.
+
+#### Two-Factor Authentication (2FA)
+
+Currently, it is not possible to use private `API` with two-factor authentication enabled on the account. If you do not
+disable it, you might face issues like [#37](https://github.com/dmytrostriletskyi/threads-net/issues/37). So, in order
+to use private `API`, you have to disable it first. By the way, there are plans in the roadmap to manage authentication
+for such accounts so you don't have to disable it.
 
 ### Terminology
 
