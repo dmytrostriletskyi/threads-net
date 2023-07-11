@@ -90,6 +90,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             url=f'{self.INSTAGRAM_API_URL}/users/search/?q={query}',
             headers=self.headers,
         )
+
         return response.json()
 
     def get_user_followers(self, id: int) -> dict:
@@ -123,6 +124,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/following/',
             headers=self.headers,
         )
+
         return response.json()
 
     def follow_user(self, id: int) -> dict:
@@ -139,6 +141,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             url=f'{self.INSTAGRAM_API_URL}/friendships/create/{id}/',
             headers=self.headers,
         )
+
         return response.json()
 
     def unfollow_user(self, id: int) -> dict:
@@ -155,6 +158,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             url=f'{self.INSTAGRAM_API_URL}/friendships/destroy/{id}/',
             headers=self.headers,
         )
+
         return response.json()
 
     def get_thread(self, id: int) -> dict:
@@ -171,6 +175,82 @@ class PrivateThreadsApi(AbstractThreadsApi):
             url=f'{self.INSTAGRAM_API_URL}/text_feed/{id}/replies',
             headers=self.headers,
         )
+
+        return response.json()
+
+    def get_thread_likers(self, id: int) -> dict:
+        """
+        Get a thread's likers.
+
+        Arguments:
+            id (int): a thread's identifier.
+
+        Returns:
+            The list of thread's likers inside a dict.
+        """
+        response = requests.get(
+            url=f'{self.INSTAGRAM_API_URL}/media/{id}_{self.user_id}/likers/',
+            headers=self.headers,
+        )
+
+        return response.json()
+
+    def create_thread(self, caption: str) -> dict:
+        """
+        Create a thread.
+
+        Arguments:
+            caption (str): a thread's caption.
+
+        Returns:
+            The created thread as a dict.
+        """
+        current_timestamp = time.time()
+
+        parameters_as_string = json.dumps(
+            {
+                'publish_mode': 'text_post',
+                'text_post_app_info': '{"reply_control":0}',
+                'timezone_offset': str(self.timezone_offset),
+                'source_type': '4',
+                'caption': caption,
+                '_uid': self.user_id,
+                'device_id': self.android_device_id,
+                'upload_id': int(current_timestamp),
+                'device': {
+                    'manufacturer': 'OnePlus',
+                    'model': 'ONEPLUS+A3010',
+                    'android_version': 25,
+                    'android_release': '7.1.1',
+                },
+            }
+        )
+
+        encoded_parameters = quote(string=parameters_as_string, safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/media/configure_text_only_post/',
+            headers=self.headers,
+            data=f'signed_body=SIGNATURE.{encoded_parameters}',
+        )
+
+        return response.json()
+
+    def delete_thread(self, id: str) -> dict:
+        """
+        Delete a thread.
+
+        Arguments:
+            id (int): a thread's identifier.
+
+        Returns:
+            The deletion information as a dict.
+        """
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/media/{id}_{self.user_id}/delete/?media_type=TEXT_POST',
+            headers=self.headers,
+        )
+
         return response.json()
 
     def like_thread(self, id: int) -> dict:
@@ -187,6 +267,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             url=f'{self.INSTAGRAM_API_URL}/media/{id}_{self.user_id}/like/',
             headers=self.headers,
         )
+
         return response.json()
 
     def unlike_thread(self, id: int) -> dict:
@@ -215,7 +296,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             caption (str): a reply's caption.
 
         Returns:
-             The created reply as a dict.
+            The created reply as a dict.
         """
         current_timestamp = time.time()
 
@@ -228,47 +309,6 @@ class PrivateThreadsApi(AbstractThreadsApi):
                         'reply_control': 0,
                     }
                 ),
-                'timezone_offset': str(self.timezone_offset),
-                'source_type': '4',
-                'caption': caption,
-                '_uid': self.user_id,
-                'device_id': self.android_device_id,
-                'upload_id': int(current_timestamp),
-                'device': {
-                    'manufacturer': 'OnePlus',
-                    'model': 'ONEPLUS+A3010',
-                    'android_version': 25,
-                    'android_release': '7.1.1',
-                },
-            }
-        )
-
-        encoded_parameters = quote(string=parameters_as_string, safe="!~*'()")
-
-        response = requests.post(
-            url=f'{self.INSTAGRAM_API_URL}/media/configure_text_only_post/',
-            headers=self.headers,
-            data=f'signed_body=SIGNATURE.{encoded_parameters}',
-        )
-
-        return response.json()
-
-    def create_thread(self, caption: str) -> dict:
-        """
-        Create a thread.
-
-        Arguments:
-            caption (str): a thread's caption.
-
-        Returns:
-            The created thread as a dict.
-        """
-        current_timestamp = time.time()
-
-        parameters_as_string = json.dumps(
-            {
-                'publish_mode': 'text_post',
-                'text_post_app_info': '{"reply_control":0}',
                 'timezone_offset': str(self.timezone_offset),
                 'source_type': '4',
                 'caption': caption,

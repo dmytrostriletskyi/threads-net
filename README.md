@@ -46,7 +46,9 @@ Table of content:
     * [Thread](#thread-1)
       * [Get Identifier](#get-identifier-3)
       * [Get By Identifier](#get-by-identifier-3)
+      * [Get Likers](#get-likers-1)
       * [Create](#create)
+      * [Delete](#delete)
       * [Like](#like)
       * [Unlike](#unlike)
       * [Reply](#reply)
@@ -1375,6 +1377,43 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
   ```
 </details>
 
+##### Get Likers
+
+`threads.public_api.get_thread_likers` — getting a thread's likers by the thread's identifier.
+
+| Parameters |  Type   | Required | Restrictions | Description            |
+|:----------:|:-------:|:--------:|:------------:|------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | A thread's identifier. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> thread_likers = threads.private_api.get_thread_likers(id=3141055616164096839)
+  >>> thread_likers
+  {
+      "users": [
+          {
+              "pk": 54831820289,
+              "pk_id": "54831820289",
+              "username": "hazrel_syfddn26",
+              "full_name": "HAZLER",
+              "is_private": false,
+              "account_badges": [],
+              "is_verified": false,
+              "profile_pic_id": "3140964514487728732_54831820289",
+              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/358165944_6109031802541294_1514688336008099084_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=110&_nc_ohc=V1UF-ylegwMAX_HbWIV&edm=APwHDrQBAAAA&ccb=7-5&oh=00_AfC4W3z1EZ61XFQk6Im82OpgoEvQp_r-JNPd2NmN9cdhUQ&oe=64B23019&_nc_sid=8809c9",
+              "has_onboarded_to_text_post_app": true,
+              "latest_reel_media": 0
+          },
+          ...
+      ],
+      "user_count": 38283,
+      "status": "ok"
+  }
+  ```
+</details>
+
 ##### Create
 
 `threads.private_api.create_thread` — create a thread.
@@ -1569,6 +1608,28 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
           "has_delayed_metadata": false
       },
       "upload_id": "1688927864",
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Delete
+
+`threads.private_api.delete_thread` — delete a thread.
+
+| Parameters |  Type   | Required | Restrictions | Description                          |
+|:----------:|:-------:|:--------:|:------------:|--------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a thread to delete. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> deletion = threads.private_api.delete_thread(id=3141055616164096839)
+  >>> deletion
+  {
+      "did_delete": true,
+      "cxp_deep_deletion_global_response": {},
       "status": "ok"
   }
   ```
