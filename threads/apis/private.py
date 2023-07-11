@@ -2,8 +2,12 @@
 Provide implementation of private Threads API.
 """
 import json
+import mimetypes
+import random
 import time
+from http import HTTPStatus as HttpStatus
 from urllib.parse import quote
+from uuid import uuid4
 
 import requests
 
@@ -45,6 +49,8 @@ class PrivateThreadsApi(AbstractThreadsApi):
             }
 
             self.user_id = self.get_user_id(username=username)
+
+        self.mimetypes = mimetypes.MimeTypes()
 
     def get_user_id(self, username: str) -> int:
         """
@@ -195,48 +201,71 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def create_thread(self, caption: str) -> dict:
+    def create_thread(self, caption: str, url: str = None, image_url: str = None, reply_to: int = None) -> dict:
         """
         Create a thread.
 
         Arguments:
             caption (str): a thread's caption.
+            url (str): a thread's attachment URL.
+            image_url (str): an image's HTTP(S) URL or path to a file.
+            reply_to (int): an identifier of a thread to reply to.
+
+        Raises:
+            ValueError: if provided image URL does not match required format
 
         Returns:
             The created thread as a dict.
         """
         current_timestamp = time.time()
 
-        parameters_as_string = json.dumps(
-            {
-                'publish_mode': 'text_post',
-                'text_post_app_info': '{"reply_control":0}',
-                'timezone_offset': str(self.timezone_offset),
-                'source_type': '4',
-                'caption': caption,
-                '_uid': self.user_id,
-                'device_id': self.android_device_id,
-                'upload_id': int(current_timestamp),
-                'device': {
-                    'manufacturer': 'OnePlus',
-                    'model': 'ONEPLUS+A3010',
-                    'android_version': 25,
-                    'android_release': '7.1.1',
-                },
-            }
-        )
+        parameters_as_string = {
+            'text_post_app_info': {
+                'reply_control': 0,
+            },
+            'timezone_offset': str(self.timezone_offset),
+            'source_type': '4',
+            'caption': caption,
+            '_uid': self.user_id,
+            'device_id': self.android_device_id,
+            'upload_id': int(current_timestamp),
+            'device': {
+                'manufacturer': 'OnePlus',
+                'model': 'ONEPLUS+A3010',
+                'android_version': 25,
+                'android_release': '7.1.1',
+            },
+        }
 
-        encoded_parameters = quote(string=parameters_as_string, safe="!~*'()")
+        if reply_to is not None:
+            parameters_as_string['text_post_app_info']['reply_id'] = reply_to
+
+        endpoint = None
+
+        if url is not None:
+            endpoint = '/media/configure_text_only_post/'
+            parameters_as_string['publish_mode'] = 'text_post'
+            parameters_as_string['text_post_app_info']['link_attachment_url'] = url
+
+        if image_url is not None:
+            endpoint = '/media/configure_text_post_app_feed/'
+            parameters_as_string['upload_id'] = self._upload_image(url=image_url)
+            parameters_as_string['scene_capture_type'] = ''
+
+        if endpoint is None:
+            raise ValueError('Provided image URL does not match required format. Please, create GitHub issue')
+
+        encoded_parameters = quote(string=json.dumps(obj=parameters_as_string), safe="!~*'()")
 
         response = requests.post(
-            url=f'{self.INSTAGRAM_API_URL}/media/configure_text_only_post/',
+            url=f'{self.INSTAGRAM_API_URL}{endpoint}',
             headers=self.headers,
             data=f'signed_body=SIGNATURE.{encoded_parameters}',
         )
 
         return response.json()
 
-    def delete_thread(self, id: str) -> dict:
+    def delete_thread(self, id: int) -> dict:
         """
         Delete a thread.
 
@@ -283,53 +312,6 @@ class PrivateThreadsApi(AbstractThreadsApi):
         response = requests.post(
             url=f'{self.INSTAGRAM_API_URL}/media/{id}_{self.user_id}/unlike/',
             headers=self.headers,
-        )
-
-        return response.json()
-
-    def reply_to_thread(self, id: int, caption: str) -> dict:
-        """
-        Create a thread.
-
-        Arguments:
-            id (int): a thread's identifier.
-            caption (str): a reply's caption.
-
-        Returns:
-            The created reply as a dict.
-        """
-        current_timestamp = time.time()
-
-        parameters_as_string = json.dumps(
-            {
-                'publish_mode': 'text_post',
-                'text_post_app_info': json.dumps(
-                    {
-                        'reply_id': id,
-                        'reply_control': 0,
-                    }
-                ),
-                'timezone_offset': str(self.timezone_offset),
-                'source_type': '4',
-                'caption': caption,
-                '_uid': self.user_id,
-                'device_id': self.android_device_id,
-                'upload_id': int(current_timestamp),
-                'device': {
-                    'manufacturer': 'OnePlus',
-                    'model': 'ONEPLUS+A3010',
-                    'android_version': 25,
-                    'android_release': '7.1.1',
-                },
-            }
-        )
-
-        encoded_parameters = quote(string=parameters_as_string, safe="!~*'()")
-
-        response = requests.post(
-            url=f'{self.INSTAGRAM_API_URL}/media/configure_text_only_post/',
-            headers=self.headers,
-            data=f'signed_body=SIGNATURE.{encoded_parameters}',
         )
 
         return response.json()
@@ -384,3 +366,102 @@ class PrivateThreadsApi(AbstractThreadsApi):
         token = response_text[13:backslash_key_position]
 
         return token
+
+    def _upload_image(self, url: str) -> int:
+        """
+        Upload an image.
+
+        Arguments:
+            url (str): an image's HTTP(S) URL or path to a file.
+
+        Raises:
+            ValueError: if provided image URL neither HTTP(S) URL nor file path.
+            ValueError: if provided image could not be uploaded.
+            ValueError: if image uploading has been failed.
+
+        References:
+            - https://github.com/adw0rd/instagrapi/blob/master/instagrapi/mixins/photo.py#L123
+            - https://github.com/adw0rd/instagrapi/blob/master/instagrapi/mixins/photo.py#L99
+            - https://github.com/junhoyeo/threads-api/blob/main/threads-api/src/threads-api.ts#L606
+
+        Returns:
+            An upload identifier as an integer.
+        """
+        random_number = random.randint(1000000000, 9999999999)
+
+        upload_id = int(time.time())
+        upload_name = f'{upload_id}_0_{random_number}'
+
+        file_data = None
+        file_length = None
+        mime_type = 'image/jpeg'
+        waterfall_id = str(uuid4())
+
+        is_url = url.startswith('http')
+        is_file_path = not url.startswith('http')
+
+        if is_file_path:
+            with open(url, 'rb') as file:
+                file_data = file.read()
+                file_length = len(file_data)
+
+            mime_type = self.mimetypes.guess_type(url)[0]
+
+        if is_url:
+            response = requests.get(url, stream=True, timeout=2)
+            response.raw.decode_content = True
+
+            file_data = response.content
+            file_length = len(response.content)
+
+        if not is_file_path and not is_url:
+            raise ValueError('Provided image URL neither HTTP(S) URL nor file path. Please, create GitHub issue')
+
+        if file_data is None and file_length is None:
+            raise ValueError('Provided image could not be uploaded. Please, create GitHub issue')
+
+        parameters_as_string = {
+            'media_type': 1,
+            'upload_id': str(upload_id),
+            'sticker_burnin_params': json.dumps([]),
+            'image_compression': json.dumps(
+                {
+                    'lib_name': 'moz',
+                    'lib_version': '3.1.m',
+                    'quality': '80',
+                }
+            ),
+            'xsharing_user_ids': json.dumps([]),
+            'retry_context': json.dumps(
+                {
+                    'num_step_auto_retry': '0',
+                    'num_reupload': '0',
+                    'num_step_manual_retry': '0',
+                }
+            ),
+            'IG-FB-Xpost-entry-point-v2': 'feed',
+        }
+
+        headers = self.headers | {
+            'Accept-Encoding': 'gzip',
+            'X-Instagram-Rupload-Params': json.dumps(parameters_as_string),
+            'X_FB_PHOTO_WATERFALL_ID': waterfall_id,
+            'X-Entity-Type': mime_type,
+            'Offset': '0',
+            'X-Entity-Name': upload_name,
+            'X-Entity-Length': str(file_length),
+            'Content-Type': 'application/octet-stream',
+            'Content-Length': str(file_length),
+        }
+
+        response = requests.post(
+            url=f'https://www.instagram.com/rupload_igphoto/{upload_name}',
+            data=file_data,
+            headers=headers,
+        )
+
+        if response.status_code != HttpStatus.OK:
+            if file_data is None and file_length is None:
+                raise ValueError('Image uploading has been failed. Please, create GitHub issue')
+
+        return response.json().get('upload_id')
