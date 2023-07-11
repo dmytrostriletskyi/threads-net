@@ -110,14 +110,13 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         response = response.json()
         followers_list = response.get('users')
-        max_id=response.get('next_max_id')
+        max_id = response.get('next_max_id')
 
         while max_id:
-            print(max_id)
             response = requests.get(
                 url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/followers/',
                 headers=self.headers,
-                params={'max_id' : max_id}
+                params={'max_id': max_id}
             )
 
             response = response.json()
@@ -143,13 +142,13 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         response = response.json()
         following_list = response.get('users')
-        max_id=response.get('next_max_id')
+        max_id = response.get('next_max_id')
 
         while max_id:
             response = requests.get(
                 url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/following/',
                 headers=self.headers,
-                params={'max_id' : max_id}
+                params={'max_id': max_id}
             )
 
             response = response.json()
