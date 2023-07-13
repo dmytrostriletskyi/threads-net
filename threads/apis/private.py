@@ -363,6 +363,49 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
+    def quote_thread(self, id: int, caption: str) -> dict:
+        """
+        Quote a thread.
+
+        Arguments:
+            id (int): a thread's identifier.
+            caption (str): a quote's caption.
+
+        Returns:
+            The quoting information as a dict.
+        """
+        current_timestamp = time.time()
+
+        parameters_as_string = {
+            'publish_mode': 'text_post',
+            'text_post_app_info': {
+                'quoted_post_id': id,
+                'reply_control': 0,
+            },
+            'timezone_offset': str(self.timezone_offset),
+            'source_type': '4',
+            'caption': caption,
+            '_uid': self.user_id,
+            'device_id': self.android_device_id,
+            'upload_id': int(current_timestamp),
+            'device': {
+                'manufacturer': 'OnePlus',
+                'model': 'ONEPLUS+A3010',
+                'android_version': 25,
+                'android_release': '7.1.1',
+            },
+        }
+
+        encoded_parameters = quote(string=json.dumps(obj=parameters_as_string), safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/media/configure_text_only_post/',
+            headers=self.headers,
+            data=f'signed_body=SIGNATURE.{encoded_parameters}',
+        )
+
+        return response.json()
+
     def _get_instagram_public_key(self) -> tuple[int, str]:
         """
         Get Instagram public key.
