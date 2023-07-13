@@ -1,6 +1,8 @@
 """
 Provide implementation of public Threads API.
 """
+from __future__ import annotations
+
 import json
 import re
 
@@ -18,7 +20,7 @@ class PublicThreadsApi(AbstractThreadsApi):
 
     THREADS_API_URL = 'https://www.threads.net/api/graphql'
 
-    def __init__(self):
+    def __init__(self: PublicThreadsApi) -> None:
         """
         Construct the object.
         """
@@ -39,7 +41,7 @@ class PublicThreadsApi(AbstractThreadsApi):
             'X-IG-App-ID': '238260118697367',
         }
 
-    def get_user_id(self, username: str) -> int:
+    def get_user_id(self: PublicThreadsApi, username: str) -> int:
         """
         Get a user's identifier.
 
@@ -69,7 +71,7 @@ class PublicThreadsApi(AbstractThreadsApi):
         user_id = re.search('"props":{"user_id":"(\\d+)"},', response.text).group(1)
         return int(user_id)
 
-    def get_user(self, id: int) -> dict:
+    def get_user(self: PublicThreadsApi, id: int) -> dict:
         """
         Get a user.
 
@@ -91,7 +93,7 @@ class PublicThreadsApi(AbstractThreadsApi):
                 'variables': json.dumps(
                     {
                         'userID': id,
-                    }
+                    },
                 ),
                 'doc_id': '23996318473300828',
             },
@@ -99,13 +101,12 @@ class PublicThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def get_user_threads(self, id: int) -> dict:
+    def get_user_threads(self: PublicThreadsApi, id: int) -> dict:
         """
         Get a user's threads.
 
         Arguments:
-            id (int):
-            a user's identifier.
+            id (int): a user's identifier.
 
         Returns:
             The list of user's threads inside a dict.
@@ -122,7 +123,7 @@ class PublicThreadsApi(AbstractThreadsApi):
                 'variables': json.dumps(
                     {
                         'userID': id,
-                    }
+                    },
                 ),
                 'doc_id': '6232751443445612',
             },
@@ -130,7 +131,7 @@ class PublicThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def get_user_replies(self, id: int) -> dict:
+    def get_user_replies(self: PublicThreadsApi, id: int) -> dict:
         """
         Get a user's replies.
 
@@ -152,7 +153,7 @@ class PublicThreadsApi(AbstractThreadsApi):
                 'variables': json.dumps(
                     {
                         'userID': id,
-                    }
+                    },
                 ),
                 'doc_id': '6307072669391286',
             },
@@ -160,7 +161,7 @@ class PublicThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def get_thread(self, id: int) -> dict:
+    def get_thread(self: PublicThreadsApi, id: int) -> dict:
         """
         Get a thread.
 
@@ -182,7 +183,7 @@ class PublicThreadsApi(AbstractThreadsApi):
                 'variables': json.dumps(
                     {
                         'postID': id,
-                    }
+                    },
                 ),
                 'doc_id': '5587632691339264',
             },
@@ -190,7 +191,7 @@ class PublicThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def get_thread_likers(self, id: int) -> dict:
+    def get_thread_likers(self: PublicThreadsApi, id: int) -> dict:
         """
         Get a thread's likers.
 
@@ -208,7 +209,7 @@ class PublicThreadsApi(AbstractThreadsApi):
                 'variables': json.dumps(
                     {
                         'mediaID': id,
-                    }
+                    },
                 ),
                 'doc_id': '9360915773983802',
             },
@@ -216,7 +217,7 @@ class PublicThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def _get_threads_api_token(self) -> str:
+    def _get_threads_api_token(self: PublicThreadsApi) -> str:
         """
         Get a token for Threads API.
 
