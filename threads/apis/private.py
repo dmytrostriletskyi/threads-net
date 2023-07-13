@@ -243,6 +243,57 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
+
+    def restrict_user(self, id: int) -> dict:
+        """
+        Restrict a user.
+
+        Arguments:
+            id (int): a user's identifier.
+
+        Returns:
+            The restricting information as a dict.
+        """
+        parameters = json.dumps(obj={
+            'user_ids': id,
+            'container_module': 'ig_text_feed_timeline',
+        })
+
+        encoded_parameters = quote(string=parameters, safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/restrict_action/restrict_many/',
+            headers=self.headers,
+            data=f'signed_body=SIGNATURE.{encoded_parameters}',
+        )
+
+        return response.json()
+
+    def unrestrict_user(self, id: int) -> dict:
+        """
+        Unrestrict a user.
+
+        Arguments:
+            id (int): a user's identifier.
+
+        Returns:
+            The unrestricting information as a dict.
+        """
+        parameters = json.dumps(obj={
+            'target_user_id': id,
+            'container_module': 'ig_text_feed_timeline',
+        })
+
+        encoded_parameters = quote(string=parameters, safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/restrict_action/unrestrict/',
+            headers=self.headers,
+            data=f'signed_body=SIGNATURE.{encoded_parameters}',
+        )
+
+        return response.json()
+
     def get_thread(self, id: int) -> dict:
         """
         Get a thread.

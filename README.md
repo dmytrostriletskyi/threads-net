@@ -45,6 +45,10 @@ Table of content:
       * [Search](#search)
       * [Follow](#follow)
       * [Unfollow](#unfollow)
+      * [Mute](#mute)
+      * [Restrict](#restrict)
+      * [Unrestrict](#unrestrict)
+      * [Quote](#quote)
     * [Thread](#thread-1)
       * [Get Identifier](#get-identifier-3)
       * [Get By Identifier](#get-by-identifier-3)
@@ -76,17 +80,6 @@ Table of content:
 
 Check what is already done in the table of content above, below the only things to be done are placed: 
 
-- [ ] Mute a user
-- [ ] Unmute a user
-- [ ] Restrict a user
-- [ ] Unrestrict a user
-- [ ] Block a user
-- [ ] Unblock a user
-- [ ] Repost a user
-- [ ] Unrepost a user
-- [ ] Delete a thread
-- [ ] Embed a thread
-- [ ] Quote a thread
 - [ ] Feed (threads, replies, recommendations, notifications, seen notifications)
 - [ ] Session configuration (save `API` tokens and other settings)
 - [ ] Manage auth for accounts with enabled 2FA
@@ -1319,6 +1312,100 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
           "muting": false,
           ...
       },
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Restrict
+
+`threads.private_api.restrict_user` — restrict a user.
+
+| Parameters |  Type   | Required | Restrictions | Description                          |
+|:----------:|:-------:|:--------:|:------------:|--------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to restrict. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> restricting = threads.private_api.restrict_user(id=314216)
+  >>> restricting
+  {
+      "users": [
+          {
+              "pk": 314216,
+              "pk_id": "314216",
+              "username": "zuck",
+              "full_name": "Mark Zuckerberg",
+              "is_private": false,
+              "is_verified": true,
+              "friendship_status": {
+                  "following": false,
+                  "followed_by": false,
+                  "blocking": false,
+                  "muting": false,
+                  "is_private": false,
+                  "incoming_request": false,
+                  "outgoing_request": false,
+                  "text_post_app_pre_following": false,
+                  "is_bestie": false,
+                  "is_restricted": true,
+                  "is_feed_favorite": false,
+                  "is_eligible_to_subscribe": false
+              },
+              "profile_pic_id": "3138909791791822006_314216",
+              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=XKEMOZTrwUAAX-1hCyT&edm=AIbK1RIBAAAA&ccb=7-5&oh=00_AfDM-zL-HYX9qBBi9zM3AaHFAFzGu5ASanTF60ahGOYh7Q&oe=64B4C6C0&_nc_sid=0e3124",
+              "has_onboarded_to_text_post_app": true
+          }
+      ],
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Unrestrict
+
+`threads.private_api.unrestrict_user` — unrestrict a user.
+
+| Parameters |  Type   | Required | Restrictions | Description                            |
+|:----------:|:-------:|:--------:|:------------:|----------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to unrestrict. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> unrestricting = threads.private_api.unrestrict_user(id=314216)
+  >>> unrestricting
+  {
+      "users": [
+          {
+              "pk": 314216,
+              "pk_id": "314216",
+              "username": "zuck",
+              "full_name": "Mark Zuckerberg",
+              "is_private": false,
+              "is_verified": true,
+              "friendship_status": {
+                  "following": false,
+                  "followed_by": false,
+                  "blocking": false,
+                  "muting": false,
+                  "is_private": false,
+                  "incoming_request": false,
+                  "outgoing_request": false,
+                  "text_post_app_pre_following": false,
+                  "is_bestie": false,
+                  "is_restricted": false,
+                  "is_feed_favorite": false,
+                  "is_eligible_to_subscribe": false
+              },
+              "profile_pic_id": "3138909791791822006_314216",
+              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=XKEMOZTrwUAAX-1hCyT&edm=AMkHgcoBAAAA&ccb=7-5&oh=00_AfAMSrQmoJc3wyGdpGegznMp-f00XjYVyHNgr26As8rRHQ&oe=64B4C6C0&_nc_sid=88bf82",
+              "has_onboarded_to_text_post_app": true
+          }
+      ],
       "status": "ok"
   }
   ```
