@@ -1,5 +1,5 @@
 """
-Provide example of following a user from private Threads API.
+Provide example of following and unfollowing a user from private Threads API.
 """
 import os
 import json

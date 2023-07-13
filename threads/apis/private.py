@@ -182,6 +182,23 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return following_list
 
+    def get_friendship_status(self, id: int) -> dict:
+        """
+        Get a friendship status with a user.
+
+        Arguments:
+            id (int): An identifier of a user to get friendship status with.
+
+        Returns:
+            The friendship status as a dict.
+        """
+        response = requests.get(
+            url=f'{self.INSTAGRAM_API_URL}/friendships/show/{id}/',
+            headers=self.headers,
+        )
+
+        return response.json()
+
     def follow_user(self, id: int) -> dict:
         """
         Follow a user.
@@ -212,6 +229,56 @@ class PrivateThreadsApi(AbstractThreadsApi):
         response = requests.post(
             url=f'{self.INSTAGRAM_API_URL}/friendships/destroy/{id}/',
             headers=self.headers,
+        )
+
+        return response.json()
+
+    def mute_user(self, id: int) -> dict:
+        """
+        Mute a user.
+
+        Arguments:
+            id (int): a user's identifier.
+
+        Returns:
+            The muting information as a dict.
+        """
+        parameters = json.dumps(obj={
+            'target_posts_author_id': id,
+            'container_module': 'ig_text_feed_timeline',
+        })
+
+        encoded_parameters = quote(string=parameters, safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/friendships/mute_posts_or_story_from_follow/',
+            headers=self.headers,
+            data=f'signed_body=SIGNATURE.{encoded_parameters}',
+        )
+
+        return response.json()
+
+    def unmute_user(self, id: int) -> dict:
+        """
+        Unmute a user.
+
+        Arguments:
+            id (int): a user's identifier.
+
+        Returns:
+            The unmuting information as a dict.
+        """
+        parameters = json.dumps(obj={
+            'target_posts_author_id': id,
+            'container_module': 'ig_text_feed_timeline',
+        })
+
+        encoded_parameters = quote(string=parameters, safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/friendships/unmute_posts_or_story_from_follow/',
+            headers=self.headers,
+            data=f'signed_body=SIGNATURE.{encoded_parameters}',
         )
 
         return response.json()
@@ -363,6 +430,85 @@ class PrivateThreadsApi(AbstractThreadsApi):
         response = requests.post(
             url=f'{self.INSTAGRAM_API_URL}/media/{id}_{self.user_id}/unlike/',
             headers=self.headers,
+        )
+
+        return response.json()
+
+    def repost_thread(self, id: int) -> dict:
+        """
+        Repost a thread
+
+        Arguments:
+            id (int): a thread's identifier.
+
+        Returns:
+            The reposting information as a dict.
+        """
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/repost/create_repost/',
+            headers=self.headers,
+            data=f'media_id={id}',
+        )
+
+        return response.json()
+
+    def unrepost_thread(self, id: int) -> dict:
+        """
+        Undo a thread's repost.
+
+        Arguments:
+            id (int): a thread's identifier.
+
+        Returns:
+            The unreposting information as a dict.
+        """
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/repost/delete_text_app_repost/',
+            headers=self.headers,
+            data=f'original_media_id={id}',
+        )
+
+        return response.json()
+
+    def quote_thread(self, id: int, caption: str) -> dict:
+        """
+        Quote a thread.
+
+        Arguments:
+            id (int): a thread's identifier.
+            caption (str): a quote's caption.
+
+        Returns:
+            The quoting information as a dict.
+        """
+        current_timestamp = time.time()
+
+        parameters_as_string = {
+            'publish_mode': 'text_post',
+            'text_post_app_info': {
+                'quoted_post_id': id,
+                'reply_control': 0,
+            },
+            'timezone_offset': str(self.timezone_offset),
+            'source_type': '4',
+            'caption': caption,
+            '_uid': self.user_id,
+            'device_id': self.android_device_id,
+            'upload_id': int(current_timestamp),
+            'device': {
+                'manufacturer': 'OnePlus',
+                'model': 'ONEPLUS+A3010',
+                'android_version': 25,
+                'android_release': '7.1.1',
+            },
+        }
+
+        encoded_parameters = quote(string=json.dumps(obj=parameters_as_string), safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/media/configure_text_only_post/',
+            headers=self.headers,
+            data=f'signed_body=SIGNATURE.{encoded_parameters}',
         )
 
         return response.json()

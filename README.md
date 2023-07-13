@@ -41,6 +41,7 @@ Table of content:
       * [Get By Identifier](#get-by-identifier-2)
       * [Get Followers](#get-followers)
       * [Get Following](#get-following)
+      * [Get Friendship Status](#get-friendship-status)
       * [Search](#search)
       * [Follow](#follow)
       * [Unfollow](#unfollow)
@@ -52,6 +53,9 @@ Table of content:
       * [Delete](#delete)
       * [Like](#like)
       * [Unlike](#unlike)
+      * [Repost](#repost)
+      * [Unrepost](#unrepost)
+      * [Quote](#quote)
 
 ## Disclaimer
 
@@ -1104,6 +1108,43 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
   ```
 </details>
 
+##### Get Friendship Status
+
+`threads.private_api.get_friendship_status` — get a friendship status with a user.
+
+| Parameters |  Type   | Required | Restrictions | Description                                            |
+|:----------:|:-------:|:--------:|:------------:|--------------------------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to get friendship status with. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> friendship_status = threads.private_api.get_friendship_status(id=314216)
+  >>> friendship_status
+  {
+      "blocking": false,
+      "followed_by": false,
+      "following": false,
+      "incoming_request": false,
+      "is_bestie": false,
+      "is_blocking_reel": false,
+      "is_muting_reel": false,
+      "is_private": false,
+      "is_restricted": false,
+      "muting": false,
+      "outgoing_request": false,
+      "text_post_app_pre_following": false,
+      "is_feed_favorite": false,
+      "is_eligible_to_subscribe": false,
+      "is_supervised_by_viewer": false,
+      "is_guardian_of_viewer": false,
+      "is_muting_notes": false,
+      "status": "ok"
+  }
+  ```
+</details>
+
 ##### Search
 
 `threads.private_api.search_user` — search for a user by a query.
@@ -1229,6 +1270,54 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
           "is_restricted": false,
           "is_feed_favorite": false,
           "is_eligible_to_subscribe": false
+      },
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Mute
+
+`threads.private_api.mute_user` — mute a user.
+
+| Parameters |  Type   | Required | Restrictions | Description                      |
+|:----------:|:-------:|:--------:|:------------:|----------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to mute. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> muting = threads.private_api.mute_user(id=314216)
+  >>> muting
+  {
+      "friendship_status": {
+          "muting": true,
+          ...
+      },
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Unmute
+
+`threads.private_api.unmute_user` — unmute a user.
+
+| Parameters |  Type   | Required | Restrictions | Description                        |
+|:----------:|:-------:|:--------:|:------------:|------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to unmute. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> unmuting = threads.private_api.unmute_user(id=314216)
+  >>> unmuting
+  {
+      "friendship_status": {
+          "muting": false,
+          ...
       },
       "status": "ok"
   }
@@ -1809,6 +1898,349 @@ thread. Basically, each thread is either a root or linked to another thread like
   >>> unliking = threads.private_api.unlike_thread(id=3141055616164096839)
   >>> unliking
   {
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Repost
+
+`threads.private_api.repost_thread` — repost a thread.
+
+| Parameters |  Type   | Required | Restrictions | Description                          |
+|:----------:|:-------:|:--------:|:------------:|--------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a thread to repost. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> reposting = threads.private_api.repost_thread(id=3141055616164096839)
+  >>> reposting
+  {
+      "repost_id": 3145900181542784653,
+      "repost_fbid": 18008518438811136,
+      "reposted_at": 1689240547,
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Unrepost
+
+`threads.private_api.unrepost_thread` — undo a thread's repost. An identifier of a thread to unrepost is basically the
+identifier of the thread from `repost` method.
+
+| Parameters |  Type   | Required | Restrictions | Description                            |
+|:----------:|:-------:|:--------:|:------------:|----------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a thread to unrepost. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> unreposting = threads.private_api.unrepost_thread(id=3141055616164096839)
+  >>> unreposting
+  {
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Quote
+
+`threads.private_api.quote_thread` — quote a thread.
+
+| Parameters |  Type   | Required | Restrictions | Description                         |
+|:----------:|:-------:|:--------:|:------------:|-------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a thread to quote. |
+| `caption`  | String  |   Yes    |      -       | A quote's caption.                  |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> quoting = threads.private_api.quote_thread(id=3141055616164096839, caption='Hello, world!')
+  >>> quoting
+  {
+      "media": {
+          "taken_at": 1689241970,
+          "pk": 3145912119832282782,
+          "id": "3145912119832282782_60438154566",
+          "device_timestamp": 1689241970,
+          "media_type": 19,
+          "code": "Cuohme9Mwae",
+          "client_cache_key": "MzE0NTkxMjExOTgzMjI4Mjc4Mg==.2",
+          "filter_type": 0,
+          "can_viewer_reshare": true,
+          "caption": {
+              "pk": "18086087680362532",
+              "user_id": 60438154566,
+              "text": "Hello, world!",
+              "type": 1,
+              "created_at": 1689241971,
+              "created_at_utc": 1689241971,
+              "content_type": "comment",
+              "status": "Active",
+              "bit_flags": 0,
+              "did_report_as_spam": false,
+              "share_enabled": false,
+              "user": {
+                  "has_anonymous_profile_picture": true,
+                  "all_media_count": 33,
+                  "liked_clips_count": 0,
+                  "fan_club_info": {
+                      "fan_club_id": null,
+                      "fan_club_name": null,
+                      "is_fan_club_referral_eligible": null,
+                      "fan_consideration_page_revamp_eligiblity": null,
+                      "is_fan_club_gifting_eligible": null,
+                      "subscriber_count": null,
+                      "connected_member_count": null,
+                      "autosave_to_exclusive_highlight": null,
+                      "has_enough_subscribers_for_ssc": null
+                  },
+                  "fbid_v2": 17841460317004769,
+                  "transparency_product_enabled": false,
+                  "text_post_app_take_a_break_setting": 0,
+                  "interop_messaging_user_fbid": 17848558452010567,
+                  "show_insights_terms": false,
+                  "allowed_commenter_type": "any",
+                  "is_unpublished": false,
+                  "reel_auto_archive": "unset",
+                  "can_boost_post": false,
+                  "can_see_organic_insights": false,
+                  "has_onboarded_to_text_post_app": true,
+                  "text_post_app_joiner_number": 95787975,
+                  "pk": 60438154566,
+                  "pk_id": "60438154566",
+                  "username": "threadstester1",
+                  "full_name": "threads tester",
+                  "is_private": false,
+                  "profile_pic_url": "https://scontent-lhr8-1.cdninstagram.com/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=scontent-lhr8-1.cdninstagram.com&_nc_cat=1&_nc_ohc=d9GMadcVaNMAX8OxeS1&edm=AAAAAAABAAAA&ccb=7-5&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-5&oh=00_AfCgI100IU2KFElc0Xo-ngiCYBS2chBfBxpchDkHna42Lw&oe=64B54CCF",
+                  "account_badges": [],
+                  "feed_post_reshare_disabled": false,
+                  "show_account_transparency_details": true,
+                  "third_party_downloads_enabled": 0
+              },
+              "is_covered": false,
+              "is_ranked_comment": false,
+              "media_id": 3145912119832282782,
+              "private_reply_status": 0
+          },
+          "clips_tab_pinned_user_ids": [],
+          "comment_inform_treatment": {
+              "should_have_inform_treatment": false,
+              "text": "",
+              "url": null,
+              "action_type": null
+          },
+          "fundraiser_tag": {
+              "has_standalone_fundraiser": false
+          },
+          "sharing_friction_info": {
+              "should_have_sharing_friction": false,
+              "bloks_app_url": null,
+              "sharing_friction_payload": null
+          },
+          "xpost_deny_reason": "This post cannot be shared to Facebook.",
+          "caption_is_edited": false,
+          "original_media_has_visual_reply_media": false,
+          "like_and_view_counts_disabled": false,
+          "fb_user_tags": {
+              "in": []
+          },
+          "can_viewer_save": true,
+          "is_in_profile_grid": false,
+          "profile_grid_control_enabled": false,
+          "featured_products": [],
+          "is_comments_gif_composer_enabled": true,
+          "product_suggestions": [],
+          "user": {
+              "has_anonymous_profile_picture": true,
+              "all_media_count": 33,
+              "liked_clips_count": 0,
+              "fan_club_info": {
+                  "fan_club_id": null,
+                  "fan_club_name": null,
+                  "is_fan_club_referral_eligible": null,
+                  "fan_consideration_page_revamp_eligiblity": null,
+                  "is_fan_club_gifting_eligible": null,
+                  "subscriber_count": null,
+                  "connected_member_count": null,
+                  "autosave_to_exclusive_highlight": null,
+                  "has_enough_subscribers_for_ssc": null
+              },
+              "fbid_v2": 17841460317004769,
+              "transparency_product_enabled": false,
+              "text_post_app_take_a_break_setting": 0,
+              "interop_messaging_user_fbid": 17848558452010567,
+              "show_insights_terms": false,
+              "allowed_commenter_type": "any",
+              "is_unpublished": false,
+              "reel_auto_archive": "unset",
+              "can_boost_post": false,
+              "can_see_organic_insights": false,
+              "has_onboarded_to_text_post_app": true,
+              "text_post_app_joiner_number": 95787975,
+              "pk": 60438154566,
+              "pk_id": "60438154566",
+              "username": "threadstester1",
+              "full_name": "threads tester",
+              "is_private": false,
+              "profile_pic_url": "https://scontent-lhr8-1.cdninstagram.com/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=scontent-lhr8-1.cdninstagram.com&_nc_cat=1&_nc_ohc=d9GMadcVaNMAX8OxeS1&edm=AAAAAAABAAAA&ccb=7-5&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-5&oh=00_AfCgI100IU2KFElc0Xo-ngiCYBS2chBfBxpchDkHna42Lw&oe=64B54CCF",
+              "account_badges": [],
+              "feed_post_reshare_disabled": false,
+              "show_account_transparency_details": true,
+              "third_party_downloads_enabled": 0
+          },
+          "image_versions2": {
+              "candidates": []
+          },
+          "original_width": 612,
+          "original_height": 612,
+          "is_reshare_of_text_post_app_media_in_ig": false,
+          "comment_threading_enabled": false,
+          "max_num_visible_preview_comments": 2,
+          "has_more_comments": false,
+          "preview_comments": [],
+          "comment_count": 0,
+          "can_view_more_preview_comments": false,
+          "hide_view_all_comment_entrypoint": false,
+          "likers": [],
+          "shop_routing_user_id": null,
+          "can_see_insights_as_brand": false,
+          "is_organic_product_tagging_eligible": false,
+          "product_type": "text_post",
+          "is_paid_partnership": false,
+          "music_metadata": null,
+          "deleted_reason": 0,
+          "organic_tracking_token": "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjpmYWxzZSwidXVpZCI6ImY4MWVhNDFlYmY2NjRmNWNiOGUxMDM1ZWVlOTBmMjY3MzE0NTkxMjExOTgzMjI4Mjc4MiIsInNlcnZlcl90b2tlbiI6IjE2ODkyNDE5NzI5Nzd8MzE0NTkxMjExOTgzMjI4Mjc4Mnw2MDQzODE1NDU2Nnw2NzczNzc1YjJmODljNDhiNGI4ZTBlYTlmODYxYzA5NWRiMTc2ODYwOWRmYWIzMmI1OGUyYmY4OWM5MmFkZTlmIn0sInNpZ25hdHVyZSI6IiJ9",
+          "text_post_app_info": {
+              "is_post_unavailable": false,
+              "is_reply": false,
+              "reply_to_author": null,
+              "direct_reply_count": 0,
+              "self_thread_count": 0,
+              "reply_facepile_users": [],
+              "link_preview_attachment": null,
+              "can_reply": true,
+              "reply_control": "everyone",
+              "hush_info": null,
+              "share_info": {
+                  "can_repost": true,
+                  "is_reposted_by_viewer": false,
+                  "can_quote_post": true,
+                  "quoted_post": {
+                      "pk": 3141055616164096839,
+                      "id": "3141055616164096839_95561",
+                      "text_post_app_info": {
+                          "is_post_unavailable": false,
+                          "is_reply": false,
+                          "reply_to_author": null,
+                          "direct_reply_count": 3513,
+                          "self_thread_count": 0,
+                          "reply_facepile_users": [],
+                          "link_preview_attachment": null,
+                          "can_reply": true,
+                          "reply_control": "everyone",
+                          "hush_info": null,
+                          "share_info": {
+                              "can_repost": true,
+                              "is_reposted_by_viewer": false,
+                              "can_quote_post": true
+                          }
+                      },
+                      "caption": {
+                          "pk": "17990855999107063",
+                          "user_id": 95561,
+                          "text": "I've been getting some questions about deleting your account. To clarify, you can deactivate your Threads account, which hides your Threads profile and content, you can set your profile to private, and you can delete individual threads posts \u2013 all without deleting your Instagram account. Threads is powered by Instagram, so right now it's just one account, but we're looking into a way to delete your Threads account separately.",
+                          "type": 1,
+                          "created_at": 1688663030,
+                          "created_at_utc": 1688663030,
+                          "content_type": "comment",
+                          "status": "Active",
+                          "bit_flags": 0,
+                          "did_report_as_spam": false,
+                          "share_enabled": false,
+                          "user": {
+                              "pk": 95561,
+                              "pk_id": "95561",
+                              "username": "mosseri",
+                              "full_name": "Adam Mosseri",
+                              "is_private": false,
+                              "is_verified": true,
+                              "profile_pic_id": "3090458139926225297_95561",
+                              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/343392897_618515990300243_8088199406170073086_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=HX3vm4L7D44AX_09srG&edm=AMl8KrABAAAA&ccb=7-5&oh=00_AfBQ5qRqYCwxeopGHTpXx0LsYGnxpWEapsnHJpdkFruvEA&oe=64B4168D&_nc_sid=cd9b4f",
+                              "fbid_v2": "17841400946830001",
+                              "has_onboarded_to_text_post_app": true
+                          },
+                          "is_covered": false,
+                          "is_ranked_comment": false,
+                          "media_id": 3141055616164096839,
+                          "private_reply_status": 0
+                      },
+                      "taken_at": 1688663030,
+                      "device_timestamp": 28775508833101,
+                      "media_type": 19,
+                      "code": "CuXRXDdNOtH",
+                      "client_cache_key": "MzE0MTA1NTYxNjE2NDA5NjgzOQ==.2",
+                      "filter_type": 0,
+                      "product_type": "text_post",
+                      "organic_tracking_token": "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjp0cnVlLCJ1dWlkIjoiZjgxZWE0MWViZjY2NGY1Y2I4ZTEwMzVlZWU5MGYyNjczMTQxMDU1NjE2MTY0MDk2ODM5Iiwic2VydmVyX3Rva2VuIjoiMTY4OTI0MTk3MjYzNHwzMTQxMDU1NjE2MTY0MDk2ODM5fDYwNDM4MTU0NTY2fDUxZTliM2JkZjQ3ZDdkMDAyZTZlOGJmZjA0NDY2YjM3NWM4ZjQ1Yzc4YzYzMmNlYThlYmYwNDcyNDlkMDI1NzUifSwic2lnbmF0dXJlIjoiIn0=",
+                      "image_versions2": {
+                          "candidates": []
+                      },
+                      "original_width": 612,
+                      "original_height": 612,
+                      "video_versions": [],
+                      "like_count": 38544,
+                      "has_liked": false,
+                      "like_and_view_counts_disabled": false,
+                      "can_viewer_reshare": true,
+                      "integrity_review_decision": "pending",
+                      "top_likers": [],
+                      "user": {
+                          "pk": 95561,
+                          "pk_id": "95561",
+                          "username": "mosseri",
+                          "full_name": "Adam Mosseri",
+                          "is_private": false,
+                          "is_verified": true,
+                          "profile_pic_id": "3090458139926225297_95561",
+                          "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/343392897_618515990300243_8088199406170073086_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=HX3vm4L7D44AX_09srG&edm=AMl8KrABAAAA&ccb=7-5&oh=00_AfBQ5qRqYCwxeopGHTpXx0LsYGnxpWEapsnHJpdkFruvEA&oe=64B4168D&_nc_sid=cd9b4f",
+                          "friendship_status": {
+                              "following": false,
+                              "followed_by": false,
+                              "blocking": false,
+                              "muting": false,
+                              "is_private": false,
+                              "incoming_request": false,
+                              "outgoing_request": false,
+                              "text_post_app_pre_following": false,
+                              "is_bestie": false,
+                              "is_restricted": false,
+                              "is_feed_favorite": false,
+                              "is_eligible_to_subscribe": false
+                          },
+                          "has_anonymous_profile_picture": false,
+                          "has_onboarded_to_text_post_app": true,
+                          "account_badges": []
+                      }
+                  }
+              }
+          },
+          "integrity_review_decision": "pending",
+          "ig_media_sharing_disabled": false,
+          "has_shared_to_fb": 0,
+          "is_unified_video": false,
+          "should_request_ads": false,
+          "is_visual_reply_commenter_notice_enabled": true,
+          "commerciality_status": "not_commercial",
+          "explore_hide_comments": false,
+          "has_delayed_metadata": false
+      },
+      "upload_id": "1689241970",
       "status": "ok"
   }
   ```
