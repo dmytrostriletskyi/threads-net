@@ -193,6 +193,56 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
+    def mute_user(self, id: int) -> dict:
+        """
+        Mute a user.
+
+        Arguments:
+            id (int): a user's identifier.
+
+        Returns:
+            The muting information as a dict.
+        """
+        parameters = json.dumps(obj={
+            'target_posts_author_id': id,
+            'container_module': 'ig_text_feed_timeline',
+        })
+
+        encoded_parameters = quote(string=parameters, safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/friendships/mute_posts_or_story_from_follow/',
+            headers=self.headers,
+            data=f'signed_body=SIGNATURE.{encoded_parameters}',
+        )
+
+        return response.json()
+
+    def unmute_user(self, id: int) -> dict:
+        """
+        Unmute a user.
+
+        Arguments:
+            id (int): a user's identifier.
+
+        Returns:
+            The unmuting information as a dict.
+        """
+        parameters = json.dumps(obj={
+            'target_posts_author_id': id,
+            'container_module': 'ig_text_feed_timeline',
+        })
+
+        encoded_parameters = quote(string=parameters, safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/friendships/unmute_posts_or_story_from_follow/',
+            headers=self.headers,
+            data=f'signed_body=SIGNATURE.{encoded_parameters}',
+        )
+
+        return response.json()
+
     def get_thread(self, id: int) -> dict:
         """
         Get a thread.

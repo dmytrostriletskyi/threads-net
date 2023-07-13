@@ -1276,6 +1276,54 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
   ```
 </details>
 
+##### Mute
+
+`threads.private_api.mute_user` — mute a user.
+
+| Parameters |  Type   | Required | Restrictions | Description                      |
+|:----------:|:-------:|:--------:|:------------:|----------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to mute. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> muting = threads.private_api.mute_user(id=314216)
+  >>> muting
+  {
+      "friendship_status": {
+          "muting": true,
+          ...
+      },
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Unmute
+
+`threads.private_api.unmute_user` — unmute a user.
+
+| Parameters |  Type   | Required | Restrictions | Description                        |
+|:----------:|:-------:|:--------:|:------------:|------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to unmute. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> unmuting = threads.private_api.unmute_user(id=314216)
+  >>> unmuting
+  {
+      "friendship_status": {
+          "muting": false,
+          ...
+      },
+      "status": "ok"
+  }
+  ```
+</details>
+
 #### Thread
 
 ##### Get Identifier
