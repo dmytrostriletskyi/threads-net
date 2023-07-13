@@ -327,6 +327,42 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
+    def repost_thread(self, id: int) -> dict:
+        """
+        Repost a thread
+
+        Arguments:
+            id (int): a thread's identifier.
+
+        Returns:
+            The reposting information as a dict.
+        """
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/repost/create_repost/',
+            headers=self.headers,
+            data=f'media_id={id}',
+        )
+
+        return response.json()
+
+    def unrepost_thread(self, id: int) -> dict:
+        """
+        Undo a thread's repost.
+
+        Arguments:
+            id (int): a thread's identifier.
+
+        Returns:
+            The unreposting information as a dict.
+        """
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/repost/delete_text_app_repost/',
+            headers=self.headers,
+            data=f'original_media_id={id}',
+        )
+
+        return response.json()
+
     def _get_instagram_public_key(self) -> tuple[int, str]:
         """
         Get Instagram public key.

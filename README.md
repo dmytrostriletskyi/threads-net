@@ -52,6 +52,8 @@ Table of content:
       * [Delete](#delete)
       * [Like](#like)
       * [Unlike](#unlike)
+      * [Repost](#repost)
+      * [Unrepost](#unrepost)
 
 ## Disclaimer
 
@@ -1808,6 +1810,50 @@ thread. Basically, each thread is either a root or linked to another thread like
   ```python3
   >>> unliking = threads.private_api.unlike_thread(id=3141055616164096839)
   >>> unliking
+  {
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Repost
+
+`threads.private_api.repost_thread` — repost a thread.
+
+| Parameters |  Type   | Required | Restrictions | Description                          |
+|:----------:|:-------:|:--------:|:------------:|--------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a thread to repost. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> reposting = threads.private_api.repost_thread(id=3141055616164096839)
+  >>> reposting
+  {
+      "repost_id": 3145900181542784653,
+      "repost_fbid": 18008518438811136,
+      "reposted_at": 1689240547,
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Unrepost
+
+`threads.private_api.unrepost_thread` — undo a thread's repost. An identifier of a thread to unrepost is basically the
+identifier of the thread from `repost` method.
+
+| Parameters |  Type   | Required | Restrictions | Description                            |
+|:----------:|:-------:|:--------:|:------------:|----------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a thread to unrepost. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> unreposting = threads.private_api.unrepost_thread(id=3141055616164096839)
+  >>> unreposting
   {
       "status": "ok"
   }
