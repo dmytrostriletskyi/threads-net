@@ -21,7 +21,6 @@ Table of content:
 * [API](#api)
   * [Disclaimer](#disclaimer-1)
   * [Troubleshooting](#troubleshooting)
-    * [User Identifier](#user-identifier)
     * [Two-Factor Authentication (2FA)](#two-factor-authentication-2fa)
   * [Terminology](#terminology)
   * [Initialization](#initialization)
@@ -137,19 +136,6 @@ combine two approaches: for instance, prefer `public API` for read-only endpoint
 endpoints or even build a retry mechanism (try public one, if failed, try private one).
 
 ### Troubleshooting
-
-#### User Identifier
-
-If you use `public API`, you should know that there is one really unstable method — getting a user's identifier 
-by a username (`threads.public_api.get_user_id`) because under the hood it does retrieving and parsing a plain `HTML`
-instead of regular `GrapQL` or `RESTful API`. The returning `HTML` is inconsistent from time to time as well `API` 
-itself is broken not responding with any data at all.
-
-Until the library maintainers find more stable way, you have two options:
-
-* Retrieve a user's identifier manually from a public service like this one — https://commentpicker.com/instagram-user-id.php.
-* Use `private API` method (`threads.private_api.get_user_id`) which use much more stable endpoint. You can just fetch
-  a user identifier once via it and then pass it to `public API` and it will work.
 
 #### Two-Factor Authentication (2FA)
 

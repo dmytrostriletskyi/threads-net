@@ -203,10 +203,12 @@ class PrivateThreadsApi(AbstractThreadsApi):
         Returns:
             The muting information as a dict.
         """
-        parameters = json.dumps(obj={
-            'target_posts_author_id': id,
-            'container_module': 'ig_text_feed_timeline',
-        })
+        parameters = json.dumps(
+            obj={
+                'target_posts_author_id': id,
+                'container_module': 'ig_text_feed_timeline',
+            }
+        )
 
         encoded_parameters = quote(string=parameters, safe="!~*'()")
 
@@ -228,10 +230,12 @@ class PrivateThreadsApi(AbstractThreadsApi):
         Returns:
             The unmuting information as a dict.
         """
-        parameters = json.dumps(obj={
-            'target_posts_author_id': id,
-            'container_module': 'ig_text_feed_timeline',
-        })
+        parameters = json.dumps(
+            obj={
+                'target_posts_author_id': id,
+                'container_module': 'ig_text_feed_timeline',
+            }
+        )
 
         encoded_parameters = quote(string=parameters, safe="!~*'()")
 
@@ -253,10 +257,12 @@ class PrivateThreadsApi(AbstractThreadsApi):
         Returns:
             The restricting information as a dict.
         """
-        parameters = json.dumps(obj={
-            'user_ids': id,
-            'container_module': 'ig_text_feed_timeline',
-        })
+        parameters = json.dumps(
+            obj={
+                'user_ids': id,
+                'container_module': 'ig_text_feed_timeline',
+            }
+        )
 
         encoded_parameters = quote(string=parameters, safe="!~*'()")
 
@@ -278,10 +284,12 @@ class PrivateThreadsApi(AbstractThreadsApi):
         Returns:
             The unrestricting information as a dict.
         """
-        parameters = json.dumps(obj={
-            'target_user_id': id,
-            'container_module': 'ig_text_feed_timeline',
-        })
+        parameters = json.dumps(
+            obj={
+                'target_user_id': id,
+                'container_module': 'ig_text_feed_timeline',
+            }
+        )
 
         encoded_parameters = quote(string=parameters, safe="!~*'()")
 
@@ -303,11 +311,13 @@ class PrivateThreadsApi(AbstractThreadsApi):
         Returns:
             The blocking information as a dict.
         """
-        parameters = json.dumps(obj={
-            'user_id': id,
-            'surface': 'ig_text_feed_timeline',
-            'is_auto_block_enabled': "true",
-        })
+        parameters = json.dumps(
+            obj={
+                'user_id': id,
+                'surface': 'ig_text_feed_timeline',
+                'is_auto_block_enabled': 'true',
+            }
+        )
 
         encoded_parameters = quote(string=parameters, safe="!~*'()")
 
@@ -329,10 +339,12 @@ class PrivateThreadsApi(AbstractThreadsApi):
         Returns:
             The unblocking information as a dict.
         """
-        parameters = json.dumps(obj={
-            'user_id': id,
-            'container_module': 'ig_text_feed_timeline',
-        })
+        parameters = json.dumps(
+            obj={
+                'user_id': id,
+                'container_module': 'ig_text_feed_timeline',
+            }
+        )
 
         encoded_parameters = quote(string=parameters, safe="!~*'()")
 
@@ -497,7 +509,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
     def repost_thread(self, id: int) -> dict:
         """
-        Repost a thread
+        Repost a thread.
 
         Arguments:
             id (int): a thread's identifier.

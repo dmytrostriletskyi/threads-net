@@ -1,9 +1,6 @@
 """
 Provide implementation of abstract Threads API.
 """
-import re
-
-import requests
 
 
 class AbstractThreadsApi:
@@ -26,7 +23,6 @@ class AbstractThreadsApi:
             'Content-Type': 'application/x-www-form-urlencoded',
             'Origin': 'https://www.threads.net',
             'Pragma': 'no-cache',
-            'Referer': 'https://www.instagram.com',
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
             'Sec-Fetch-Site': 'cross-site',
@@ -37,26 +33,6 @@ class AbstractThreadsApi:
                 'AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.1.2 Safari/605.1.15'
             ),
         }
-
-    def get_user_id(self, username: str) -> int:
-        """
-        Get a user's identifier.
-
-        Arguments:
-            username (str): a user's username.
-
-        Returns:
-            The user's identifier as an integer.
-        """
-        response = requests.get(
-            url=f'https://www.instagram.com/{username}',
-            headers=self.fetch_html_headers,
-        )
-
-        user_id_key_value = re.search('"user_id":"(\\d+)",', response.text).group()
-        user_id = re.search('\\d+', user_id_key_value).group()
-
-        return int(user_id)
 
     def get_thread_id(self, url_id: str) -> int:
         """

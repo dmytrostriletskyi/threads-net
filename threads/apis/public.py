@@ -39,6 +39,36 @@ class PublicThreadsApi(AbstractThreadsApi):
             'X-IG-App-ID': '238260118697367',
         }
 
+    def get_user_id(self, username: str) -> int:
+        """
+        Get a user's identifier.
+
+        Arguments:
+            username (str): a user's username.
+
+        Returns:
+            The user's identifier as an integer.
+        """
+        headers = self.fetch_html_headers | {
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'cross-site',
+            'Sec-Fetch-User': '?1',
+            'Upgrade-Insecure-Requests': '1',
+            'User-Agent': (
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) '
+                'AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.1.2 Safari/605.1.15'
+            ),
+        }
+
+        response = requests.get(
+            url=f'https://www.threads.net/@{username}',
+            headers=headers,
+        )
+
+        user_id = re.search('"props":{"user_id":"(\\d+)"},', response.text).group(1)
+        return int(user_id)
+
     def get_user(self, id: int) -> dict:
         """
         Get a user.
