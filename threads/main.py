@@ -1,6 +1,10 @@
 """
 Threads (threads.net) API wrapper implementation.
 """
+from __future__ import annotations
+
+from typing import Optional
+
 from threads.apis import (
     PrivateThreadsApi,
     PublicThreadsApi,
@@ -12,7 +16,11 @@ class Threads:
     Threads (threads.net) API wrapper implementation.
     """
 
-    def __init__(self, username: str = None, password: str = None):
+    def __init__(
+        self: Threads,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+    ) -> None:
         """
         Construct the object.
 

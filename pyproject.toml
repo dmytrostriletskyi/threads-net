@@ -1,20 +1,26 @@
-[tool.black]
-target-version = ['py39']
+[tool.ruff]
+target-version = "py39"
+src = ["src"]
+select = ["ALL"]
 line-length = 120
-skip-string-normalization = 1
-include = '\.pyi?$'
-exclude = '''
-(
-  /(
-      \.eggs
-    | \.git
-    | \.tox
-    | \.venv
-    | venv
-    | _build
-    | buck-out
-    | build
-    | dist
-  )/
-)
-'''
+ignore = [
+    "A002",
+    "D",
+    "EM101",
+    "PTH123",
+    "TRY003",
+    "RET504",
+    "S113",
+    "S311",
+    "UP007",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = [
+    "D104",
+    "F401",
+]
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "single"

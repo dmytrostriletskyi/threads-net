@@ -62,5 +62,3 @@ jobs:
         run: make install-requirements
       - name: Check code quality
         run: make check-code-quality
-      - name: Check YAML standards
-        run: make check-yaml-standards

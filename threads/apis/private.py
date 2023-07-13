@@ -1,6 +1,8 @@
 """
 Provide implementation of private Threads API.
 """
+from __future__ import annotations
+
 import base64
 import json
 import mimetypes
@@ -29,7 +31,11 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
     INSTAGRAM_API_URL = 'https://i.instagram.com/api/v1'
 
-    def __init__(self, username: str = None, password: str = None):
+    def __init__(
+        self: PrivateThreadsApi,
+        username: str | None = None,
+        password: str | None = None,
+    ) -> None:
         """
         Construct the object.
 
@@ -61,7 +67,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         self.mimetypes = mimetypes.MimeTypes()
 
-    def get_user_id(self, username: str) -> int:
+    def get_user_id(self: PrivateThreadsApi, username: str) -> int:
         """
         Get a user's identifier.
 
@@ -78,7 +84,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return user_id_as_int
 
-    def get_user(self, id: int) -> dict:
+    def get_user(self: PrivateThreadsApi, id: int) -> dict:
         """
         Get a user.
 
@@ -91,7 +97,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
         response = requests.get(url=f'{self.INSTAGRAM_API_URL}/users/{id}/info/', headers=self.headers)
         return response.json()
 
-    def search_user(self, query: str) -> dict:
+    def search_user(self: PrivateThreadsApi, query: str) -> dict:
         """
         Search for a user.
 
@@ -108,7 +114,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def get_user_followers(self, id: int) -> dict:
+    def get_user_followers(self: PrivateThreadsApi, id: int) -> dict:
         """
         Get a user's followers.
 
@@ -125,7 +131,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def get_user_following(self, id: int) -> dict:
+    def get_user_following(self: PrivateThreadsApi, id: int) -> dict:
         """
         Get a user's following.
 
@@ -142,7 +148,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def get_friendship_status(self, id: int) -> dict:
+    def get_friendship_status(self: PrivateThreadsApi, id: int) -> dict:
         """
         Get a friendship status with a user.
 
@@ -159,7 +165,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def follow_user(self, id: int) -> dict:
+    def follow_user(self: PrivateThreadsApi, id: int) -> dict:
         """
         Follow a user.
 
@@ -176,7 +182,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def unfollow_user(self, id: int) -> dict:
+    def unfollow_user(self: PrivateThreadsApi, id: int) -> dict:
         """
         Unfollow a user.
 
@@ -193,7 +199,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def mute_user(self, id: int) -> dict:
+    def mute_user(self: PrivateThreadsApi, id: int) -> dict:
         """
         Mute a user.
 
@@ -207,7 +213,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             obj={
                 'target_posts_author_id': id,
                 'container_module': 'ig_text_feed_timeline',
-            }
+            },
         )
 
         encoded_parameters = quote(string=parameters, safe="!~*'()")
@@ -220,7 +226,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def unmute_user(self, id: int) -> dict:
+    def unmute_user(self: PrivateThreadsApi, id: int) -> dict:
         """
         Unmute a user.
 
@@ -234,7 +240,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             obj={
                 'target_posts_author_id': id,
                 'container_module': 'ig_text_feed_timeline',
-            }
+            },
         )
 
         encoded_parameters = quote(string=parameters, safe="!~*'()")
@@ -247,7 +253,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def restrict_user(self, id: int) -> dict:
+    def restrict_user(self: PrivateThreadsApi, id: int) -> dict:
         """
         Restrict a user.
 
@@ -261,7 +267,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             obj={
                 'user_ids': id,
                 'container_module': 'ig_text_feed_timeline',
-            }
+            },
         )
 
         encoded_parameters = quote(string=parameters, safe="!~*'()")
@@ -274,7 +280,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def unrestrict_user(self, id: int) -> dict:
+    def unrestrict_user(self: PrivateThreadsApi, id: int) -> dict:
         """
         Unrestrict a user.
 
@@ -288,7 +294,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             obj={
                 'target_user_id': id,
                 'container_module': 'ig_text_feed_timeline',
-            }
+            },
         )
 
         encoded_parameters = quote(string=parameters, safe="!~*'()")
@@ -301,7 +307,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def block_user(self, id: int) -> dict:
+    def block_user(self: PrivateThreadsApi, id: int) -> dict:
         """
         Block a user.
 
@@ -316,7 +322,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
                 'user_id': id,
                 'surface': 'ig_text_feed_timeline',
                 'is_auto_block_enabled': 'true',
-            }
+            },
         )
 
         encoded_parameters = quote(string=parameters, safe="!~*'()")
@@ -329,7 +335,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def unblock_user(self, id: int) -> dict:
+    def unblock_user(self: PrivateThreadsApi, id: int) -> dict:
         """
         Unblock a user.
 
@@ -343,7 +349,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             obj={
                 'user_id': id,
                 'container_module': 'ig_text_feed_timeline',
-            }
+            },
         )
 
         encoded_parameters = quote(string=parameters, safe="!~*'()")
@@ -356,7 +362,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def get_thread(self, id: int) -> dict:
+    def get_thread(self: PrivateThreadsApi, id: int) -> dict:
         """
         Get a thread.
 
@@ -373,7 +379,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def get_thread_likers(self, id: int) -> dict:
+    def get_thread_likers(self: PrivateThreadsApi, id: int) -> dict:
         """
         Get a thread's likers.
 
@@ -390,7 +396,13 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def create_thread(self, caption: str, url: str = None, image_url: str = None, reply_to: int = None) -> dict:
+    def create_thread(
+        self: PrivateThreadsApi,
+        caption: str,
+        url: str | None = None,
+        image_url: str | None = None,
+        reply_to: int | None = None,
+    ) -> dict:
         """
         Create a thread.
 
@@ -456,7 +468,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def delete_thread(self, id: int) -> dict:
+    def delete_thread(self: PrivateThreadsApi, id: int) -> dict:
         """
         Delete a thread.
 
@@ -473,7 +485,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def like_thread(self, id: int) -> dict:
+    def like_thread(self: PrivateThreadsApi, id: int) -> dict:
         """
         Like a thread.
 
@@ -490,7 +502,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def unlike_thread(self, id: int) -> dict:
+    def unlike_thread(self: PrivateThreadsApi, id: int) -> dict:
         """
         Unlike a thread.
 
@@ -507,7 +519,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def repost_thread(self, id: int) -> dict:
+    def repost_thread(self: PrivateThreadsApi, id: int) -> dict:
         """
         Repost a thread.
 
@@ -525,7 +537,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def unrepost_thread(self, id: int) -> dict:
+    def unrepost_thread(self: PrivateThreadsApi, id: int) -> dict:
         """
         Undo a thread's repost.
 
@@ -543,7 +555,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def quote_thread(self, id: int, caption: str) -> dict:
+    def quote_thread(self: PrivateThreadsApi, id: int, caption: str) -> dict:
         """
         Quote a thread.
 
@@ -586,7 +598,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def _get_instagram_public_key(self) -> tuple[int, str]:
+    def _get_instagram_public_key(self: PrivateThreadsApi) -> tuple[int, str]:
         """
         Get Instagram public key.
 
@@ -598,7 +610,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
         parameters_as_string = json.dumps(
             {
                 'id': str(uuid4()),
-            }
+            },
         )
 
         encoded_parameters = quote(string=parameters_as_string, safe="!~*'()")
@@ -618,7 +630,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return int(public_key_key_id), public_key
 
-    def _encrypt_password(self, password) -> tuple[str, str]:
+    def _encrypt_password(self: PrivateThreadsApi, password: str) -> tuple[str, str]:
         """
         Encrypt a password.
 
@@ -681,7 +693,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return password_as_encryption_sequence_as_base64, str(current_timestamp)
 
-    def _get_instagram_api_token(self) -> str:
+    def _get_instagram_api_token(self: PrivateThreadsApi) -> str:
         """
         Get a token for Instagram API.
 
@@ -701,14 +713,14 @@ class PrivateThreadsApi(AbstractThreadsApi):
                     'credential_type': 'password',
                     'device_id': self.android_device_id,
                 },
-            }
+            },
         )
 
         bk_client_context_as_string = json.dumps(
             {
                 'bloks_version': block_version,
                 'styles_id': 'instagram',
-            }
+            },
         )
 
         params = quote(string=parameters_as_string, safe="!~*'()")
@@ -732,7 +744,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return token
 
-    def _upload_image(self, url: str) -> int:
+    def _upload_image(self: PrivateThreadsApi, url: str) -> int:
         """
         Upload an image.
 
@@ -794,7 +806,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
                     'lib_name': 'moz',
                     'lib_version': '3.1.m',
                     'quality': '80',
-                }
+                },
             ),
             'xsharing_user_ids': json.dumps([]),
             'retry_context': json.dumps(
@@ -802,7 +814,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
                     'num_step_auto_retry': '0',
                     'num_reupload': '0',
                     'num_step_manual_retry': '0',
-                }
+                },
             ),
             'IG-FB-Xpost-entry-point-v2': 'feed',
         }
@@ -825,8 +837,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             headers=headers,
         )
 
-        if response.status_code != HttpStatus.OK:
-            if file_data is None and file_length is None:
-                raise ValueError('Image uploading has been failed. Please, create GitHub issue')
+        if response.status_code not in (HttpStatus.OK, HttpStatus.CREATED):
+            raise ValueError('Image uploading has been failed. Please, create GitHub issue')
 
         return response.json().get('upload_id')

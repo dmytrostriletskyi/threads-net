@@ -8,7 +8,7 @@ class AbstractThreadsApi:
     Abstract API implementation.
     """
 
-    def __init__(self):
+    def __init__(self: 'AbstractThreadsApi') -> None:
         """
         Construct the object.
         """
@@ -34,7 +34,7 @@ class AbstractThreadsApi:
             ),
         }
 
-    def get_thread_id(self, url_id: str) -> int:
+    def get_thread_id(self: 'AbstractThreadsApi', url_id: str) -> int:
         """
         Get a thread's identifier.
 
