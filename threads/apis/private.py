@@ -243,7 +243,6 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-
     def restrict_user(self, id: int) -> dict:
         """
         Restrict a user.
@@ -288,6 +287,57 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         response = requests.post(
             url=f'{self.INSTAGRAM_API_URL}/restrict_action/unrestrict/',
+            headers=self.headers,
+            data=f'signed_body=SIGNATURE.{encoded_parameters}',
+        )
+
+        return response.json()
+
+    def block_user(self, id: int) -> dict:
+        """
+        Block a user.
+
+        Arguments:
+            id (int): a user's identifier.
+
+        Returns:
+            The blocking information as a dict.
+        """
+        parameters = json.dumps(obj={
+            'user_id': id,
+            'surface': 'ig_text_feed_timeline',
+            'is_auto_block_enabled': "true",
+        })
+
+        encoded_parameters = quote(string=parameters, safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/friendships/block/{id}/',
+            headers=self.headers,
+            data=f'signed_body=SIGNATURE.{encoded_parameters}',
+        )
+
+        return response.json()
+
+    def unblock_user(self, id: int) -> dict:
+        """
+        Unblock a user.
+
+        Arguments:
+            id (int): a user's identifier.
+
+        Returns:
+            The unblocking information as a dict.
+        """
+        parameters = json.dumps(obj={
+            'user_id': id,
+            'container_module': 'ig_text_feed_timeline',
+        })
+
+        encoded_parameters = quote(string=parameters, safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/friendships/unblock/{id}/',
             headers=self.headers,
             data=f'signed_body=SIGNATURE.{encoded_parameters}',
         )

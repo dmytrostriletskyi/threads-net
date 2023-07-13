@@ -46,9 +46,11 @@ Table of content:
       * [Follow](#follow)
       * [Unfollow](#unfollow)
       * [Mute](#mute)
+      * [Unmute](#unmute)
       * [Restrict](#restrict)
       * [Unrestrict](#unrestrict)
-      * [Quote](#quote)
+      * [Block](#block)
+      * [Unblock](#unblock)
     * [Thread](#thread-1)
       * [Get Identifier](#get-identifier-3)
       * [Get By Identifier](#get-by-identifier-3)
@@ -1408,6 +1410,54 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
       ],
       "status": "ok"
   }
+  ```
+</details>
+
+##### Block
+
+`threads.private_api.block_user` — block a user.
+
+| Parameters |  Type   | Required | Restrictions | Description                       |
+|:----------:|:-------:|:--------:|:------------:|-----------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to block. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> blocking = threads.private_api.block_user(id=314216)
+  >>> blocking
+  {
+      "friendship_status": {
+          "blocking": true,
+          ...
+      },
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Unblock
+
+`threads.private_api.unblock_user` — unblock a user.
+
+| Parameters |  Type   | Required | Restrictions | Description                         |
+|:----------:|:-------:|:--------:|:------------:|-------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to unblock. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> unblocking = threads.private_api.unblock_user(id=314216)
+  >>> unblocking
+  {
+    "friendship_status": {
+        "blocking": false,
+        ...
+    },
+    "status": "ok"
+}
   ```
 </details>
 
