@@ -185,7 +185,7 @@ If you are going to use only `private API` or both `private` and `public` `APIs`
 | `username` | String  |   Yes    |      -       | A user's username which goes along with `@` like `zuck`. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> user_id = threads.public_api.get_user_id(username='zuck')
@@ -203,7 +203,7 @@ If you are going to use only `private API` or both `private` and `public` `APIs`
 |    `id`    | Integer |   Yes    |     `>0`     | A user's identifier. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> user = threads.public_api.get_user(id=314216)
@@ -259,7 +259,7 @@ If you are going to use only `private API` or both `private` and `public` `APIs`
 |    `id`    | Integer |   Yes    |     `>0`     | A user's identifier. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> user_threads = threads.public_api.get_user_threads(id=314216)
@@ -349,7 +349,7 @@ If you are going to use only `private API` or both `private` and `public` `APIs`
 |    `id`    | Integer |   Yes    |     `>0`     | A user's identifier. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> user_replies = threads.public_api.get_user_replies(id=314216)
@@ -586,7 +586,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |  `url_id`  | String |   Yes    |      -       | A thread's `URL` identifier. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> thread_id = threads.public_api.get_thread_id(url_id='CuXFPIeLLod')
@@ -604,7 +604,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | A thread's identifier. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> thread = threads.public_api.get_thread(id=3141002295235099165)
@@ -735,7 +735,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | A thread's identifier. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> thread_likers = threads.public_api.get_thread_likers(id=3141002295235099165)
@@ -778,7 +778,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 | `username` | String  |   Yes    |      -       | A user's username which goes along with `@` like `zuck`. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> user_id = threads.private_api.get_user_id(username='zuck')
@@ -796,7 +796,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | A user's identifier. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> user = threads.private_api.get_user(id=314216)
@@ -994,7 +994,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | A user's identifier. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> user_followers = threads.private_api.get_user_followers(id=314216)
@@ -1045,7 +1045,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | A user's identifier. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> user_following = threads.private_api.get_user_following(id=314216)
@@ -1098,7 +1098,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to get friendship status with. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> friendship_status = threads.private_api.get_friendship_status(id=314216)
@@ -1135,7 +1135,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |  `query`   | String |   Yes    |      -       | A search query. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> found_users = threads.private_api.search_user(query='zuck')
@@ -1197,7 +1197,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to follow. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> following = threads.private_api.follow_user(id=314216)
@@ -1232,7 +1232,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to unfollow. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> following = threads.private_api.unfollow_user(id=314216)
@@ -1266,7 +1266,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to mute. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> muting = threads.private_api.mute_user(id=314216)
@@ -1290,7 +1290,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to unmute. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> unmuting = threads.private_api.unmute_user(id=314216)
@@ -1314,7 +1314,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to restrict. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> restricting = threads.private_api.restrict_user(id=314216)
@@ -1361,7 +1361,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to unrestrict. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> unrestricting = threads.private_api.unrestrict_user(id=314216)
@@ -1408,7 +1408,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to block. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> blocking = threads.private_api.block_user(id=314216)
@@ -1432,7 +1432,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to unblock. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> unblocking = threads.private_api.unblock_user(id=314216)
@@ -1459,7 +1459,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |  `url_id`  | String |   Yes    |      -       | A thread's `URL` identifier. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> thread_id = threads.private_api.get_thread_id(url_id='CuXFPIeLLod')
@@ -1477,7 +1477,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | A thread's identifier. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> thread = threads.private_api.get_thread(id=3141002295235099165)
@@ -1608,7 +1608,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |    `id`    | Integer |   Yes    |     `>0`     | A thread's identifier. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> thread_likers = threads.private_api.get_thread_likers(id=3141055616164096839)
@@ -1651,7 +1651,7 @@ thread. Basically, each thread is either a root or linked to another thread like
 | `reply_to`  | String |    No    |      -       | An identifier of a thread to reply to.        |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> created_thread = threads.private_api.create_thread(
@@ -1964,6 +1964,14 @@ thread. Basically, each thread is either a root or linked to another thread like
   ```
 </details>
 
+<details>
+  <summary>Open UI example</summary>
+
+  ![](./assets/examples/create-thread-caption.png)
+  ![](./assets/examples/create-thread-url.png)
+  ![](./assets/examples/create-thread-image.png)
+</details>
+
 ##### Delete
 
 `threads.private_api.delete_thread` — delete a thread.
@@ -1973,7 +1981,7 @@ thread. Basically, each thread is either a root or linked to another thread like
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a thread to delete. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> deletion = threads.private_api.delete_thread(id=3141055616164096839)
@@ -1995,7 +2003,7 @@ thread. Basically, each thread is either a root or linked to another thread like
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a thread to like. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> liking = threads.private_api.like_thread(id=3141055616164096839)
@@ -2015,7 +2023,7 @@ thread. Basically, each thread is either a root or linked to another thread like
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a thread to unlike. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> unliking = threads.private_api.unlike_thread(id=3141055616164096839)
@@ -2035,7 +2043,7 @@ thread. Basically, each thread is either a root or linked to another thread like
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a thread to repost. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> reposting = threads.private_api.repost_thread(id=3141055616164096839)
@@ -2049,6 +2057,12 @@ thread. Basically, each thread is either a root or linked to another thread like
   ```
 </details>
 
+<details>
+  <summary>Open UI example</summary>
+
+  ![](./assets/examples/repost-thread.png)
+</details>
+
 ##### Unrepost
 
 `threads.private_api.unrepost_thread` — undo a thread's repost. An identifier of a thread to unrepost is basically the
@@ -2059,7 +2073,7 @@ identifier of the thread from `repost` method.
 |    `id`    | Integer |   Yes    |     `>0`     | An identifier of a thread to unrepost. |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> unreposting = threads.private_api.unrepost_thread(id=3141055616164096839)
@@ -2080,7 +2094,7 @@ identifier of the thread from `repost` method.
 | `caption`  | String  |   Yes    |      -       | A quote's caption.                  |
 
 <details>
-  <summary>Open example</summary>
+  <summary>Open code example</summary>
   
   ```python3
   >>> quoting = threads.private_api.quote_thread(id=3141055616164096839, caption='Hello, world!')
@@ -2367,4 +2381,10 @@ identifier of the thread from `repost` method.
       "status": "ok"
   }
   ```
+</details>
+
+<details>
+  <summary>Open UI example</summary>
+
+  ![](./assets/examples/quote-thread.png)
 </details>
