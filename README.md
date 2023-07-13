@@ -41,6 +41,7 @@ Table of content:
       * [Get By Identifier](#get-by-identifier-2)
       * [Get Followers](#get-followers)
       * [Get Following](#get-following)
+      * [Get Friendship Status](#get-friendship-status)
       * [Search](#search)
       * [Follow](#follow)
       * [Unfollow](#unfollow)
@@ -1102,6 +1103,43 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
       "next_max_id": "100",
       "has_more": false,
       "should_limit_list_of_followers": false,
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Get Friendship Status
+
+`threads.private_api.get_friendship_status` — get a friendship status with a user.
+
+| Parameters |  Type   | Required | Restrictions | Description                                            |
+|:----------:|:-------:|:--------:|:------------:|--------------------------------------------------------|
+|    `id`    | Integer |   Yes    |     `>0`     | An identifier of a user to get friendship status with. |
+
+<details>
+  <summary>Open example</summary>
+  
+  ```python3
+  >>> friendship_status = threads.private_api.get_friendship_status(id=314216)
+  >>> friendship_status
+  {
+      "blocking": false,
+      "followed_by": false,
+      "following": false,
+      "incoming_request": false,
+      "is_bestie": false,
+      "is_blocking_reel": false,
+      "is_muting_reel": false,
+      "is_private": false,
+      "is_restricted": false,
+      "muting": false,
+      "outgoing_request": false,
+      "text_post_app_pre_following": false,
+      "is_feed_favorite": false,
+      "is_eligible_to_subscribe": false,
+      "is_supervised_by_viewer": false,
+      "is_guardian_of_viewer": false,
+      "is_muting_notes": false,
       "status": "ok"
   }
   ```

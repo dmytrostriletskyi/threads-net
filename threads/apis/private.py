@@ -142,6 +142,23 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
+    def get_friendship_status(self, id: int) -> dict:
+        """
+        Get a friendship status with a user.
+
+        Arguments:
+            id (int): An identifier of a user to get friendship status with.
+
+        Returns:
+            The friendship status as a dict.
+        """
+        response = requests.get(
+            url=f'{self.INSTAGRAM_API_URL}/friendships/show/{id}/',
+            headers=self.headers,
+        )
+
+        return response.json()
+
     def follow_user(self, id: int) -> dict:
         """
         Follow a user.
