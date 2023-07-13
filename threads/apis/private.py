@@ -249,19 +249,21 @@ class PrivateThreadsApi(AbstractThreadsApi):
         if reply_to is not None:
             parameters_as_string['text_post_app_info']['reply_id'] = reply_to
 
-        endpoint = None
+        if url is None and image_url is None:
+            endpoint = '/media/configure_text_only_post/'
+            parameters_as_string['publish_mode'] = 'text_post'
 
-        if url is not None:
+        elif url is not None and image_url is None:
             endpoint = '/media/configure_text_only_post/'
             parameters_as_string['publish_mode'] = 'text_post'
             parameters_as_string['text_post_app_info']['link_attachment_url'] = url
 
-        if image_url is not None:
+        elif url is None and image_url is not None:
             endpoint = '/media/configure_text_post_app_feed/'
             parameters_as_string['upload_id'] = self._upload_image(url=image_url)
             parameters_as_string['scene_capture_type'] = ''
 
-        if endpoint is None:
+        else:
             raise ValueError('Provided image URL does not match required format. Please, create GitHub issue')
 
         encoded_parameters = quote(string=json.dumps(obj=parameters_as_string), safe="!~*'()")
