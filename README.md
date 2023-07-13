@@ -19,6 +19,7 @@ Table of content:
   * [How to install](#how-to-install)
   * [Examples](#examples)
 * [API](#api)
+  * [Disclaimer](#disclaimer-1)
   * [Troubleshooting](#troubleshooting)
     * [User Identifier](#user-identifier)
     * [Two-Factor Authentication (2FA)](#two-factor-authentication-2fa)
@@ -54,35 +55,37 @@ Table of content:
 
 ## Disclaimer
 
-* As `Threads` are backed by `Instagram`, those are couples in terms of `APIs`. For example, there is a way to fetch a
-  user or thread information from both `Threads` and `Instagram` `APIs`. But there are unique `API` endpoints that exist 
-  only in one of the `APIs`, for instance, to create a post, there is only `Instagram API` endpoint.
-* To interact with `Threads API` there is no need for any authorization. On the other hand, to interact with 
-  `Instagram API`, you have to specify `Instagram` username and password (as like you do when you log in to `Threads` 
-  mobile application). 
-* This project is unofficial and reverse-engineered, it means: 
-  * That the library would be pretending being a mobile phone or web user (via proper `HTTP` headers and other things). 
-    Thus, you might face `rate limits` (because pretending is never ideal) or even your account in `Threads` and/or 
-    `Instagram` might be suspended if you mess up with logining or sending too much requests. 
-  * That `Threads` and `Instagram` `APIs` which are used by a library are not provided as public `API` and developed to 
-    be used internally (`Meta'`s `back-end` developers for `front-end` developers) without any intention to reveal it. 
-    Thus, expect activate development on their side and not stable work of the `APIs` and therefore the library.
+* As `Threads` is backed by `Instagram`, those are coupled in terms of `APIs`. For example, there is a way to fetch a
+  `Threads` user or a thread from both `Threads` and `Instagram` `APIs`. But there are unique `API` endpoints that 
+  exist only in one of the `APIs`. For instance, to create a thread, there is only `Instagram API` endpoint.
+* This project is unofficial and reverse-engineered, it means that:
+  * The library would be pretending being a mobile phone or a web user (via proper `HTTP` headers and other things).
+    Thus, you might face `rate limits` (because pretending is never ideal) or even your `Threads` and/or 
+    `Instagram` account might be suspended if you mess up with logining or sending too much requests. 
+  * `Threads` and `Instagram` `APIs` are not provided as public `API` and developed to be used internally
+    (`Meta'`s `back-end` developers made it only for `Meta'`s `front-end/mobile` developers) without any intention to
+    reveal externally in any way. So, they would not inform the community about any changes they are going to do or done
+    and would not support backward compatibility. Thus, expect `APIs` unstable work sometimes and therefore the library,
+    and be patient waiting for the fixes.
 
 ## Roadmap
 
-Check what is already done in the table of content above, below placed only things to be done: 
+Check what is already done in the table of content above, below the only things to be done are placed: 
 
-- [ ] Private `API`
-  - [ ] Get a user's threads
-  - [ ] Get a user's replies
-  - [ ] Get a thread's likers
-  - [ ] Create a thread
-    - [ ] With image
-    - [ ] With multiple images
-    - [ ] With link attachment
-  - [ ] Delete a thread
-  - [ ] Embed a thread
-  - [ ] Manage auth for accounts with enabled 2FA
+- [ ] Mute a user
+- [ ] Unmute a user
+- [ ] Restrict a user
+- [ ] Unrestrict a user
+- [ ] Block a user
+- [ ] Unblock a user
+- [ ] Repost a user
+- [ ] Unrepost a user
+- [ ] Delete a thread
+- [ ] Embed a thread
+- [ ] Quote a thread
+- [ ] Feed (threads, replies, recommendations, notifications, seen notifications)
+- [ ] Session configuration (save `API` tokens and other settings)
+- [ ] Manage auth for accounts with enabled 2FA
 
 ## Getting started
 
@@ -119,11 +122,26 @@ ls examples
 
 ## API
 
+### Disclaimer
+
+To interact with `Threads API`, there is no need for any authorization, so in the library it is called `public API`.
+On the other hand, to interact with `Instagram API`, you have to specify `Instagram` username and password (as like
+you do when you log in to `Threads` mobile application), so in the library it is called `private API`.
+
+* `Public API` has only read-only endpoints. In the same time, `private API` has both read and write endpoints. 
+  `Public API` much less stable than `private API` (because `private API` is used for `Instagram API` and `Instagram` 
+  is stable product in general already).
+* `Public API` less risky to get `rate limits` or to have an account in `Threads` and/or `Instagram` be suspended.
+
+So, it is a trade-off between stability, bugs and `rate limits` and/or `suspension`. But with the library you can
+combine two approaches: for instance, prefer `public API` for read-only endpoints and `private API` for write-only
+endpoints or even build a retry mechanism (try public one, if failed, try private one).
+
 ### Troubleshooting
 
 #### User Identifier
 
-If you use public `API`, you should know that there is one really unstable method — getting a user's identifier 
+If you use `public API`, you should know that there is one really unstable method — getting a user's identifier 
 by a username (`threads.public_api.get_user_id`) because under the hood it does retrieving and parsing a plain `HTML`
 instead of regular `GrapQL` or `RESTful API`. The returning `HTML` is inconsistent from time to time as well `API` 
 itself is broken not responding with any data at all.
@@ -131,14 +149,14 @@ itself is broken not responding with any data at all.
 Until the library maintainers find more stable way, you have two options:
 
 * Retrieve a user's identifier manually from a public service like this one — https://commentpicker.com/instagram-user-id.php.
-* Use private `API` method (`threads.private_api.get_user_id`) which use much more stable endpoint. You can just fetch
-  a user identifier once via it and then pass it to public `API` and it will work.
+* Use `private API` method (`threads.private_api.get_user_id`) which use much more stable endpoint. You can just fetch
+  a user identifier once via it and then pass it to `public API` and it will work.
 
 #### Two-Factor Authentication (2FA)
 
-Currently, it is not possible to use private `API` with two-factor authentication enabled on the account. If you do not
+Currently, it is not possible to use `private API` with two-factor authentication enabled on the account. If you do not
 disable it, you might face issues like [#37](https://github.com/dmytrostriletskyi/threads-net/issues/37). So, in order
-to use private `API`, you have to disable it first. By the way, there are plans in the roadmap to manage authentication
+to use `private API`, you have to disable it first. By the way, there are plans in the roadmap to manage authentication
 for such accounts so you don't have to disable it.
 
 ### Terminology
@@ -148,32 +166,25 @@ to the naming of entities. For instance, in `Threads` a publication is called a 
 of fetching or creating a `thread` it is called a `post`. 
 
 It is done because `Threads` are backed by `Instagram` and `threads` creation is done on `Instagram API` where a 
-publication called a post. Library maintainers decided to stick into `Threads` terminology and use the word `thread`.
+publication called a post. Library maintainers decided to stick into `Threads` terminology and use the word `thread` for
+the post-related things.
 
 ### Initialization
 
-Import the class responsible for `Threads API` communication and initialize the object. But it depends on if you are
-going to use public or private `API`. The differences between public or private `APIs` are:
+Import the class responsible for `Threads API` communication and initialize the object.
 
-* Public `API` is `Threads API` which is developed for anonymous access. On other hand, private `API` is `Instagram API`,
-  which is developed for access from mobile phone being authorized via `Instagram` username and password.
-* Public `API` has only read-only endpoints. On other hand, private `API` has both read and write endpoints such as
-  creating a post or follow a user.
-* Public `API` much less stable than private `API` (from the library maintainers perspective).
-* Public `API` much less risky to get `rate limits` or to have account in `Threads` and/or `Instagram` be suspended.
-
-So, it is a trade-off between less risk, less stability and bugs and more risk, more stability and less bugs.
-
-```python3
->>> from threads import Threads
->>> threads = Threads(username='instagram_username', password='instagram_password')
-```
-
-You can leave `username` and `password` parameters unspecified if you have no plans to use private `API`:
+If you are going to use only `public API`, use the following commands:
 
 ```python3
 >>> from threads import Threads
 >>> threads = Threads()
+```
+
+If you are going to use only `private API` or both `private` and `public` `APIs`, use the following commands:
+
+```python3
+>>> from threads import Threads
+>>> threads = Threads(username='instagram_username', password='instagram_password')
 ```
 
 ### Public
@@ -1415,17 +1426,17 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 
 ##### Create
 
-`threads.private_api.create_thread` — create a thread. You can create a thread with an attachment link or image (
-specifying either `HTTP(S)` `URL` or path to a file). Also, you are able to create a thread as a reply to another
+`threads.private_api.create_thread` — create a thread. You can create a thread with an attachment link or image
+(specifying either `HTTP(S)` `URL` or path to a file). Also, you are able to create a thread as a reply to another
 thread. Basically, each thread is either a root or linked to another thread like a graph. You can check 
-`https://www.threads.net/@threadstester1` for all the examples of possible threads.
+`https://www.threads.net/@threadstester1` for all the illustration of possible threads that can be created.
 
-| Parameters  |  Type  | Required | Restrictions | Description                                 |
-|:-----------:|:------:|:--------:|:------------:|---------------------------------------------|
-|  `caption`  | String |   Yes    |      -       | A thread's caption.                         |
-|    `url`    | String |    No    |      -       | A thread's attachment `URL`.                |
-| `image_url` | String |    No    |      -       | An image's `HTTP(S)` URL or path to a file. |
-| `reply_to`  | String |    No    |      -       | An identifier of a thread to reply to.      |
+| Parameters  |  Type  | Required | Restrictions | Description                                   |
+|:-----------:|:------:|:--------:|:------------:|-----------------------------------------------|
+|  `caption`  | String |   Yes    |      -       | A thread's caption.                           |
+|    `url`    | String |    No    |      -       | A thread's attachment `URL`.                  |
+| `image_url` | String |    No    |      -       | An image's `HTTP(S)` `URL` or path to a file. |
+| `reply_to`  | String |    No    |      -       | An identifier of a thread to reply to.        |
 
 <details>
   <summary>Open example</summary>

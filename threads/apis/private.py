@@ -1,6 +1,7 @@
 """
 Provide implementation of private Threads API.
 """
+import base64
 import json
 import mimetypes
 import random
@@ -10,6 +11,12 @@ from urllib.parse import quote
 from uuid import uuid4
 
 import requests
+from Crypto.Cipher import (
+    AES,
+    PKCS1_v1_5,
+)
+from Crypto.PublicKey import RSA
+from Crypto.Random import get_random_bytes
 
 from threads.apis.abstract import AbstractThreadsApi
 from threads.utils import generate_android_device_id
@@ -39,6 +46,8 @@ class PrivateThreadsApi(AbstractThreadsApi):
         self.android_device_id = generate_android_device_id()
 
         if self.username is not None and self.password is not None:
+            self.instagram_public_key_id, self.instagram_public_key = self._get_instagram_public_key()
+            self.encrypted_password, self.current_timestamp_as_string = self._encrypt_password(password=self.password)
             self.instagram_api_token = self._get_instagram_api_token()
 
             self.headers = {
@@ -270,19 +279,21 @@ class PrivateThreadsApi(AbstractThreadsApi):
         if reply_to is not None:
             parameters_as_string['text_post_app_info']['reply_id'] = reply_to
 
-        endpoint = None
+        if url is None and image_url is None:
+            endpoint = '/media/configure_text_only_post/'
+            parameters_as_string['publish_mode'] = 'text_post'
 
-        if url is not None:
+        elif url is not None and image_url is None:
             endpoint = '/media/configure_text_only_post/'
             parameters_as_string['publish_mode'] = 'text_post'
             parameters_as_string['text_post_app_info']['link_attachment_url'] = url
 
-        if image_url is not None:
+        elif url is None and image_url is not None:
             endpoint = '/media/configure_text_post_app_feed/'
             parameters_as_string['upload_id'] = self._upload_image(url=image_url)
             parameters_as_string['scene_capture_type'] = ''
 
-        if endpoint is None:
+        else:
             raise ValueError('Provided image URL does not match required format. Please, create GitHub issue')
 
         encoded_parameters = quote(string=json.dumps(obj=parameters_as_string), safe="!~*'()")
@@ -346,6 +357,101 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
+    def _get_instagram_public_key(self) -> tuple[int, str]:
+        """
+        Get Instagram public key.
+
+        Basically, those are used to encrypt a password to never transfer it over the network.
+
+        Returns:
+            The public key and its identifier as a tuple of an integer and string.
+        """
+        parameters_as_string = json.dumps(
+            {
+                'id': str(uuid4()),
+            }
+        )
+
+        encoded_parameters = quote(string=parameters_as_string, safe="!~*'()")
+
+        response = requests.post(
+            url=f'{self.INSTAGRAM_API_URL}/qe/sync/',
+            headers={
+                'User-Agent': 'Barcelona 289.0.0.77.109 Android',
+                'Sec-Fetch-Site': 'same-origin',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            },
+            data=f'params={encoded_parameters}',
+        )
+
+        public_key_key_id = response.headers.get('ig-set-password-encryption-key-id')
+        public_key = response.headers.get('ig-set-password-encryption-pub-key')
+
+        return int(public_key_key_id), public_key
+
+    def _encrypt_password(self, password) -> tuple[str, str]:
+        """
+        Encrypt a password.
+
+        At some point, Instagram API changed they way the password is supplied. Basically, you now have two ways:
+
+        Arguments:
+            password (str): a Instagram password.
+
+        1) First, you encrypt a secret key (basically, can be random sequence) with Instagram public key (which is
+           used specifically for this procedure and retrieved from the API). Second, you encrypt a password with the
+           secret key. Then you combine encrypted things and mix with initialization vector, auth tag and other things
+           in one Base64 sequence. Third, this sequence is like your password where you prove it by encryptions where
+           one of them is based on Instagram public API so your password never transferred publicly over the network.
+        2) Just send a password publicly over the network (but requires little changes to the headers:
+           password: '#PWD_INSTAGRAM_BROWSER:0:{timestamp_as_string}:plain_password'). Read more about it there:
+           `https://stackoverflow.com/a/62524514`.
+
+        Currently, the first way is chosen to align with other libraries approach.
+
+        References:
+            - https://github.com/junhoyeo/threads-api/blame/main/threads-api/src/threads-api.ts#L204
+            - https://github.com/threadsjs/threads.js/blame/main/src/index.js#L53
+
+        Returns:
+            The password sequence and current timestamp as a tuple of strings.
+        """
+        password_as_bytes = password.encode('utf-8')
+
+        current_timestamp = int(time.time())
+        current_timestamp_as_string = str(current_timestamp).encode('utf-8')
+
+        secret_key = get_random_bytes(32)
+        initialization_vector = get_random_bytes(12)
+
+        instagram_public_key_as_bytes = base64.b64decode(self.instagram_public_key)
+        instagram_public_key = RSA.import_key(extern_key=instagram_public_key_as_bytes)
+
+        cipher = PKCS1_v1_5.new(instagram_public_key)
+        encrypted_secret_key = cipher.encrypt(secret_key)
+
+        cipher = AES.new(secret_key, AES.MODE_GCM, nonce=initialization_vector)
+        cipher.update(current_timestamp_as_string)
+        encrypted_password, auth_tag = cipher.encrypt_and_digest(password_as_bytes)
+
+        key_id_mixed_bytes = int(1).to_bytes(1, 'big') + self.instagram_public_key_id.to_bytes(1, 'big')
+        encrypted_rsa_key_mixed_bytes = int(0).to_bytes(1, 'big') + int(1).to_bytes(1, 'big')
+
+        password_as_encryption_sequence = (
+            key_id_mixed_bytes
+            + initialization_vector
+            + encrypted_rsa_key_mixed_bytes
+            + encrypted_secret_key
+            + auth_tag
+            + encrypted_password
+        )
+
+        password_as_encryption_sequence_as_base64 = base64.b64encode(
+            s=password_as_encryption_sequence,
+        ).decode('ascii')
+
+        return password_as_encryption_sequence_as_base64, str(current_timestamp)
+
     def _get_instagram_api_token(self) -> str:
         """
         Get a token for Instagram API.
@@ -358,7 +464,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
         parameters_as_string = json.dumps(
             {
                 'client_input_params': {
-                    'password': self.password,
+                    'password': f'#PWD_INSTAGRAM:4:{self.current_timestamp_as_string}:{self.encrypted_password}',
                     'contact_point': self.username,
                     'device_id': self.android_device_id,
                 },
