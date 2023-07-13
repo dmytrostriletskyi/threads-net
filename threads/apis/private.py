@@ -58,6 +58,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
             }
 
             self.user_id = self.get_user_id(username=username)
+            self.rank_token = str(uuid4())
 
         self.mimetypes = mimetypes.MimeTypes()
 
@@ -108,67 +109,76 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def get_user_followers(self, id: int) -> dict:
+    def get_user_followers(self, id: int, limit: int = 10000, offset: int = 0) -> dict:
         """
         Get a user's followers.
 
         Arguments:
             id (int): a user's identifier.
-
+            limit (int): The maximum number of followers to retrieve. Default value: 10000.
+            offset (int): The number of followers to skip before retrieval. Default value: 0.
+            
         Returns:
             The list of user's followers.
         """
-        response = requests.get(
-            url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/followers/',
-            headers=self.headers,
-        )
+        followers_list = []
+        max_id = offset if offset else ""
 
-        response = response.json()
-        followers_list = response.get('users')
-        max_id = response.get('next_max_id')
-
-        while max_id:
+        while True:
+            count = limit if limit < 100 else 100
             response = requests.get(
                 url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/followers/',
                 headers=self.headers,
-                params={'max_id': max_id}
+                params={
+                    "max_id": max_id,
+                    "count": count,
+                    "rank_token": self.rank_token,
+                },
             )
-
             response = response.json()
-            followers_list.extend(response.get('users'))
-            max_id = response.get('next_max_id')
+            followers_list.extend(response.get("users"))
+            limit -= len(response.get("users"))
+            max_id = response.get("next_max_id")
+
+            if not max_id or limit <= 0:
+                break
 
         return followers_list
 
-    def get_user_following(self, id: int) -> dict:
+
+    def get_user_following(self, id: int, limit: int = 10000, offset: int = 0) -> dict:
         """
         Get a user's following.
 
         Arguments:
             id (int): a user's identifier.
-
+            limit (int): The maximum number of users to retrieve. Default value: 10000.
+            offset (int): The number of users to skip before retrieval. Default value: 0.
+            
         Returns:
             The list of user's following.
         """
-        response = requests.get(
-            url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/following/',
-            headers=self.headers,
-        )
+        following_list = []
+        max_id = offset if offset else ""
 
-        response = response.json()
-        following_list = response.get('users')
-        max_id = response.get('next_max_id')
-
-        while max_id:
+        while True:
+            count = limit if limit < 100 else 100
             response = requests.get(
                 url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/following/',
                 headers=self.headers,
-                params={'max_id': max_id}
+                params={
+                    "max_id": max_id,
+                    "count": count,
+                    "rank_token": self.rank_token,
+                },
             )
-
             response = response.json()
-            following_list.extend(response.get('users'))
-            max_id = response.get('next_max_id')
+            following_list.extend(response.get("users"))
+            limit -= len(response.get("users"))
+            max_id = response.get("next_max_id")
+
+            if not max_id or limit <= 0:
+                break
 
         return following_list
 
