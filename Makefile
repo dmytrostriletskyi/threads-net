@@ -10,9 +10,11 @@ install-requirements:
 	    -r requirements/ops.txt
 
 check-code-quality:
+	isort $(SOURCE_FOLDER) --diff --check-only
 	darglint $(SOURCE_FOLDER)
 	ruff check $(SOURCE_FOLDER) --fix
 	yamllint .
 
 format:
+	isort $(SOURCE_FOLDER)
 	ruff check $(SOURCE_FOLDER) --fix
