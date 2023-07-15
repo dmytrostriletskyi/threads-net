@@ -41,6 +41,7 @@ Table of content:
       * [Get Identifier](#get-identifier-2)
       * [Get By Identifier](#get-by-identifier-2)
       * [Get Threads](#get-threads-1)
+      * [Get Replies](#get-replies-1)
       * [Get Followers](#get-followers)
       * [Get Following](#get-following)
       * [Get Friendship Status](#get-friendship-status)
@@ -1313,6 +1314,184 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
           },
           ...
       ],
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Get Replies
+
+`threads.private_api.get_user_replies — getting a user's replies by the user's identifier. Supports 
+[pagination](#pagination).
+
+|  Parameters   |  Type   | Required | Restrictions | Description                                             |
+|:-------------:|:-------:|:--------:|:------------:|---------------------------------------------------------|
+|     `id`      | Integer |   Yes    |     `>0`     | A user's identifier.                                    |
+|    `count`    | Integer |    No    |     `>0`     | A number of replies to get. Default value is `15`.      |
+| `from_max_id` | String  |    No    |      -       | An encoded reply's identifier to start offsetting from. |
+
+<details>
+  <summary>Open code example</summary>
+  
+  ```python3
+  >>> user_replies = threads.private_api.get_user_replies(id=314216)
+  >>> user_replies
+  {
+      "medias": [],
+      "threads": [
+          {
+              "thread_items": [
+                  {
+                      "post": {
+                          "pk": 3146315493980433758,
+                          "id": "3146315493980433758_9155181033",
+                          "taken_at": 1689290074,
+                          "device_timestamp": 1689290056390615,
+                          "client_cache_key": "MzE0NjMxNTQ5Mzk4MDQzMzc1OA==.2",
+                          "filter_type": 0,
+                          "like_and_view_counts_disabled": false,
+                          "integrity_review_decision": "pending",
+                          "text_post_app_info": {
+                              "is_post_unavailable": false,
+                              "is_reply": false,
+                              "reply_to_author": null,
+                              "direct_reply_count": 348,
+                              "self_thread_count": 0,
+                              "reply_facepile_users": [],
+                              "link_preview_attachment": null,
+                              "can_reply": true,
+                              "reply_control": "everyone",
+                              "hush_info": null,
+                              "share_info": {
+                                  "can_repost": true,
+                                  "is_reposted_by_viewer": false,
+                                  "can_quote_post": true
+                              }
+                          },
+                          "caption": {
+                              "pk": "17869797770898727",
+                              "user_id": 9155181033,
+                              "text": "Squad goals \ud83d\ude0e\n\n(via @stylebender)",
+                              "type": 1,
+                              "created_at": 1689290074,
+                              "created_at_utc": 1689290074,
+                              "content_type": "comment",
+                              "status": "Active",
+                              "bit_flags": 0,
+                              "did_report_as_spam": false,
+                              "share_enabled": false,
+                              "user": {
+                                  "pk": 9155181033,
+                                  "pk_id": "9155181033",
+                                  "username": "espnmma",
+                                  "full_name": "ESPN MMA",
+                                  "is_private": false,
+                                  "is_verified": true,
+                                  "profile_pic_id": "3141004987567665802_9155181033",
+                                  "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/358383703_848206763406082_8252942189546556167_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=110&_nc_ohc=WOV8wy4ScRoAX_C1CaW&edm=AClQE0sBAAAA&ccb=7-5&oh=00_AfDDl35PMIh3bUJ2WuzOkIIAgIEZqwFqdSh8tuPDTyfgTg&oe=64B7C4EE&_nc_sid=2bf346",
+                                  "fbid_v2": "17841409270994397",
+                                  "has_onboarded_to_text_post_app": true
+                              },
+                              "is_covered": false,
+                              "is_ranked_comment": false,
+                              "media_id": 3146315493980433758,
+                              "private_reply_status": 0
+                          },
+                          "media_type": 2,
+                          "code": "Cup9UWaAu1e",
+                          "product_type": "feed",
+                          "original_width": 640,
+                          "original_height": 1136,
+                          "is_dash_eligible": 1,
+                          "video_dash_manifest": "\n<MPD xmlns=\"urn:mpeg:dash:schema:mpd:2011\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd\" profiles=\"urn:mpeg:dash:profile:isoff-on-demand:2011\" minBufferTime=\"PT2S\" type=\"static\" mediaPresentationDuration=\"PT18.700000762939453S\"><Period id=\"0\" duration=\"PT18.700000762939453S\"><AdaptationSet id=\"0\" contentType=\"video\" frameRate=\"15360/512\" subsegmentAlignment=\"true\" par=\"9:16\" FBUnifiedUploadResolutionMos=\"360:73.6\"><Representation id=\"2611672838971644vd\" bandwidth=\"2906765\" codecs=\"avc1.64001e\" mimeType=\"video/mp4\" sar=\"1:1\" FBEncodingTag=\"dash_baseline_1_v1\" FBPlaybackResolutionMos=\"0:100,720:81.9\" FBPlaybackResolutionMosConfidenceLevel=\"high\" FBPlaybackResolutionCsvqm=\"0:100,720:93.9,1080:93.9\" width=\"720\" height=\"1280\" FBDefaultQuality=\"1\" FBQualityClass=\"hd\" FBQualityLabel=\"720p\"><BaseURL>https://instagram.fiev6-1.fna.fbcdn.net/v/t50.2886-16/360404858_562471725885766_7209197166491385251_n.mp4?_nc_cat=110&amp;ccb=1-7&amp;_nc_sid=9c5c06&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImRhc2hfYmFzZWxpbmVfMV92MSJ9&amp;_nc_ohc=cWWHe8rV1jgAX83DFJb&amp;_nc_ht=instagram.fiev6-1.fna&amp;oh=00_AfCoaG0qN3zuORItVcpof45_2Pb0-EStajQ4w122qQAOjA&amp;oe=64B7C39B</BaseURL><SegmentBase indexRange=\"858-937\" timescale=\"15360\" FBFirstSegmentRange=\"938-1280180\" FBFirstSegmentDuration=\"5000\" FBSecondSegmentRange=\"1280181-3445747\" FBPrefetchSegmentRange=\"938-1280180\" FBPrefetchSegmentDuration=\"5000\"><Initialization range=\"0-857\"/></SegmentBase></Representation><Representation id=\"1023383492024442v\" bandwidth=\"1437655\" codecs=\"avc1.4d401e\" mimeType=\"video/mp4\" sar=\"1:1\" FBEncodingTag=\"dash_baseline_2_v1\" FBPlaybackResolutionMos=\"0:100,720:68.3\" FBPlaybackResolutionMosConfidenceLevel=\"high\" FBPlaybackResolutionCsvqm=\"0:100,720:83.1\" width=\"480\" height=\"854\" FBQualityClass=\"sd\" FBQualityLabel=\"480p\"><BaseURL>https://instagram.fiev6-1.fna.fbcdn.net/v/t50.2886-16/361062149_663346358581709_8844241500491019989_n.mp4?_nc_cat=108&amp;ccb=1-7&amp;_nc_sid=9c5c06&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImRhc2hfYmFzZWxpbmVfMl92MSJ9&amp;_nc_ohc=qTgwWXx1yVIAX_SSGzH&amp;_nc_ht=instagram.fiev6-1.fna&amp;oh=00_AfBctcPfSdoR_uhaFtjymaEPurWerLwzsSWT-miL-d8jTQ&amp;oe=64B893BC</BaseURL><SegmentBase indexRange=\"859-938\" timescale=\"15360\" FBFirstSegmentRange=\"939-615676\" FBFirstSegmentDuration=\"5000\" FBSecondSegmentRange=\"615677-1710065\" FBPrefetchSegmentRange=\"939-615676\" FBPrefetchSegmentDuration=\"5000\"><Initialization range=\"0-858\"/></SegmentBase></Representation></AdaptationSet><AdaptationSet id=\"1\" contentType=\"audio\" subsegmentAlignment=\"true\"><Representation id=\"2856964614438406ad\" bandwidth=\"5574\" codecs=\"mp4a.40.5\" mimeType=\"audio/mp4\" audioSamplingRate=\"44100\" FBEncodingTag=\"dash_baseline_audio_v1\" FBDefaultQuality=\"1\"><AudioChannelConfiguration schemeIdUri=\"urn:mpeg:dash:23003:3:audio_channel_configuration:2011\" value=\"2\"/><BaseURL>https://instagram.fiev6-1.fna.fbcdn.net/v/t50.2886-16/361076953_132281986568099_8817081705646996429_n.mp4?_nc_cat=105&amp;ccb=1-7&amp;_nc_sid=9c5c06&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImRhc2hfYmFzZWxpbmVfYXVkaW9fdjEifQ%3D%3D&amp;_nc_ohc=hmo1IZBaVgUAX_6DWPV&amp;_nc_ht=instagram.fiev6-1.fna&amp;oh=00_AfBLaMyqjDbhP4xYrpA4a84Cc8i3C5fkB049uhKZDxywEg&amp;oe=64B78E64</BaseURL><SegmentBase indexRange=\"817-896\" timescale=\"44100\" FBFirstSegmentRange=\"897-3975\" FBFirstSegmentDuration=\"5040\" FBSecondSegmentRange=\"3976-6939\" FBPrefetchSegmentRange=\"897-3975\" FBPrefetchSegmentDuration=\"5040\"><Initialization range=\"0-816\"/></SegmentBase></Representation></AdaptationSet></Period></MPD>\n",
+                          "video_codec": "avc1.64001e",
+                          "has_audio": true,
+                          "video_duration": 18.784,
+                          "video_versions": [
+                              {
+                                  "type": 101,
+                                  "width": 720,
+                                  "height": 1280,
+                                  "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t50.2886-16/360404858_562471725885766_7209197166491385251_n.mp4?efg=eyJ2ZW5jb2RlX3RhZyI6InZ0c192b2RfdXJsZ2VuLjcyMC5mZWVkLmJhc2VsaW5lIn0&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=110&_nc_ohc=m3bTlD7JhCoAX9eODcJ&edm=AClQE0sBAAAA&vs=2611672838971644_3296775565&_nc_vs=HBksFQAYJEdIcFhleFZHNldxbmtQOEJBS085ZUlDZ05neGtia1lMQUFBRhUAAsgBABUAGCRHTm1ZaFJXano5Rk1UM2dBQU0wN3I2d1lrVng2YmtZTEFBQUYVAgLIAQAoABgAGwGIB3VzZV9vaWwBMBUAACa6u7r%2BmOjoPxUCKAJDMywXQDKzMzMzMzMYEmRhc2hfYmFzZWxpbmVfMV92MREAdeoHAA%3D%3D&_nc_rid=e91b3f00fc&ccb=7-5&oh=00_AfB17yCrQdXrNLAZlgUqwZSSjgrwF9H8oNjJF6eVpHx9Ug&oe=64B477DB&_nc_sid=2bf346",
+                                  "id": "2611672838971644v"
+                              },
+                              {
+                                  "type": 102,
+                                  "width": 480,
+                                  "height": 854,
+                                  "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t50.2886-16/361062149_663346358581709_8844241500491019989_n.mp4?efg=eyJ2ZW5jb2RlX3RhZyI6InZ0c192b2RfdXJsZ2VuLjQ4MC5mZWVkLmJhc2VsaW5lIn0&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=105&_nc_ohc=V4Gn1XoC7usAX8ESNnG&edm=AClQE0sBAAAA&vs=1023383492024442_1730708493&_nc_vs=HBksFQAYJEdBVmZoUlhOX1JCY1Qxc0NBTlgyaURESkRyMTZia1lMQUFBRhUAAsgBABUAGCRHTm1ZaFJXano5Rk1UM2dBQU0wN3I2d1lrVng2YmtZTEFBQUYVAgLIAQAoABgAGwGIB3VzZV9vaWwBMBUAACa6u7r%2BmOjoPxUCKAJDMywXQDKzMzMzMzMYEmRhc2hfYmFzZWxpbmVfMl92MREAdeoHAA%3D%3D&_nc_rid=e91b3f00fc&ccb=7-5&oh=00_AfD4G2wv4eJTNJjnGXOF04FdWuUUtelx_tvm5iq5dYx1pw&oe=64B49F3C&_nc_sid=2bf346",
+                                  "id": "1023383492024442v"
+                              },
+                              {
+                                  "type": 103,
+                                  "width": 480,
+                                  "height": 854,
+                                  "url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t50.2886-16/361062149_663346358581709_8844241500491019989_n.mp4?efg=eyJ2ZW5jb2RlX3RhZyI6InZ0c192b2RfdXJsZ2VuLjQ4MC5mZWVkLmJhc2VsaW5lIn0&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=105&_nc_ohc=V4Gn1XoC7usAX8ESNnG&edm=AClQE0sBAAAA&vs=1023383492024442_1730708493&_nc_vs=HBksFQAYJEdBVmZoUlhOX1JCY1Qxc0NBTlgyaURESkRyMTZia1lMQUFBRhUAAsgBABUAGCRHTm1ZaFJXano5Rk1UM2dBQU0wN3I2d1lrVng2YmtZTEFBQUYVAgLIAQAoABgAGwGIB3VzZV9vaWwBMBUAACa6u7r%2BmOjoPxUCKAJDMywXQDKzMzMzMzMYEmRhc2hfYmFzZWxpbmVfMl92MREAdeoHAA%3D%3D&_nc_rid=e91b3f00fc&ccb=7-5&oh=00_AfD4G2wv4eJTNJjnGXOF04FdWuUUtelx_tvm5iq5dYx1pw&oe=64B49F3C&_nc_sid=2bf346",
+                                  "id": "1023383492024442v"
+                              }
+                          ],
+                          "like_count": 9188,
+                          "has_liked": false,
+                          "can_viewer_reshare": true,
+                          "top_likers": [],
+                          "user": {
+                              "pk": 9155181033,
+                              "pk_id": "9155181033",
+                              "username": "espnmma",
+                              "full_name": "ESPN MMA",
+                              "is_private": false,
+                              "is_verified": true,
+                              "profile_pic_id": "3141004987567665802_9155181033",
+                              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/358383703_848206763406082_8252942189546556167_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=110&_nc_ohc=WOV8wy4ScRoAX_C1CaW&edm=AClQE0sBAAAA&ccb=7-5&oh=00_AfDDl35PMIh3bUJ2WuzOkIIAgIEZqwFqdSh8tuPDTyfgTg&oe=64B7C4EE&_nc_sid=2bf346",
+                              "friendship_status": {
+                                  "following": false,
+                                  "followed_by": false,
+                                  "blocking": false,
+                                  "muting": false,
+                                  "is_private": false,
+                                  "incoming_request": false,
+                                  "outgoing_request": false,
+                                  "text_post_app_pre_following": false,
+                                  "is_bestie": false,
+                                  "is_restricted": false,
+                                  "is_feed_favorite": false,
+                                  "is_eligible_to_subscribe": false
+                              },
+                              "has_anonymous_profile_picture": false,
+                              "has_onboarded_to_text_post_app": true,
+                              "account_badges": []
+                          }
+                      },
+                      "line_type": "squiggle",
+                      "view_replies_cta_string": "348 replies",
+                      "should_show_replies_cta": true,
+                      "reply_facepile_users": [
+                          {
+                              "pk": 60781132585,
+                              "pk_id": "60781132585",
+                              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/359641162_959966898669598_6990253892519958381_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=110&_nc_ohc=uLBckw2TPWQAX_yvvWz&edm=AClQE0sBAAAA&ccb=7-5&oh=00_AfDZeeb69FVIALEYjbqFBzIbIXMlhKhyCPMge1K-ni0hZQ&oe=64B7FC4E&_nc_sid=2bf346"
+                          },
+                          {
+                              "pk": 57175390182,
+                              "pk_id": "57175390182",
+                              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/358544206_674380928039672_4729519352683894077_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=108&_nc_ohc=0qWbftDXewwAX8KUtSO&edm=AClQE0sBAAAA&ccb=7-5&oh=00_AfDj4Z6wYUVslOtd4Mp7oRhbxKJZDIsZLxjX861MFn4CfQ&oe=64B74C23&_nc_sid=2bf346"
+                          },
+                          {
+                              "pk": 46363005289,
+                              "pk_id": "46363005289",
+                              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/358356136_267621489287701_6184904086615879877_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=_kbmWIEqHuYAX9in-BH&edm=AClQE0sBAAAA&ccb=7-5&oh=00_AfBMSnbvraqk2tIrN5MwKAT49ey9QoeppiTEiMzeggaEYw&oe=64B86906&_nc_sid=2bf346"
+                          }
+                      ],
+                      "can_inline_expand_below": false
+                  },
+                  ...
+              ],
+              "thread_type": "thread",
+              "show_create_reply_cta": false,
+              "id": 3146509421211016700
+          },
+      ],
+      "next_max_id": "QVFBZU1fRWxkXzh4UUhGOV84VUZGLS1BdHlVWVVzQmpNbmUzZ0hkRVJURXgyVDBSb2pSdnhacnRGX1JrNUxMRDgxbFZ4ZW5tSUc5TTRraEgwRV91eWR3Nw==",
       "status": "ok"
   }
   ```

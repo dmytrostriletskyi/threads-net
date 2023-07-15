@@ -147,6 +147,29 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
+    def get_user_replies(self: PrivateThreadsApi, id: int, count: int = 15, from_max_id: Optional[str] = None) -> dict:
+        """
+        Get a user's replies.
+
+        Arguments:
+            id (int): a user's identifier.
+            count (int): a number of threads to get.
+            from_max_id (str): an encoded thread's identifier to start offsetting from.
+
+        Returns:
+            The list of user's replies inside a dict.
+        """
+        response = requests.get(
+            url=f'{self.INSTAGRAM_API_URL}/text_feed/{id}/profile/replies/',
+            headers=self.headers,
+            params={
+                'count': count,
+                'max_id': from_max_id,
+            }
+        )
+
+        return response.json()
+
     def get_user_followers(self: PrivateThreadsApi, id: int) -> dict:
         """
         Get a user's followers.

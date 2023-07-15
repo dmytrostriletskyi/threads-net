@@ -106,3 +106,4 @@ venv.bak/
 .idea/
 settings.json
 examples/experiements.py
+.DS_Store
