@@ -9,6 +9,7 @@ import mimetypes
 import random
 import time
 from http import HTTPStatus as HttpStatus
+from typing import TYPE_CHECKING
 from urllib.parse import quote
 from uuid import uuid4
 
@@ -21,7 +22,9 @@ from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 
 from threads.apis.abstract import AbstractThreadsApi
-from threads.utils import generate_android_device_id
+
+if TYPE_CHECKING:
+    from threads.settings import Settings
 
 
 class PrivateThreadsApi(AbstractThreadsApi):
@@ -33,6 +36,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
     def __init__(
         self: PrivateThreadsApi,
+        settings: Settings,
         username: str | None = None,
         password: str | None = None,
     ) -> None:
@@ -40,32 +44,38 @@ class PrivateThreadsApi(AbstractThreadsApi):
         Construct the object.
 
         Arguments:
+            settings (Settings): settings.
             username (str): a user's Instagram username.
             password (str): a user's Instagram password.
         """
         super().__init__()
 
+        self.settings = settings
         self.username = username
         self.password = password
 
-        self.timezone_offset = -14400
-        self.android_device_id = generate_android_device_id()
+        self.mimetypes = mimetypes.MimeTypes()
 
-        if self.username is not None and self.password is not None:
-            self.instagram_public_key_id, self.instagram_public_key = self._get_instagram_public_key()
-            self.encrypted_password, self.current_timestamp_as_string = self._encrypt_password(password=self.password)
+        if self.username is None and self.password is None:
+            return
+
+        self.instagram_public_key_id, self.instagram_public_key = self._get_instagram_public_key()
+        self.encrypted_password, self.current_timestamp_as_string = self._encrypt_password(password=self.password)
+
+        if self.settings.are_provided:
+            self.instagram_api_token = self.settings.authentication_token
+
+        else:
             self.instagram_api_token = self._get_instagram_api_token()
 
-            self.headers = {
-                'Authorization': f'Bearer IGT:2:{self.instagram_api_token}',
-                'User-Agent': 'Barcelona 289.0.0.77.109 Android',
-                'Sec-Fetch-Site': 'same-origin',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            }
+        self.headers = {
+            'Authorization': f'Bearer IGT:2:{self.instagram_api_token}',
+            'User-Agent': 'Barcelona 289.0.0.77.109 Android',
+            'Sec-Fetch-Site': 'same-origin',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        }
 
-            self.user_id = self.get_user_id(username=username)
-
-        self.mimetypes = mimetypes.MimeTypes()
+        self.user_id = self.get_user_id(username=username)
 
     def get_user_id(self: PrivateThreadsApi, username: str) -> int:
         """
@@ -424,18 +434,13 @@ class PrivateThreadsApi(AbstractThreadsApi):
             'text_post_app_info': {
                 'reply_control': 0,
             },
-            'timezone_offset': str(self.timezone_offset),
+            'timezone_offset': str(self.settings.timezone_offset),
             'source_type': '4',
             'caption': caption,
             '_uid': self.user_id,
-            'device_id': self.android_device_id,
+            'device_id': self.settings.device_id,
             'upload_id': int(current_timestamp),
-            'device': {
-                'manufacturer': 'OnePlus',
-                'model': 'ONEPLUS+A3010',
-                'android_version': 25,
-                'android_release': '7.1.1',
-            },
+            'device': self.settings.device_as_dict,
         }
 
         if reply_to is not None:
@@ -574,18 +579,13 @@ class PrivateThreadsApi(AbstractThreadsApi):
                 'quoted_post_id': id,
                 'reply_control': 0,
             },
-            'timezone_offset': str(self.timezone_offset),
+            'timezone_offset': str(self.settings.timezone_offset),
             'source_type': '4',
             'caption': caption,
             '_uid': self.user_id,
-            'device_id': self.android_device_id,
+            'device_id': self.settings.device_id,
             'upload_id': int(current_timestamp),
-            'device': {
-                'manufacturer': 'OnePlus',
-                'model': 'ONEPLUS+A3010',
-                'android_version': 25,
-                'android_release': '7.1.1',
-            },
+            'device': self.settings.device_as_dict,
         }
 
         encoded_parameters = quote(string=json.dumps(obj=parameters_as_string), safe="!~*'()")
@@ -707,11 +707,11 @@ class PrivateThreadsApi(AbstractThreadsApi):
                 'client_input_params': {
                     'password': f'#PWD_INSTAGRAM:4:{self.current_timestamp_as_string}:{self.encrypted_password}',
                     'contact_point': self.username,
-                    'device_id': self.android_device_id,
+                    'device_id': self.settings.device_id,
                 },
                 'server_params': {
                     'credential_type': 'password',
-                    'device_id': self.android_device_id,
+                    'device_id': self.settings.device_id,
                 },
             },
         )

@@ -24,6 +24,7 @@ Table of content:
     * [Two-Factor Authentication (2FA)](#two-factor-authentication-2fa)
   * [Terminology](#terminology)
   * [Initialization](#initialization)
+  * [Settings](#settings)
   * [Public](#api)
     * [User](#user)
       * [Get Identifier](#get-identifier)
@@ -69,8 +70,9 @@ Table of content:
   exist only in one of the `APIs`. For instance, to create a thread, there is only `Instagram API` endpoint.
 * This project is unofficial and reverse-engineered, it means that:
   * The library would be pretending being a mobile phone or a web user (via proper `HTTP` headers and other things).
-    Thus, you might face `rate limits` (because pretending is never ideal) or even your `Threads` and/or 
-    `Instagram` account might be suspended if you mess up with logining or sending too much requests. 
+    Thus, you might face `rate limits` (because pretending is never ideal), your `IP` marked as suspicious and even 
+    your `Threads` and/or `Instagram` account might be suspended if you mess up with logining or sending too much
+    requests. 
   * `Threads` and `Instagram` `APIs` are not provided as public `API` and developed to be used internally
     (`Meta'`s `back-end` developers made it only for `Meta'`s `front-end/mobile` developers) without any intention to
     reveal externally in any way. So, they would not inform the community about any changes they are going to do or done
@@ -170,6 +172,80 @@ If you are going to use only `private API` or both `private` and `public` `APIs`
 ```python3
 >>> from threads import Threads
 >>> threads = Threads(username='instagram_username', password='instagram_password')
+```
+
+### Settings
+
+Currently, to perform `private API` requests, there is a need to specify a mobile device metadata, timezone offset and
+an authorization token. The device metadata and timezone offset are randomly generated once you initialize `Threads`, 
+in order the authorization token is requested from `Instagram API` and saved for further usage.
+
+If you initialize `Threads` frequently with different data, `Instagram API` might threat it as a non-human and machine
+behavior and mark your `IP` as suspicious and even suspend your account `Threads` and/or `Instagram` account. Also,
+the authorization token has long live period and once the authorization token is fetched, it can be reused at least for 
+next 24 hours (maybe more, but at least) and there is no need to fetch it at each initialization over and over again.
+
+For this, there are settings. Those are either a `JSON` file or a dictionary you can provide to reuse device metadata, 
+timezone offset and the authorization token instead of generating random data each initialization.
+
+To provide settings as a dictionary, use the following commands:
+
+```python
+>>> settings = {
+        'authentication': {
+            'token': 'eyJkc191c2VyX2lkIjYnNjA0MzgxNTQ1N1NjYiLCJzZXNzaW9uaWQiOi1FxSUQ1TXcifQ==',
+        },
+        'timezone': {
+            'offset': -14400,
+        },
+        'device': {
+            'id': 'android-cb0d81d0e326cb42',
+            'manufacturer': 'OnePlus',
+            'model': 'ONEPLUS+A3010',
+            'android_version': 25,
+            'android_release': '7.1.1',
+        }
+    }
+>>> threads = Threads(settings=settings, username=INSTAGRAM_USERNAME, password=INSTAGRAM_PASSWORD)
+```
+
+To provide settings as a path to a `JSON` file, use the following commands:
+
+```python
+>>> threads = Threads(
+      settings='/Users/dmytrostriletskyi/projects/threads/settings.json',
+      username='instagram_username',
+      password='instagram_password',
+  )
+```
+
+The `JSON` file content looks like:
+
+```bash
+$ cat settings.json
+{
+    "authentication": {
+        "token": "eyJkc191c2VyX2lkIjYnNjA0MzgxNTQ1N1NjYiLCJzZXNzaW9uaWQiOi1FxSUQ1TXcifQ=="
+    },
+    "timezone": {
+        "offset": -14400
+    },
+    "device": {
+        "id": "android-2d53671ef3d1ac79",
+        "manufacturer": "OnePlus",
+        "model": "ONEPLUS+A3010",
+        "android_version": 25,
+        "android_release": "7.1.1"
+    }
+}
+```
+
+Instead of manually create a `JSON` file, you can ask `Threads` to generate it, specifying a path to where to save it, 
+with the following command:
+
+```python
+>>> threads = Threads(username='instagram_username', password='instagram_password')
+>>> threads.download_settings(path='/Users/dmytrostriletskyi/projects/threads/settings.json')
 ```
 
 ### Public
