@@ -25,6 +25,7 @@ Table of content:
   * [Terminology](#terminology)
   * [Initialization](#initialization)
   * [Settings](#settings)
+  * [Pagination](#pagination)
   * [Public](#api)
     * [User](#user)
       * [Get Identifier](#get-identifier)
@@ -39,6 +40,7 @@ Table of content:
     * [User](#user-1)
       * [Get Identifier](#get-identifier-2)
       * [Get By Identifier](#get-by-identifier-2)
+      * [Get Threads](#get-threads-1)
       * [Get Followers](#get-followers)
       * [Get Following](#get-following)
       * [Get Friendship Status](#get-friendship-status)
@@ -84,8 +86,8 @@ Table of content:
 Check what is already done in the table of content above, below the only things to be done are placed: 
 
 - [ ] Feed (threads, replies, recommendations, notifications, seen notifications)
-- [ ] Session configuration (save `API` tokens and other settings)
-- [ ] Manage auth for accounts with enabled 2FA
+- [ ] Pagination for list-related responses
+- [ ] Manage auth for accounts with enabled 2FA and challenges
 
 ## Getting started
 
@@ -247,6 +249,106 @@ with the following command:
 >>> threads = Threads(username='instagram_username', password='instagram_password')
 >>> threads.download_settings(path='/Users/dmytrostriletskyi/projects/threads/settings.json')
 ```
+
+### Pagination
+
+There are two things that are involved into the pagination for requests that respond with lists of records (e.g. threads, 
+replies, followers, following and so on): `count` and `max id`. Basically, `count` is responsible for a number of records
+to request (where `15` is a default number) and `max id` is kinda offset thingy, but a bit tricky.
+
+Let consider the method for getting a list of a user's threads if there are only `10` in total:
+
+```python
+>>> user_threads = threads.private_api.get_user_threads(id=314216)
+>>> user_threads
+{
+    "threads": [
+        {"id": 3146710118003098789, ...},
+        {"id": 3146710118003098788, ...},
+        {"id": 3146710118003098787, ...},
+        {"id": 3146710118003098786, ...},
+        {"id": 3146710118003098785, ...},
+        {"id": 3146710118003098784, ...},
+        {"id": 3146710118003098783, ...},
+        {"id": 3146710118003098782, ...},
+        {"id": 3146710118003098781, ...},
+        {"id": 3146710118003098780, ...},
+    ],
+    "status": "ok"
+}
+```
+
+If we want to fetch them iteratively by chunks (for instance, by `2` threads), we just specify a `count` argument:
+
+```python
+>>> user_threads = threads.private_api.get_user_threads(id=314216, count=2)
+>>> user_threads
+{
+    "threads": [
+        {"id": 3146710118003098789, ...},  # 1st thread from 10.
+        {"id": 3146710118003098788, ...},  # 2nd thread from 10.
+    ],
+    "next_max_id": "QVFCWnJRSFdwMW5ITjRhcDlqR2hfY19JM21eQ==",
+    "status": "ok"
+}
+```
+
+But it is not enough, because on this stage we do not know how to iterate and fetch the next `2` threads. Here `max id` 
+helps, if you see, there is `next_max_id` in the response. Which is encoded identifier of the `3rd` thread to start 
+offsetting (chunking) from:
+
+```python
+>>> user_threads = threads.private_api.get_user_threads(
+        id=314216, 
+        count=2, 
+        from_max_id='QVFCWnJRSFdwMW5ITjRhcDlqR2hfY19JM21eQ==',
+    )
+>>> user_threads
+{
+    "threads": [
+        {"id": 3146710118003098787, ...},  # 3rd thread from 10.
+        {"id": 3146710118003098786, ...},  # 4th thread from 10.
+    ],
+    "next_max_id": "ZrWDBSMm9DTU90Yy1mSXQ4WTNWb0V3ZmI4Um5==",
+    "status": "ok"
+}
+```
+
+So, basically, you should iterate over all threads until `next_max_id` is presented. The code to fetch all existing 
+threads would look like:
+
+```python
+from_max_id = None
+
+while True:
+    user_threads = threads.private_api.get_user_threads(id=314216, count=2, from_max_id=from_max_id)
+
+    for thread in user_threads.get('threads'):
+        items = thread.get('thread_items')
+
+        for item in items:
+            thread_id = item.get('post').get('pk')
+            print(thread_id)
+
+    from_max_id = user_threads.get('next_max_id')
+
+    if from_max_id is None:
+        break
+
+3146710118003098789
+3146710118003098788
+3146710118003098787
+3146710118003098786
+3146710118003098785
+3146710118003098784
+3146710118003098783
+3146710118003098782
+3146710118003098781
+3146710118003098780
+```
+
+Use the pagination if there are a lot of records (e.g. threads, replies, followers, following and so on) to be returned 
+as well as if you are somehow limited by computer resources (`RAM`, `bandwidth` and so on).
 
 ### Public
 
@@ -1056,6 +1158,161 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
           "is_new_to_instagram": false,
           "highlight_reshare_disabled": false
       },
+      "status": "ok"
+  }
+  ```
+</details>
+
+##### Get Threads
+
+`threads.private_api.get_user_thread` — getting a user's threads by the user's identifier. Supports 
+[pagination](#pagination).
+
+|  Parameters   |  Type   | Required | Restrictions | Description                                              |
+|:-------------:|:-------:|:--------:|:------------:|----------------------------------------------------------|
+|     `id`      | Integer |   Yes    |     `>0`     | A user's identifier.                                     |
+|    `count`    | Integer |    No    |     `>0`     | A number of threads to get. Default value is `15`.       |
+| `from_max_id` | String  |    No    |      -       | An encoded thread's identifier to start offsetting from. |
+
+<details>
+  <summary>Open code example</summary>
+  
+  ```python3
+  >>> user_threads = threads.private_api.get_user_threads(id=314216)
+  >>> user_threads
+  {
+      "medias": [],
+      "threads": [
+          {
+              "thread_items": [
+                  {
+                      "post": {
+                          "pk": 3143857175171939857,
+                          "id": "3143857175171939857_314216",
+                          "taken_at": 1688997002,
+                          "device_timestamp": 154381465597879,
+                          "client_cache_key": "MzE0Mzg1NzE3NTE3MTkzOTg1Nw==.2",
+                          "filter_type": 0,
+                          "like_and_view_counts_disabled": false,
+                          "integrity_review_decision": "pending",
+                          "text_post_app_info": {
+                              "is_post_unavailable": false,
+                              "is_reply": false,
+                              "reply_to_author": null,
+                              "direct_reply_count": 24278,
+                              "self_thread_count": 0,
+                              "reply_facepile_users": [],
+                              "link_preview_attachment": null,
+                              "can_reply": true,
+                              "reply_control": "everyone",
+                              "hush_info": null,
+                              "share_info": {
+                                  "can_repost": true,
+                                  "is_reposted_by_viewer": false,
+                                  "can_quote_post": true
+                              }
+                          },
+                          "caption": {
+                              "pk": "17971080284299711",
+                              "user_id": 314216,
+                              "text": "Threads reached 100 million sign ups over the weekend. That's mostly organic demand and we haven't even turned on many promotions yet. Can't believe it's only been 5 days!",
+                              "type": 1,
+                              "created_at": 1688997002,
+                              "created_at_utc": 1688997002,
+                              "content_type": "comment",
+                              "status": "Active",
+                              "bit_flags": 0,
+                              "did_report_as_spam": false,
+                              "share_enabled": false,
+                              "user": {
+                                  "pk": 314216,
+                                  "pk_id": "314216",
+                                  "username": "zuck",
+                                  "full_name": "Mark Zuckerberg",
+                                  "is_private": false,
+                                  "is_verified": true,
+                                  "profile_pic_id": "3138909791791822006_314216",
+                                  "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=XKEMOZTrwUAAX-1hCyT&edm=AKIuHiwBAAAA&ccb=7-5&oh=00_AfCXFLPZTQxrVDWADA_aPG8o4_lRhKbEQsAs6Jh5TF3auQ&oe=64B6C100&_nc_sid=3b7ee3",
+                                  "fbid_v2": "17841401746480004",
+                                  "has_onboarded_to_text_post_app": true
+                              },
+                              "is_covered": false,
+                              "is_ranked_comment": false,
+                              "media_id": 3143857175171939857,
+                              "private_reply_status": 0
+                          },
+                          "media_type": 19,
+                          "code": "CuhOXGmr74R",
+                          "product_type": "text_post",
+                          "organic_tracking_token": "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjp0cnVlLCJ1dWlkIjoiYzY0NzE2ZDZmYmJhNDE2MDlhODEwMWU3ZTkzYmM3NWYzMTQzODU3MTc1MTcxOTM5ODU3Iiwic2VydmVyX3Rva2VuIjoiMTY4OTQxOTI0NDgxMHwzMTQzODU3MTc1MTcxOTM5ODU3fDYwNDM4MTU0NTY2fGFiYzJhZWFjNGZkZTBlZTFlN2I4ZTZhNTA4MDcxMzQxNGZjM2U0NTdmN2ZjZmYyZDE4ODlkYmQyODViOTBiZjYifSwic2lnbmF0dXJlIjoiIn0=",
+                          "image_versions2": {
+                              "candidates": []
+                          },
+                          "original_width": 612,
+                          "original_height": 612,
+                          "video_versions": [],
+                          "like_count": 127327,
+                          "has_liked": false,
+                          "can_viewer_reshare": true,
+                          "top_likers": [],
+                          "user": {
+                              "pk": 314216,
+                              "pk_id": "314216",
+                              "username": "zuck",
+                              "full_name": "Mark Zuckerberg",
+                              "is_private": false,
+                              "is_verified": true,
+                              "profile_pic_id": "3138909791791822006_314216",
+                              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/357376107_1330597350674698_8884059223384672080_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=XKEMOZTrwUAAX-1hCyT&edm=AKIuHiwBAAAA&ccb=7-5&oh=00_AfCXFLPZTQxrVDWADA_aPG8o4_lRhKbEQsAs6Jh5TF3auQ&oe=64B6C100&_nc_sid=3b7ee3",
+                              "friendship_status": {
+                                  "following": false,
+                                  "followed_by": false,
+                                  "blocking": false,
+                                  "muting": false,
+                                  "is_private": false,
+                                  "incoming_request": false,
+                                  "outgoing_request": false,
+                                  "text_post_app_pre_following": false,
+                                  "is_bestie": false,
+                                  "is_restricted": false,
+                                  "is_feed_favorite": false,
+                                  "is_eligible_to_subscribe": false
+                              },
+                              "has_anonymous_profile_picture": false,
+                              "has_onboarded_to_text_post_app": true,
+                              "account_badges": []
+                          }
+                      },
+                      "line_type": "line",
+                      "view_replies_cta_string": "24,278 replies",
+                      "should_show_replies_cta": true,
+                      "reply_facepile_users": [
+                          {
+                              "pk": 57325599231,
+                              "pk_id": "57325599231",
+                              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/359520387_1561960634615463_4231364575815896983_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=103&_nc_ohc=L0Vg4L6V5_AAX_Hbcgj&edm=AKIuHiwBAAAA&ccb=7-5&oh=00_AfD130-XjZ1RrsD_TVSbyH1SgizO5hGb5W5IJhVTOK3_Gg&oe=64B6B3CC&_nc_sid=3b7ee3"
+                          },
+                          {
+                              "pk": 53041190925,
+                              "pk_id": "53041190925",
+                              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/359187805_177094641886545_7812186447575399344_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=109&_nc_ohc=0CBUtKwuehgAX9EK7C3&edm=AKIuHiwBAAAA&ccb=7-5&oh=00_AfDT8r2ogdVP6qGgBbsjZEoB9tL3V5Zyjwe-rWgUqjRDfw&oe=64B6AA34&_nc_sid=3b7ee3"
+                          },
+                          {
+                              "pk": 60184849158,
+                              "pk_id": "60184849158",
+                              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/358782577_620441826734229_2771436956212880281_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=109&_nc_ohc=UwO4_ipDCRgAX-LM3Qn&edm=AKIuHiwBAAAA&ccb=7-5&oh=00_AfAie1X0UbKUYRbBtRI8fn_8_sbyZAy9sLKQjdTBiWhhNQ&oe=64B6B8B8&_nc_sid=3b7ee3"
+                          }
+                      ],
+                      "can_inline_expand_below": false
+                  }
+              ],
+              "thread_type": "thread",
+              "show_create_reply_cta": false,
+              "id": 3143857175171939857,
+              ...
+          },
+          ...
+      ],
       "status": "ok"
   }
   ```
