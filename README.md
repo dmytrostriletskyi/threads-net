@@ -257,7 +257,7 @@ with the following command:
 ### Pagination
 
 There are two things that are involved into the pagination for requests that respond with lists of records (e.g. threads, 
-replies, followers, following and so on): `count` and `max id`. Basically, `count` is responsible for a number of records
+replies, followers, following and so on): `limit` and `max id`. Basically, `limit` is responsible for a number of records
 to request (where `15` is a default number) and `max id` is kinda offset thingy, but a bit tricky.
 
 Let consider the method for getting a list of a user's threads if there are only `10` in total:
@@ -282,10 +282,10 @@ Let consider the method for getting a list of a user's threads if there are only
 }
 ```
 
-If we want to fetch them iteratively by chunks (for instance, by `2` threads), we just specify a `count` argument:
+If we want to fetch them iteratively by chunks (for instance, by `2` threads), we just specify a `limit` argument:
 
 ```python
->>> user_threads = threads.private_api.get_user_threads(id=314216, count=2)
+>>> user_threads = threads.private_api.get_user_threads(id=314216, limit=2)
 >>> user_threads
 {
     "threads": [
@@ -304,7 +304,7 @@ offsetting (chunking) from:
 ```python
 >>> user_threads = threads.private_api.get_user_threads(
         id=314216, 
-        count=2, 
+        limit=2, 
         from_max_id='QVFCWnJRSFdwMW5ITjRhcDlqR2hfY19JM21eQ==',
     )
 >>> user_threads
@@ -325,7 +325,7 @@ threads would look like:
 from_max_id = None
 
 while True:
-    user_threads = threads.private_api.get_user_threads(id=314216, count=2, from_max_id=from_max_id)
+    user_threads = threads.private_api.get_user_threads(id=314216, limit=2, from_max_id=from_max_id)
 
     for thread in user_threads.get('threads'):
         items = thread.get('thread_items')
@@ -1175,7 +1175,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |  Parameters   |  Type   | Required | Restrictions | Description                                              |
 |:-------------:|:-------:|:--------:|:------------:|----------------------------------------------------------|
 |     `id`      | Integer |   Yes    |     `>0`     | A user's identifier.                                     |
-|    `count`    | Integer |    No    |     `>0`     | A number of threads to get. Default value is `15`.       |
+|    `limit`    | Integer |    No    |     `>0`     | A number of threads to get. Default value is `15`.       |
 | `from_max_id` | String  |    No    |      -       | An encoded thread's identifier to start offsetting from. |
 
 <details>
@@ -1330,7 +1330,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 |  Parameters   |  Type   | Required | Restrictions | Description                                             |
 |:-------------:|:-------:|:--------:|:------------:|---------------------------------------------------------|
 |     `id`      | Integer |   Yes    |     `>0`     | A user's identifier.                                    |
-|    `count`    | Integer |    No    |     `>0`     | A number of replies to get. Default value is `15`.      |
+|    `limit`    | Integer |    No    |     `>0`     | A number of replies to get. Default value is `15`.      |
 | `from_max_id` | String  |    No    |      -       | An encoded reply's identifier to start offsetting from. |
 
 <details>
@@ -2913,7 +2913,7 @@ whether to stop iterations or not.
 
 | Parameters |  Type   | Required | Restrictions | Description                                                  |
 |:----------:|:-------:|:--------:|:------------:|--------------------------------------------------------------|
-|  `count`   | Integer |    No    |     `>0`     | A number of recommended users to get. Default value is `15`. |
+|  `limit`   | Integer |    No    |     `>0`     | A number of recommended users to get. Default value is `15`. |
 |  `offset`  | Integer |    No    |      -       | A number of recommended users skip before fetching.          |
 
 <details>

@@ -9,7 +9,10 @@ import mimetypes
 import random
 import time
 from http import HTTPStatus as HttpStatus
-from typing import TYPE_CHECKING, Optional
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+)
 from urllib.parse import quote
 from uuid import uuid4
 
@@ -124,13 +127,18 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def get_user_threads(self: PrivateThreadsApi, id: int, count: int = 15, from_max_id: Optional[str] = None) -> dict:
+    def get_user_threads(
+        self: PrivateThreadsApi,
+        id: int,
+        limit: int = 15,
+        from_max_id: Optional[str] = None,
+    ) -> dict:
         """
         Get a user's threads.
 
         Arguments:
             id (int): a user's identifier.
-            count (int): a number of threads to get.
+            limit (int): a number of threads to get.
             from_max_id (str): an encoded thread's identifier to start offsetting from.
 
         Returns:
@@ -140,20 +148,20 @@ class PrivateThreadsApi(AbstractThreadsApi):
             url=f'{self.INSTAGRAM_API_URL}/text_feed/{id}/profile/',
             headers=self.headers,
             params={
-                'count': count,
+                'count': limit,
                 'max_id': from_max_id,
-            }
+            },
         )
 
         return response.json()
 
-    def get_user_replies(self: PrivateThreadsApi, id: int, count: int = 15, from_max_id: Optional[str] = None) -> dict:
+    def get_user_replies(self: PrivateThreadsApi, id: int, limit: int = 15, from_max_id: Optional[str] = None) -> dict:
         """
         Get a user's replies.
 
         Arguments:
             id (int): a user's identifier.
-            count (int): a number of replies to get.
+            limit (int): a number of replies to get.
             from_max_id (str): an encoded reply's identifier to start offsetting from.
 
         Returns:
@@ -163,19 +171,19 @@ class PrivateThreadsApi(AbstractThreadsApi):
             url=f'{self.INSTAGRAM_API_URL}/text_feed/{id}/profile/replies/',
             headers=self.headers,
             params={
-                'count': count,
+                'count': limit,
                 'max_id': from_max_id,
-            }
+            },
         )
 
         return response.json()
 
-    def get_recommended_users(self, count: int = 15, offset: Optional[int] = None):
+    def get_recommended_users(self: PrivateThreadsApi, limit: int = 15, offset: Optional[int] = None) -> dict:
         """
         Get recommended users.
 
         Arguments:
-            count (int): a number of users to get.
+            limit (int): a number of users to get.
             offset (str): an offset.
 
         Returns:
@@ -186,8 +194,8 @@ class PrivateThreadsApi(AbstractThreadsApi):
             headers=self.headers,
             params={
                 'paging_token': offset,
-                'count': count,
-            }
+                'count': limit,
+            },
         )
 
         return response.json()

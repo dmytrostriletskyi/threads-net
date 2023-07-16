@@ -14,7 +14,7 @@ if __name__ == '__main__':
     from_max_id = None
 
     while True:
-        user_threads = threads.private_api.get_user_threads(id=314216, count=2, from_max_id=from_max_id)
+        user_threads = threads.private_api.get_user_threads(id=314216, limit=2, from_max_id=from_max_id)
 
         for thread in user_threads.get('threads'):
             items = thread.get('thread_items')
