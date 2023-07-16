@@ -65,6 +65,8 @@ Table of content:
       * [Repost](#repost)
       * [Unrepost](#unrepost)
       * [Quote](#quote)
+    * [Feed](#feed)
+      * [Recommended users](#get-recommended-users)
 
 ## Disclaimer
 
@@ -86,9 +88,10 @@ Table of content:
 
 Check what is already done in the table of content above, below the only things to be done are placed: 
 
-- [ ] Feed (threads, replies, recommendations, notifications, seen notifications)
-- [ ] Pagination for list-related responses
-- [ ] Manage auth for accounts with enabled 2FA and challenges
+- [ ] Pagination for all methods responding with a list of records
+- [ ] Get notifications about new threads
+- [ ] Manage auth for accounts with the enabled 2FA
+- [ ] Manage auth for accounts required a challenge
 
 ## Getting started
 
@@ -1403,7 +1406,6 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
                           "original_width": 640,
                           "original_height": 1136,
                           "is_dash_eligible": 1,
-                          "video_dash_manifest": "\n<MPD xmlns=\"urn:mpeg:dash:schema:mpd:2011\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd\" profiles=\"urn:mpeg:dash:profile:isoff-on-demand:2011\" minBufferTime=\"PT2S\" type=\"static\" mediaPresentationDuration=\"PT18.700000762939453S\"><Period id=\"0\" duration=\"PT18.700000762939453S\"><AdaptationSet id=\"0\" contentType=\"video\" frameRate=\"15360/512\" subsegmentAlignment=\"true\" par=\"9:16\" FBUnifiedUploadResolutionMos=\"360:73.6\"><Representation id=\"2611672838971644vd\" bandwidth=\"2906765\" codecs=\"avc1.64001e\" mimeType=\"video/mp4\" sar=\"1:1\" FBEncodingTag=\"dash_baseline_1_v1\" FBPlaybackResolutionMos=\"0:100,720:81.9\" FBPlaybackResolutionMosConfidenceLevel=\"high\" FBPlaybackResolutionCsvqm=\"0:100,720:93.9,1080:93.9\" width=\"720\" height=\"1280\" FBDefaultQuality=\"1\" FBQualityClass=\"hd\" FBQualityLabel=\"720p\"><BaseURL>https://instagram.fiev6-1.fna.fbcdn.net/v/t50.2886-16/360404858_562471725885766_7209197166491385251_n.mp4?_nc_cat=110&amp;ccb=1-7&amp;_nc_sid=9c5c06&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImRhc2hfYmFzZWxpbmVfMV92MSJ9&amp;_nc_ohc=cWWHe8rV1jgAX83DFJb&amp;_nc_ht=instagram.fiev6-1.fna&amp;oh=00_AfCoaG0qN3zuORItVcpof45_2Pb0-EStajQ4w122qQAOjA&amp;oe=64B7C39B</BaseURL><SegmentBase indexRange=\"858-937\" timescale=\"15360\" FBFirstSegmentRange=\"938-1280180\" FBFirstSegmentDuration=\"5000\" FBSecondSegmentRange=\"1280181-3445747\" FBPrefetchSegmentRange=\"938-1280180\" FBPrefetchSegmentDuration=\"5000\"><Initialization range=\"0-857\"/></SegmentBase></Representation><Representation id=\"1023383492024442v\" bandwidth=\"1437655\" codecs=\"avc1.4d401e\" mimeType=\"video/mp4\" sar=\"1:1\" FBEncodingTag=\"dash_baseline_2_v1\" FBPlaybackResolutionMos=\"0:100,720:68.3\" FBPlaybackResolutionMosConfidenceLevel=\"high\" FBPlaybackResolutionCsvqm=\"0:100,720:83.1\" width=\"480\" height=\"854\" FBQualityClass=\"sd\" FBQualityLabel=\"480p\"><BaseURL>https://instagram.fiev6-1.fna.fbcdn.net/v/t50.2886-16/361062149_663346358581709_8844241500491019989_n.mp4?_nc_cat=108&amp;ccb=1-7&amp;_nc_sid=9c5c06&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImRhc2hfYmFzZWxpbmVfMl92MSJ9&amp;_nc_ohc=qTgwWXx1yVIAX_SSGzH&amp;_nc_ht=instagram.fiev6-1.fna&amp;oh=00_AfBctcPfSdoR_uhaFtjymaEPurWerLwzsSWT-miL-d8jTQ&amp;oe=64B893BC</BaseURL><SegmentBase indexRange=\"859-938\" timescale=\"15360\" FBFirstSegmentRange=\"939-615676\" FBFirstSegmentDuration=\"5000\" FBSecondSegmentRange=\"615677-1710065\" FBPrefetchSegmentRange=\"939-615676\" FBPrefetchSegmentDuration=\"5000\"><Initialization range=\"0-858\"/></SegmentBase></Representation></AdaptationSet><AdaptationSet id=\"1\" contentType=\"audio\" subsegmentAlignment=\"true\"><Representation id=\"2856964614438406ad\" bandwidth=\"5574\" codecs=\"mp4a.40.5\" mimeType=\"audio/mp4\" audioSamplingRate=\"44100\" FBEncodingTag=\"dash_baseline_audio_v1\" FBDefaultQuality=\"1\"><AudioChannelConfiguration schemeIdUri=\"urn:mpeg:dash:23003:3:audio_channel_configuration:2011\" value=\"2\"/><BaseURL>https://instagram.fiev6-1.fna.fbcdn.net/v/t50.2886-16/361076953_132281986568099_8817081705646996429_n.mp4?_nc_cat=105&amp;ccb=1-7&amp;_nc_sid=9c5c06&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImRhc2hfYmFzZWxpbmVfYXVkaW9fdjEifQ%3D%3D&amp;_nc_ohc=hmo1IZBaVgUAX_6DWPV&amp;_nc_ht=instagram.fiev6-1.fna&amp;oh=00_AfBLaMyqjDbhP4xYrpA4a84Cc8i3C5fkB049uhKZDxywEg&amp;oe=64B78E64</BaseURL><SegmentBase indexRange=\"817-896\" timescale=\"44100\" FBFirstSegmentRange=\"897-3975\" FBFirstSegmentDuration=\"5040\" FBSecondSegmentRange=\"3976-6939\" FBPrefetchSegmentRange=\"897-3975\" FBPrefetchSegmentDuration=\"5040\"><Initialization range=\"0-816\"/></SegmentBase></Representation></AdaptationSet></Period></MPD>\n",
                           "video_codec": "avc1.64001e",
                           "has_audio": true,
                           "video_duration": 18.784,
@@ -2899,4 +2901,61 @@ identifier of the thread from `repost` method.
   <summary>Open UI example</summary>
 
   ![](./assets/examples/quote-thread.png)
+</details>
+
+#### Feed
+
+##### Get recommended users
+
+`threads.private_api.get_recommended_users` — get recommended users. Supports [pagination](#pagination), but has 
+different response keys: `paging_token` instead of `next_max_id` as an `offset` and `has_more` as a value to detect
+whether to stop iterations or not.
+
+| Parameters |  Type   | Required | Restrictions | Description                                                  |
+|:----------:|:-------:|:--------:|:------------:|--------------------------------------------------------------|
+|  `count`   | Integer |    No    |     `>0`     | A number of recommended users to get. Default value is `15`. |
+|  `offset`  | Integer |    No    |      -       | A number of recommended users skip before fetching.          |
+
+<details>
+  <summary>Open code example</summary>
+  
+  ```python3
+  >>> recommended_users = threads.private_api.get_recommended_users()
+  >>> recommended_users
+  {
+      "users": [
+          {
+              "pk": 285464169,
+              "pk_id": "285464169",
+              "username": "sashachistova",
+              "full_name": "Sasha Chistova",
+              "account_badges": [],
+              "profile_pic_url": "https://instagram.fiev6-1.fna.fbcdn.net/v/t51.2885-19/358049976_793858308785598_4202050856705005217_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fiev6-1.fna.fbcdn.net&_nc_cat=106&_nc_ohc=sieozLj6SiAAX-AN0KH&edm=AHWpSgsBAAAA&ccb=7-5&oh=00_AfCMzBux6Y1Hzi0ZmBkD26hzer4ETDiRY8v6mfeGEbR6lw&oe=64B8BE6D&_nc_sid=ae9eda",
+              "has_anonymous_profile_picture": false,
+              "has_onboarded_to_text_post_app": true,
+              "is_verified": true,
+              "friendship_status": {
+                  "following": false,
+                  "followed_by": false,
+                  "blocking": false,
+                  "muting": false,
+                  "is_private": false,
+                  "incoming_request": false,
+                  "outgoing_request": false,
+                  "text_post_app_pre_following": false,
+                  "is_bestie": false,
+                  "is_restricted": false,
+                  "is_feed_favorite": false,
+                  "is_eligible_to_subscribe": false
+              },
+              "profile_context_facepile_users": [],
+              "follower_count": 26459
+          },
+          ...
+      ],
+      "paging_token": "15",
+      "has_more": true,
+      "status": "ok"
+  }
+  ```
 </details>

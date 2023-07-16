@@ -153,8 +153,8 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         Arguments:
             id (int): a user's identifier.
-            count (int): a number of threads to get.
-            from_max_id (str): an encoded thread's identifier to start offsetting from.
+            count (int): a number of replies to get.
+            from_max_id (str): an encoded reply's identifier to start offsetting from.
 
         Returns:
             The list of user's replies inside a dict.
@@ -165,6 +165,28 @@ class PrivateThreadsApi(AbstractThreadsApi):
             params={
                 'count': count,
                 'max_id': from_max_id,
+            }
+        )
+
+        return response.json()
+
+    def get_recommended_users(self, count: int = 15, offset: Optional[int] = None):
+        """
+        Get recommended users.
+
+        Arguments:
+            count (int): a number of users to get.
+            offset (str): an offset.
+
+        Returns:
+            The list of recommended users inside a dict.
+        """
+        response = requests.get(
+            url=f'{self.INSTAGRAM_API_URL}/text_feed/recommended_users/',
+            headers=self.headers,
+            params={
+                'paging_token': offset,
+                'count': count,
             }
         )
 
