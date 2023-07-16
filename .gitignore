@@ -107,3 +107,4 @@ venv.bak/
 settings.json
 examples/experiements.py
 .DS_Store
+session*.json

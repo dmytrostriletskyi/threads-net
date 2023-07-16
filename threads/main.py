@@ -13,6 +13,7 @@ from threads.apis import (
     PublicThreadsApi,
 )
 from threads.settings import Settings
+from instagrapi import Client
 
 
 class Threads:
@@ -21,10 +22,11 @@ class Threads:
     """
 
     def __init__(
-        self: Threads,
-        username: Optional[Union[dict, str]] = None,
-        password: Optional[str] = None,
-        settings: Optional[Union[dict, str]] = None,
+            self: Threads,
+            username: Optional[Union[dict, str]] = None,
+            password: Optional[str] = None,
+            instagrapi_client: Client | None = None,
+            settings: Optional[Union[dict, str]] = None,
     ) -> None:
         """
         Construct the object.
@@ -36,11 +38,16 @@ class Threads:
         """
         self.username = username
         self.password = password
+        self.instagrapi_client = instagrapi_client
 
         self.settings = Settings(settings=settings)
 
         self.public_api = PublicThreadsApi()
-        self.private_api = PrivateThreadsApi(settings=self.settings, username=username, password=password)
+        self.private_api = PrivateThreadsApi(
+            settings=self.settings,
+            username=username, password=password,
+            instagrapi_client=self.instagrapi_client
+        )
 
     def download_settings(self: Threads, path: str) -> None:
         """

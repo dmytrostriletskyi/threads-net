@@ -25,6 +25,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 
 from threads.apis.abstract import AbstractThreadsApi
+from instagrapi import Client
 
 if TYPE_CHECKING:
     from threads.settings import Settings
@@ -38,10 +39,11 @@ class PrivateThreadsApi(AbstractThreadsApi):
     INSTAGRAM_API_URL = 'https://i.instagram.com/api/v1'
 
     def __init__(
-        self: PrivateThreadsApi,
-        settings: Settings,
-        username: str | None = None,
-        password: str | None = None,
+            self: PrivateThreadsApi,
+            settings: Settings,
+            username: str | None = None,
+            password: str | None = None,
+            instagrapi_client: Client | None = None,
     ) -> None:
         """
         Construct the object.
@@ -56,6 +58,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
         self.settings = settings
         self.username = username
         self.password = password
+        self.instagrapi_client = instagrapi_client
 
         self.mimetypes = mimetypes.MimeTypes()
 
@@ -67,9 +70,11 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         if self.settings.are_provided:
             self.instagram_api_token = self.settings.authentication_token
-
         else:
-            self.instagram_api_token = self._get_instagram_api_token()
+            if self.instagrapi_client:
+                self.instagram_api_token = self.instagrapi_client.authorization.split("Bearer IGT:2:")[1]
+            else:
+                self.instagram_api_token = self._get_instagram_api_token()
 
         self.headers = {
             'Authorization': f'Bearer IGT:2:{self.instagram_api_token}',
@@ -128,10 +133,10 @@ class PrivateThreadsApi(AbstractThreadsApi):
         return response.json()
 
     def get_user_threads(
-        self: PrivateThreadsApi,
-        id: int,
-        limit: int = 15,
-        from_max_id: Optional[str] = None,
+            self: PrivateThreadsApi,
+            id: int,
+            limit: int = 15,
+            from_max_id: Optional[str] = None,
     ) -> dict:
         """
         Get a user's threads.
@@ -483,11 +488,11 @@ class PrivateThreadsApi(AbstractThreadsApi):
         return response.json()
 
     def create_thread(
-        self: PrivateThreadsApi,
-        caption: str,
-        url: str | None = None,
-        image_url: str | None = None,
-        reply_to: int | None = None,
+            self: PrivateThreadsApi,
+            caption: str,
+            url: str | None = None,
+            image_url: str | None = None,
+            reply_to: int | None = None,
     ) -> dict:
         """
         Create a thread.
@@ -755,12 +760,12 @@ class PrivateThreadsApi(AbstractThreadsApi):
         encrypted_rsa_key_mixed_bytes = int(0).to_bytes(1, 'big') + int(1).to_bytes(1, 'big')
 
         password_as_encryption_sequence = (
-            key_id_mixed_bytes
-            + initialization_vector
-            + encrypted_rsa_key_mixed_bytes
-            + encrypted_secret_key
-            + auth_tag
-            + encrypted_password
+                key_id_mixed_bytes
+                + initialization_vector
+                + encrypted_rsa_key_mixed_bytes
+                + encrypted_secret_key
+                + auth_tag
+                + encrypted_password
         )
 
         password_as_encryption_sequence_as_base64 = base64.b64encode(
