@@ -200,35 +200,43 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         return response.json()
 
-    def get_user_followers(self: PrivateThreadsApi, id: int) -> dict:
+    def get_user_followers(self: PrivateThreadsApi, id: int, max_id: Optional[str] = None) -> dict:
         """
         Get a user's followers.
 
         Arguments:
             id (int): a user's identifier.
+            max_id (str): offset.
 
         Returns:
             The list of user's followers inside a dict.
         """
         response = requests.get(
             url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/followers/',
+            params={
+                'max_id': max_id
+            },
             headers=self.headers,
         )
 
         return response.json()
 
-    def get_user_following(self: PrivateThreadsApi, id: int) -> dict:
+    def get_user_following(self: PrivateThreadsApi, id: int, max_id: Optional[str] = None) -> dict:
         """
         Get a user's following.
 
         Arguments:
             id (int): a user's identifier.
+            max_id (str): offset.
 
         Returns:
             The list of user's following inside a dict.
         """
         response = requests.get(
             url=f'{self.INSTAGRAM_API_URL}/friendships/{id}/following/',
+            params={
+                'max_id': max_id
+            },
             headers=self.headers,
         )
 
