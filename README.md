@@ -76,7 +76,7 @@ Table of content:
 * This project is unofficial and reverse-engineered, it means that:
   * The library would be pretending being a mobile phone or a web user (via proper `HTTP` headers and other things).
     Thus, you might face `rate limits` (because pretending is never ideal), your `IP` marked as suspicious and even 
-    your `Threads` and/or `Instagram` account might be suspended if you mess up with logining or sending too much
+    your `Threads` and/or `Instagram` account might be suspended if you mess up with logging in or sending too much
     requests. 
   * `Threads` and `Instagram` `APIs` are not provided as public `API` and developed to be used internally
     (`Meta'`s `back-end` developers made it only for `Meta'`s `front-end/mobile` developers) without any intention to
@@ -131,13 +131,12 @@ ls examples
 ### Disclaimer
 
 To interact with `Threads API`, there is no need for any authorization, so in the library it is called `public API`.
-On the other hand, to interact with `Instagram API`, you have to specify `Instagram` username and password (as like
-you do when you log in to `Threads` mobile application), so in the library it is called `private API`.
+On the other hand, to interact with `Instagram API`, you have to specify `Instagram` username and password (like you do when you log in to `Threads` mobile application), so in the library it is called `private API`.
 
-* `Public API` has only read-only endpoints. In the same time, `private API` has both read and write endpoints. 
-  `Public API` much less stable than `private API` (because `private API` is used for `Instagram API` and `Instagram` 
-  is stable product in general already).
-* `Public API` less risky to get `rate limits` or to have an account in `Threads` and/or `Instagram` be suspended.
+* `Public API` has only read-only endpoints. At the same time, `private API` has both read and write endpoints. 
+  `Public API` is much less stable than `private API` (because `private API` is used for `Instagram API` and `Instagram` 
+  is a stable product in general already).
+* `Public API` is less risky to get `rate limits` or to have an account in `Threads` and/or `Instagram` be suspended.
 
 So, it is a trade-off between stability, bugs and `rate limits` and/or `suspension`. But with the library you can
 combine two approaches: for instance, prefer `public API` for read-only endpoints and `private API` for write-only
@@ -154,12 +153,12 @@ for such accounts so you don't have to disable it.
 
 ### Terminology
 
-There might be a confusion among many `Threads API` clients as well as in both `Threads` an `Instagram` `APIs` according
+There might be confusion among many `Threads API` clients as well as in both `Threads` an `Instagram` `APIs` according
 to the naming of entities. For instance, in `Threads` a publication is called a `thread`, but under the hood in the `API`
 of fetching or creating a `thread` it is called a `post`. 
 
 It is done because `Threads` are backed by `Instagram` and `threads` creation is done on `Instagram API` where a 
-publication called a post. Library maintainers decided to stick into `Threads` terminology and use the word `thread` for
+publication called a post. Library maintainers decided to stick to `Threads` terminology and use the word `thread` for
 the post-related things.
 
 ### Initialization
@@ -182,13 +181,12 @@ If you are going to use only `private API` or both `private` and `public` `APIs`
 
 ### Settings
 
-Currently, to perform `private API` requests, there is a need to specify a mobile device metadata, timezone offset and
-an authorization token. The device metadata and timezone offset are randomly generated once you initialize `Threads`, 
-in order the authorization token is requested from `Instagram API` and saved for further usage.
+Currently, to perform `private API` requests, there is a need to specify mobile device metadata, timezone offset and
+an authorization token. The device metadata and timezone offset are randomly generated once you initialize `Threads`, the authorization token is requested from `Instagram API` and saved for further usage.
 
-If you initialize `Threads` frequently with different data, `Instagram API` might threat it as a non-human and machine
-behavior and mark your `IP` as suspicious and even suspend your account `Threads` and/or `Instagram` account. Also,
-the authorization token has long live period and once the authorization token is fetched, it can be reused at least for 
+If you initialize `Threads` frequently with different data, `Instagram API` might treat it as a non-human and machine
+behavior and mark your `IP` as suspicious and even suspend your `Threads` account and/or `Instagram` account. Also,
+the authorization token has a long lifespan and once the authorization token is fetched, it can be reused at least for 
 next 24 hours (maybe more, but at least) and there is no need to fetch it at each initialization over and over again.
 
 For this, there are settings. Those are either a `JSON` file or a dictionary you can provide to reuse device metadata, 
@@ -246,7 +244,7 @@ $ cat settings.json
 }
 ```
 
-Instead of manually create a `JSON` file, you can ask `Threads` to generate it, specifying a path to where to save it, 
+Instead of manually creating a `JSON` file, you can ask `Threads` to generate it, by specifying a path to where to save it, 
 with the following command:
 
 ```python
@@ -256,8 +254,8 @@ with the following command:
 
 ### Pagination
 
-There are two things that are involved into the pagination for requests that respond with lists of records (e.g. threads, 
-replies, followers, following and so on): `limit` and `max id`. Basically, `limit` is responsible for a number of records
+There are two things that are involved into pagination for requests that respond with lists of records (e.g. threads, 
+replies, followers, following and so on): `limit` and `max id`. Basically, `limit` is responsible for the number of records
 to request (where `15` is a default number) and `max id` is kinda offset thingy, but a bit tricky.
 
 Let consider the method for getting a list of a user's threads if there are only `10` in total:
@@ -298,7 +296,7 @@ If we want to fetch them iteratively by chunks (for instance, by `2` threads), w
 ```
 
 But it is not enough, because on this stage we do not know how to iterate and fetch the next `2` threads. Here `max id` 
-helps, if you see, there is `next_max_id` in the response. Which is encoded identifier of the `3rd` thread to start 
+helps, if you see, there is `next_max_id` in the response. Which is an encoded identifier of the `3rd` thread to start 
 offsetting (chunking) from:
 
 ```python
@@ -434,7 +432,7 @@ as well as if you are somehow limited by computer resources (`RAM`, `bandwidth` 
 
 ##### Get Threads
 
-`threads.public_api.get_user_threads` — getting a user's threads by the user's identifier.
+`threads.public_api.get_user_threads` — getting user's threads by the user's identifier.
 
 | Parameters |  Type   | Required | Restrictions | Description          |
 |:----------:|:-------:|:--------:|:------------:|----------------------|
@@ -524,7 +522,7 @@ as well as if you are somehow limited by computer resources (`RAM`, `bandwidth` 
 
 ##### Get Replies
 
-`threads.public_api.get_user_replies` — getting a user's replies by the user's identifier.
+`threads.public_api.get_user_replies` — getting user's replies by the user's identifier.
 
 | Parameters |  Type   | Required | Restrictions | Description          |
 |:----------:|:-------:|:--------:|:------------:|----------------------|
@@ -910,7 +908,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 
 ##### Get Likers
 
-`threads.public_api.get_thread_likers` — getting a thread's likers by the thread's identifier.
+`threads.public_api.get_thread_likers` — getting thread's likers by the thread's identifier.
 
 | Parameters |  Type   | Required | Restrictions | Description            |
 |:----------:|:-------:|:--------:|:------------:|------------------------|
@@ -1501,7 +1499,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 
 ##### Get Followers
 
-`threads.private_api.get_user_followers` — getting a user's followers by the user's identifier.
+`threads.private_api.get_user_followers` — getting user's followers by the user's identifier.
 
 | Parameters |  Type   | Required | Restrictions | Description          |
 |:----------:|:-------:|:--------:|:------------:|----------------------|
@@ -1605,7 +1603,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 
 ##### Get Friendship Status
 
-`threads.private_api.get_friendship_status` — get a friendship status with a user.
+`threads.private_api.get_friendship_status` — get the friendship status with a user.
 
 | Parameters |  Type   | Required | Restrictions | Description                                            |
 |:----------:|:-------:|:--------:|:------------:|--------------------------------------------------------|
@@ -2115,7 +2113,7 @@ part of a thread's website `URL`. If the thread's `URL` is `https://threads.net/
 
 ##### Get Likers
 
-`threads.private_api.get_thread_likers` — getting a thread's likers by the thread's identifier.
+`threads.private_api.get_thread_likers` — getting thread's likers by the thread's identifier.
 
 | Parameters |  Type   | Required | Restrictions | Description            |
 |:----------:|:-------:|:--------:|:------------:|------------------------|
