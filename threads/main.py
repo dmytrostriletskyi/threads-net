@@ -42,13 +42,17 @@ class Threads:
         self.public_api = PublicThreadsApi()
         self.private_api = PrivateThreadsApi(settings=self.settings, username=username, password=password)
 
-    def download_settings(self: Threads, path: str) -> None:
+    def download_settings(self: Threads, path: str, renew_token: bool = False) -> None:
         """
         Download settings.
 
         Arguments:
             path (str): a path to a JSON file.
+            renew_token (bool): whether to renew the authentication token.
         """
+        if renew_token:
+            self.private_api.renew_instagram_api_token()
+
         self.settings.download_settings(
             path=path,
             authentication_token=self.private_api.instagram_api_token,

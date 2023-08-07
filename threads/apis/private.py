@@ -80,6 +80,10 @@ class PrivateThreadsApi(AbstractThreadsApi):
 
         self.user_id = self.get_user_id(username=username)
 
+    def renew_instagram_api_token(self: PrivateThreadsApi) -> str:
+        self.instagram_api_token = self._get_instagram_api_token()
+        return self.instagram_api_token
+
     def get_user_id(self: PrivateThreadsApi, username: str) -> int:
         """
         Get a user's identifier.
