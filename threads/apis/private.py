@@ -486,6 +486,7 @@ class PrivateThreadsApi(AbstractThreadsApi):
         self: PrivateThreadsApi,
         caption: str,
         url: str | None = None,
+        upload_id: int | None = None,
         image_url: str | None = None,
         reply_to: int | None = None,
     ) -> dict:
@@ -534,6 +535,10 @@ class PrivateThreadsApi(AbstractThreadsApi):
         elif url is None and image_url is not None:
             endpoint = '/media/configure_text_post_app_feed/'
             parameters_as_string['upload_id'] = self._upload_image(url=image_url)
+            parameters_as_string['scene_capture_type'] = ''
+        elif upload_id is not None:
+            endpoint = '/media/configure_text_post_app_feed/'
+            parameters_as_string['upload_id'] = upload_id
             parameters_as_string['scene_capture_type'] = ''
 
         else:
